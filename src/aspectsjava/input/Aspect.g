@@ -10,13 +10,14 @@ import JavaP,JavaL;
 @header {
 package aspectsjava.input;
 
-import chameleon.aspects.PointcutMethodHeader;
-import chameleon.aspects.Aspect;
 import chameleon.aspects.Advice;
-import chameleon.aspects.CrossReferencePointcut;
-import chameleon.aspects.pointcutexpression.*;
-import chameleon.aspects.MethodReference;
-import chameleon.aspects.QualifiedMethodHeader;
+import chameleon.aspects.Aspect;
+import chameleon.aspects.pointcut.CrossReferencePointcut;
+import chameleon.aspects.pointcut.MethodReference;
+import chameleon.aspects.pointcut.PointcutHeader;
+import chameleon.aspects.pointcut.PointcutMethodHeader;
+import chameleon.aspects.pointcut.QualifiedMethodHeader;
+import chameleon.aspects.pointcut.expression.*;
 
 import chameleon.exception.ModelException;
 import chameleon.exception.ChameleonProgrammerException;
@@ -340,9 +341,12 @@ aspect returns [Aspect element]
 
 pointcut returns [CrossReferencePointcut element]
 @after{setLocation(retval.element, decl.start, decl.stop);}
-	: pct='pointcut' decl=pointcutDecl pars=formalParameters ':' expr=pointcutExpression {retval.element = new CrossReferencePointcut(decl.element, expr.element, pars.element);} ';'
+	: pct='pointcut' decl=pointcutDecl pars=formalParameters ':' expr=pointcutExpression ';'
 	
 	{
+		PointcutHeader header = new PointcutHeader(decl.element);
+		header.addFormalParameters(pars.element);
+		retval.element = new CrossReferencePointcut(header, expr.element);
 		setKeyword(retval.element, pct);
 	}
 	;

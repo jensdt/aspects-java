@@ -1,14 +1,15 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 JavaP.g 2010-11-06 22:30:03
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 JavaP.g 2010-11-11 15:03:41
 
 package aspectsjava.input;
 
-import chameleon.aspects.PointcutMethodHeader;
-import chameleon.aspects.Aspect;
 import chameleon.aspects.Advice;
-import chameleon.aspects.CrossReferencePointcut;
-import chameleon.aspects.pointcutexpression.*;
-import chameleon.aspects.MethodReference;
-import chameleon.aspects.QualifiedMethodHeader;
+import chameleon.aspects.Aspect;
+import chameleon.aspects.pointcut.CrossReferencePointcut;
+import chameleon.aspects.pointcut.MethodReference;
+import chameleon.aspects.pointcut.PointcutHeader;
+import chameleon.aspects.pointcut.PointcutMethodHeader;
+import chameleon.aspects.pointcut.QualifiedMethodHeader;
+import chameleon.aspects.pointcut.expression.*;
 
 import chameleon.exception.ModelException;
 import chameleon.exception.ChameleonProgrammerException;
@@ -11601,7 +11602,7 @@ public class Aspect_JavaP extends ChameleonParser {
                     int LA114_0 = input.LA(1);
 
                     if ( (LA114_0==77) ) {
-                        int LA114_1 = input.LA(2);
+                        int LA114_2 = input.LA(2);
 
                         if ( (synpred150_JavaP()) ) {
                             alt114=1;

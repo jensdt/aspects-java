@@ -1,14 +1,15 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g 2010-11-06 22:30:03
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g 2010-11-11 15:03:41
 
 package aspectsjava.input;
 
-import chameleon.aspects.PointcutMethodHeader;
-import chameleon.aspects.Aspect;
 import chameleon.aspects.Advice;
-import chameleon.aspects.CrossReferencePointcut;
-import chameleon.aspects.pointcutexpression.*;
-import chameleon.aspects.MethodReference;
-import chameleon.aspects.QualifiedMethodHeader;
+import chameleon.aspects.Aspect;
+import chameleon.aspects.pointcut.CrossReferencePointcut;
+import chameleon.aspects.pointcut.MethodReference;
+import chameleon.aspects.pointcut.PointcutHeader;
+import chameleon.aspects.pointcut.PointcutMethodHeader;
+import chameleon.aspects.pointcut.QualifiedMethodHeader;
+import chameleon.aspects.pointcut.expression.*;
 
 import chameleon.exception.ModelException;
 import chameleon.exception.ChameleonProgrammerException;
@@ -428,7 +429,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "compilationUnit"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:275:1: compilationUnit returns [CompilationUnit element] : ( annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* ) | (np= packageDeclaration )? (imp= importDeclaration )* (typech= typeDeclaration | ad= aspect )* ) ;
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:276:1: compilationUnit returns [CompilationUnit element] : ( annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* ) | (np= packageDeclaration )? (imp= importDeclaration )* (typech= typeDeclaration | ad= aspect )* ) ;
     public final AspectParser.compilationUnit_return compilationUnit() throws RecognitionException {
         AspectParser.compilationUnit_return retval = new AspectParser.compilationUnit_return();
         retval.start = input.LT(1);
@@ -455,17 +456,17 @@ public class AspectParser extends ChameleonParser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 408) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:280:5: ( ( annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* ) | (np= packageDeclaration )? (imp= importDeclaration )* (typech= typeDeclaration | ad= aspect )* ) )
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:280:8: ( annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* ) | (np= packageDeclaration )? (imp= importDeclaration )* (typech= typeDeclaration | ad= aspect )* )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:281:5: ( ( annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* ) | (np= packageDeclaration )? (imp= importDeclaration )* (typech= typeDeclaration | ad= aspect )* ) )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:281:8: ( annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* ) | (np= packageDeclaration )? (imp= importDeclaration )* (typech= typeDeclaration | ad= aspect )* )
             {
             root_0 = (Object)adaptor.nil();
 
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:280:8: ( annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* ) | (np= packageDeclaration )? (imp= importDeclaration )* (typech= typeDeclaration | ad= aspect )* )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:281:8: ( annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* ) | (np= packageDeclaration )? (imp= importDeclaration )* (typech= typeDeclaration | ad= aspect )* )
             int alt8=2;
             alt8 = dfa8.predict(input);
             switch (alt8) {
                 case 1 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:280:10: annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* )
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:281:10: annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* )
                     {
                     pushFollow(FOLLOW_annotations_in_compilationUnit80);
                     annotations1=annotations();
@@ -473,7 +474,7 @@ public class AspectParser extends ChameleonParser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, annotations1.getTree());
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:281:9: (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* )
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:282:9: (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* )
                     int alt4=2;
                     int LA4_0 = input.LA(1);
 
@@ -492,7 +493,7 @@ public class AspectParser extends ChameleonParser {
                     }
                     switch (alt4) {
                         case 1 :
-                            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:281:13: np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )*
+                            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:282:13: np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )*
                             {
                             pushFollow(FOLLOW_packageDeclaration_in_compilationUnit96);
                             np=packageDeclaration();
@@ -506,7 +507,7 @@ public class AspectParser extends ChameleonParser {
                                                npp.addImport(new DemandImport(new NamespaceReference("java.lang")));
                                               
                             }
-                            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:286:13: (imp= importDeclaration )*
+                            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:287:13: (imp= importDeclaration )*
                             loop1:
                             do {
                                 int alt1=2;
@@ -519,7 +520,7 @@ public class AspectParser extends ChameleonParser {
 
                                 switch (alt1) {
                             	case 1 :
-                            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:286:14: imp= importDeclaration
+                            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:287:14: imp= importDeclaration
                             	    {
                             	    pushFollow(FOLLOW_importDeclaration_in_compilationUnit132);
                             	    imp=importDeclaration();
@@ -539,7 +540,7 @@ public class AspectParser extends ChameleonParser {
                                 }
                             } while (true);
 
-                            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:287:13: (typech= typeDeclaration )*
+                            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:288:13: (typech= typeDeclaration )*
                             loop2:
                             do {
                                 int alt2=2;
@@ -552,7 +553,7 @@ public class AspectParser extends ChameleonParser {
 
                                 switch (alt2) {
                             	case 1 :
-                            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:287:14: typech= typeDeclaration
+                            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:288:14: typech= typeDeclaration
                             	    {
                             	    pushFollow(FOLLOW_typeDeclaration_in_compilationUnit153);
                             	    typech=typeDeclaration();
@@ -577,7 +578,7 @@ public class AspectParser extends ChameleonParser {
                             }
                             break;
                         case 2 :
-                            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:291:13: cd= classOrInterfaceDeclaration (typech= typeDeclaration )*
+                            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:292:13: cd= classOrInterfaceDeclaration (typech= typeDeclaration )*
                             {
                             pushFollow(FOLLOW_classOrInterfaceDeclaration_in_compilationUnit202);
                             cd=classOrInterfaceDeclaration();
@@ -592,7 +593,7 @@ public class AspectParser extends ChameleonParser {
                                               processType(npp,cd.element);
                                              
                             }
-                            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:297:13: (typech= typeDeclaration )*
+                            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:298:13: (typech= typeDeclaration )*
                             loop3:
                             do {
                                 int alt3=2;
@@ -605,7 +606,7 @@ public class AspectParser extends ChameleonParser {
 
                                 switch (alt3) {
                             	case 1 :
-                            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:297:14: typech= typeDeclaration
+                            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:298:14: typech= typeDeclaration
                             	    {
                             	    pushFollow(FOLLOW_typeDeclaration_in_compilationUnit237);
                             	    typech=typeDeclaration();
@@ -636,9 +637,9 @@ public class AspectParser extends ChameleonParser {
                     }
                     break;
                 case 2 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:302:9: (np= packageDeclaration )? (imp= importDeclaration )* (typech= typeDeclaration | ad= aspect )*
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:303:9: (np= packageDeclaration )? (imp= importDeclaration )* (typech= typeDeclaration | ad= aspect )*
                     {
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:302:9: (np= packageDeclaration )?
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:303:9: (np= packageDeclaration )?
                     int alt5=2;
                     int LA5_0 = input.LA(1);
 
@@ -647,7 +648,7 @@ public class AspectParser extends ChameleonParser {
                     }
                     switch (alt5) {
                         case 1 :
-                            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:302:10: np= packageDeclaration
+                            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:303:10: np= packageDeclaration
                             {
                             pushFollow(FOLLOW_packageDeclaration_in_compilationUnit292);
                             np=packageDeclaration();
@@ -675,7 +676,7 @@ public class AspectParser extends ChameleonParser {
                                retval.element.add(npp);
                               
                     }
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:314:9: (imp= importDeclaration )*
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:315:9: (imp= importDeclaration )*
                     loop6:
                     do {
                         int alt6=2;
@@ -688,7 +689,7 @@ public class AspectParser extends ChameleonParser {
 
                         switch (alt6) {
                     	case 1 :
-                    	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:314:10: imp= importDeclaration
+                    	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:315:10: imp= importDeclaration
                     	    {
                     	    pushFollow(FOLLOW_importDeclaration_in_compilationUnit341);
                     	    imp=importDeclaration();
@@ -708,7 +709,7 @@ public class AspectParser extends ChameleonParser {
                         }
                     } while (true);
 
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:317:9: (typech= typeDeclaration | ad= aspect )*
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:318:9: (typech= typeDeclaration | ad= aspect )*
                     loop7:
                     do {
                         int alt7=3;
@@ -724,7 +725,7 @@ public class AspectParser extends ChameleonParser {
 
                         switch (alt7) {
                     	case 1 :
-                    	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:317:10: typech= typeDeclaration
+                    	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:318:10: typech= typeDeclaration
                     	    {
                     	    pushFollow(FOLLOW_typeDeclaration_in_compilationUnit378);
                     	    typech=typeDeclaration();
@@ -741,7 +742,7 @@ public class AspectParser extends ChameleonParser {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:322:11: ad= aspect
+                    	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:323:11: ad= aspect
                     	    {
                     	    pushFollow(FOLLOW_aspect_in_compilationUnit416);
                     	    ad=aspect();
@@ -800,7 +801,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "aspect"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:329:1: aspect returns [Aspect element] : asp= 'aspect' name= Identifier '{' ( (adv= advice ) | (ptc= pointcut ) )* '}' ;
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:330:1: aspect returns [Aspect element] : asp= 'aspect' name= Identifier '{' ( (adv= advice ) | (ptc= pointcut ) )* '}' ;
     public final AspectParser.aspect_return aspect() throws RecognitionException {
         AspectParser.aspect_return retval = new AspectParser.aspect_return();
         retval.start = input.LT(1);
@@ -823,8 +824,8 @@ public class AspectParser extends ChameleonParser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 409) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:331:2: (asp= 'aspect' name= Identifier '{' ( (adv= advice ) | (ptc= pointcut ) )* '}' )
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:331:4: asp= 'aspect' name= Identifier '{' ( (adv= advice ) | (ptc= pointcut ) )* '}'
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:332:2: (asp= 'aspect' name= Identifier '{' ( (adv= advice ) | (ptc= pointcut ) )* '}' )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:332:4: asp= 'aspect' name= Identifier '{' ( (adv= advice ) | (ptc= pointcut ) )* '}'
             {
             root_0 = (Object)adaptor.nil();
 
@@ -846,7 +847,7 @@ public class AspectParser extends ChameleonParser {
             char_literal2_tree = (Object)adaptor.create(char_literal2);
             adaptor.addChild(root_0, char_literal2_tree);
             }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:333:2: ( (adv= advice ) | (ptc= pointcut ) )*
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:334:2: ( (adv= advice ) | (ptc= pointcut ) )*
             loop9:
             do {
                 int alt9=3;
@@ -862,10 +863,10 @@ public class AspectParser extends ChameleonParser {
 
                 switch (alt9) {
             	case 1 :
-            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:333:3: (adv= advice )
+            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:334:3: (adv= advice )
             	    {
-            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:333:3: (adv= advice )
-            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:333:4: adv= advice
+            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:334:3: (adv= advice )
+            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:334:4: adv= advice
             	    {
             	    pushFollow(FOLLOW_advice_in_aspect484);
             	    adv=advice();
@@ -883,10 +884,10 @@ public class AspectParser extends ChameleonParser {
             	    }
             	    break;
             	case 2 :
-            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:333:56: (ptc= pointcut )
+            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:334:56: (ptc= pointcut )
             	    {
-            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:333:56: (ptc= pointcut )
-            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:333:57: ptc= pointcut
+            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:334:56: (ptc= pointcut )
+            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:334:57: ptc= pointcut
             	    {
             	    pushFollow(FOLLOW_pointcut_in_aspect491);
             	    ptc=pointcut();
@@ -953,7 +954,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "pointcut"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:341:1: pointcut returns [CrossReferencePointcut element] : pct= 'pointcut' decl= pointcutDecl pars= formalParameters ':' expr= pointcutExpression ';' ;
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:342:1: pointcut returns [CrossReferencePointcut element] : pct= 'pointcut' decl= pointcutDecl pars= formalParameters ':' expr= pointcutExpression ';' ;
     public final AspectParser.pointcut_return pointcut() throws RecognitionException {
         AspectParser.pointcut_return retval = new AspectParser.pointcut_return();
         retval.start = input.LT(1);
@@ -976,8 +977,8 @@ public class AspectParser extends ChameleonParser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 410) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:343:2: (pct= 'pointcut' decl= pointcutDecl pars= formalParameters ':' expr= pointcutExpression ';' )
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:343:4: pct= 'pointcut' decl= pointcutDecl pars= formalParameters ':' expr= pointcutExpression ';'
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:344:2: (pct= 'pointcut' decl= pointcutDecl pars= formalParameters ':' expr= pointcutExpression ';' )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:344:4: pct= 'pointcut' decl= pointcutDecl pars= formalParameters ':' expr= pointcutExpression ';'
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1009,16 +1010,16 @@ public class AspectParser extends ChameleonParser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, expr.getTree());
-            if ( state.backtracking==0 ) {
-              retval.element = new CrossReferencePointcut(decl.element, expr.element, pars.element);
-            }
-            char_literal5=(Token)match(input,26,FOLLOW_26_in_pointcut544); if (state.failed) return retval;
+            char_literal5=(Token)match(input,26,FOLLOW_26_in_pointcut542); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal5_tree = (Object)adaptor.create(char_literal5);
             adaptor.addChild(root_0, char_literal5_tree);
             }
             if ( state.backtracking==0 ) {
 
+              		PointcutHeader header = new PointcutHeader(decl.element);
+              		header.addFormalParameters(pars.element);
+              		retval.element = new CrossReferencePointcut(header, expr.element);
               		setKeyword(retval.element, pct);
               	
             }
@@ -1056,7 +1057,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "pointcutDecl"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:350:1: pointcutDecl returns [String element] : name= Identifier ;
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:354:1: pointcutDecl returns [String element] : name= Identifier ;
     public final AspectParser.pointcutDecl_return pointcutDecl() throws RecognitionException {
         AspectParser.pointcutDecl_return retval = new AspectParser.pointcutDecl_return();
         retval.start = input.LT(1);
@@ -1069,12 +1070,12 @@ public class AspectParser extends ChameleonParser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 411) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:351:2: (name= Identifier )
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:351:4: name= Identifier
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:355:2: (name= Identifier )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:355:4: name= Identifier
             {
             root_0 = (Object)adaptor.nil();
 
-            name=(Token)match(input,Identifier,FOLLOW_Identifier_in_pointcutDecl566); if (state.failed) return retval;
+            name=(Token)match(input,Identifier,FOLLOW_Identifier_in_pointcutDecl564); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             name_tree = (Object)adaptor.create(name);
             adaptor.addChild(root_0, name_tree);
@@ -1113,7 +1114,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "pointcutExpression"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:354:1: pointcutExpression returns [PointcutExpression element] : (expr1= pointcutExpressionOr '&&' expr2= pointcutExpression | expr= pointcutExpressionOr );
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:358:1: pointcutExpression returns [PointcutExpression element] : (expr1= pointcutExpressionOr '&&' expr2= pointcutExpression | expr= pointcutExpressionOr );
     public final AspectParser.pointcutExpression_return pointcutExpression() throws RecognitionException {
         AspectParser.pointcutExpression_return retval = new AspectParser.pointcutExpression_return();
         retval.start = input.LT(1);
@@ -1132,7 +1133,7 @@ public class AspectParser extends ChameleonParser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 412) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:356:2: (expr1= pointcutExpressionOr '&&' expr2= pointcutExpression | expr= pointcutExpressionOr )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:360:2: (expr1= pointcutExpressionOr '&&' expr2= pointcutExpression | expr= pointcutExpressionOr )
             int alt10=2;
             switch ( input.LA(1) ) {
             case 116:
@@ -1202,22 +1203,22 @@ public class AspectParser extends ChameleonParser {
 
             switch (alt10) {
                 case 1 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:356:4: expr1= pointcutExpressionOr '&&' expr2= pointcutExpression
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:360:4: expr1= pointcutExpressionOr '&&' expr2= pointcutExpression
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_pointcutExpressionOr_in_pointcutExpression590);
+                    pushFollow(FOLLOW_pointcutExpressionOr_in_pointcutExpression588);
                     expr1=pointcutExpressionOr();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expr1.getTree());
-                    string_literal6=(Token)match(input,99,FOLLOW_99_in_pointcutExpression592); if (state.failed) return retval;
+                    string_literal6=(Token)match(input,99,FOLLOW_99_in_pointcutExpression590); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal6_tree = (Object)adaptor.create(string_literal6);
                     adaptor.addChild(root_0, string_literal6_tree);
                     }
-                    pushFollow(FOLLOW_pointcutExpression_in_pointcutExpression596);
+                    pushFollow(FOLLOW_pointcutExpression_in_pointcutExpression594);
                     expr2=pointcutExpression();
 
                     state._fsp--;
@@ -1230,11 +1231,11 @@ public class AspectParser extends ChameleonParser {
                     }
                     break;
                 case 2 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:357:4: expr= pointcutExpressionOr
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:361:4: expr= pointcutExpressionOr
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_pointcutExpressionOr_in_pointcutExpression605);
+                    pushFollow(FOLLOW_pointcutExpressionOr_in_pointcutExpression603);
                     expr=pointcutExpressionOr();
 
                     state._fsp--;
@@ -1279,7 +1280,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "pointcutExpressionOr"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:360:1: pointcutExpressionOr returns [PointcutExpression element] : (expr1= pointcutAtom '||' expr2= pointcutExpressionOr | expr= pointcutAtom );
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:364:1: pointcutExpressionOr returns [PointcutExpression element] : (expr1= pointcutAtom '||' expr2= pointcutExpressionOr | expr= pointcutAtom );
     public final AspectParser.pointcutExpressionOr_return pointcutExpressionOr() throws RecognitionException {
         AspectParser.pointcutExpressionOr_return retval = new AspectParser.pointcutExpressionOr_return();
         retval.start = input.LT(1);
@@ -1298,7 +1299,7 @@ public class AspectParser extends ChameleonParser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 413) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:362:2: (expr1= pointcutAtom '||' expr2= pointcutExpressionOr | expr= pointcutAtom )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:366:2: (expr1= pointcutAtom '||' expr2= pointcutExpressionOr | expr= pointcutAtom )
             int alt11=2;
             switch ( input.LA(1) ) {
             case 116:
@@ -1368,22 +1369,22 @@ public class AspectParser extends ChameleonParser {
 
             switch (alt11) {
                 case 1 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:362:4: expr1= pointcutAtom '||' expr2= pointcutExpressionOr
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:366:4: expr1= pointcutAtom '||' expr2= pointcutExpressionOr
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_pointcutAtom_in_pointcutExpressionOr628);
+                    pushFollow(FOLLOW_pointcutAtom_in_pointcutExpressionOr626);
                     expr1=pointcutAtom();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expr1.getTree());
-                    string_literal7=(Token)match(input,98,FOLLOW_98_in_pointcutExpressionOr630); if (state.failed) return retval;
+                    string_literal7=(Token)match(input,98,FOLLOW_98_in_pointcutExpressionOr628); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     string_literal7_tree = (Object)adaptor.create(string_literal7);
                     adaptor.addChild(root_0, string_literal7_tree);
                     }
-                    pushFollow(FOLLOW_pointcutExpressionOr_in_pointcutExpressionOr634);
+                    pushFollow(FOLLOW_pointcutExpressionOr_in_pointcutExpressionOr632);
                     expr2=pointcutExpressionOr();
 
                     state._fsp--;
@@ -1396,11 +1397,11 @@ public class AspectParser extends ChameleonParser {
                     }
                     break;
                 case 2 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:363:4: expr= pointcutAtom
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:367:4: expr= pointcutAtom
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_pointcutAtom_in_pointcutExpressionOr643);
+                    pushFollow(FOLLOW_pointcutAtom_in_pointcutExpressionOr641);
                     expr=pointcutAtom();
 
                     state._fsp--;
@@ -1445,7 +1446,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "pointcutAtom"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:367:1: pointcutAtom returns [PointcutExpression element] : (cl= 'call' '(' metref= methodReference ')' | '!' expr1= pointcutAtom | '(' expr2= pointcutExpression ')' );
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:371:1: pointcutAtom returns [PointcutExpression element] : (cl= 'call' '(' metref= methodReference ')' | '!' expr1= pointcutAtom | '(' expr2= pointcutExpression ')' );
     public final AspectParser.pointcutAtom_return pointcutAtom() throws RecognitionException {
         AspectParser.pointcutAtom_return retval = new AspectParser.pointcutAtom_return();
         retval.start = input.LT(1);
@@ -1474,7 +1475,7 @@ public class AspectParser extends ChameleonParser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 414) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:369:2: (cl= 'call' '(' metref= methodReference ')' | '!' expr1= pointcutAtom | '(' expr2= pointcutExpression ')' )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:373:2: (cl= 'call' '(' metref= methodReference ')' | '!' expr1= pointcutAtom | '(' expr2= pointcutExpression ')' )
             int alt12=3;
             switch ( input.LA(1) ) {
             case 116:
@@ -1502,27 +1503,27 @@ public class AspectParser extends ChameleonParser {
 
             switch (alt12) {
                 case 1 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:369:4: cl= 'call' '(' metref= methodReference ')'
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:373:4: cl= 'call' '(' metref= methodReference ')'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    cl=(Token)match(input,116,FOLLOW_116_in_pointcutAtom668); if (state.failed) return retval;
+                    cl=(Token)match(input,116,FOLLOW_116_in_pointcutAtom666); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     cl_tree = (Object)adaptor.create(cl);
                     adaptor.addChild(root_0, cl_tree);
                     }
-                    char_literal8=(Token)match(input,66,FOLLOW_66_in_pointcutAtom670); if (state.failed) return retval;
+                    char_literal8=(Token)match(input,66,FOLLOW_66_in_pointcutAtom668); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal8_tree = (Object)adaptor.create(char_literal8);
                     adaptor.addChild(root_0, char_literal8_tree);
                     }
-                    pushFollow(FOLLOW_methodReference_in_pointcutAtom674);
+                    pushFollow(FOLLOW_methodReference_in_pointcutAtom672);
                     metref=methodReference();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, metref.getTree());
-                    char_literal9=(Token)match(input,67,FOLLOW_67_in_pointcutAtom676); if (state.failed) return retval;
+                    char_literal9=(Token)match(input,67,FOLLOW_67_in_pointcutAtom674); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal9_tree = (Object)adaptor.create(char_literal9);
                     adaptor.addChild(root_0, char_literal9_tree);
@@ -1534,16 +1535,16 @@ public class AspectParser extends ChameleonParser {
                     }
                     break;
                 case 2 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:370:4: '!' expr1= pointcutAtom
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:374:4: '!' expr1= pointcutAtom
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    char_literal10=(Token)match(input,112,FOLLOW_112_in_pointcutAtom683); if (state.failed) return retval;
+                    char_literal10=(Token)match(input,112,FOLLOW_112_in_pointcutAtom681); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal10_tree = (Object)adaptor.create(char_literal10);
                     adaptor.addChild(root_0, char_literal10_tree);
                     }
-                    pushFollow(FOLLOW_pointcutAtom_in_pointcutAtom687);
+                    pushFollow(FOLLOW_pointcutAtom_in_pointcutAtom685);
                     expr1=pointcutAtom();
 
                     state._fsp--;
@@ -1556,22 +1557,22 @@ public class AspectParser extends ChameleonParser {
                     }
                     break;
                 case 3 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:371:4: '(' expr2= pointcutExpression ')'
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:375:4: '(' expr2= pointcutExpression ')'
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    char_literal11=(Token)match(input,66,FOLLOW_66_in_pointcutAtom694); if (state.failed) return retval;
+                    char_literal11=(Token)match(input,66,FOLLOW_66_in_pointcutAtom692); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal11_tree = (Object)adaptor.create(char_literal11);
                     adaptor.addChild(root_0, char_literal11_tree);
                     }
-                    pushFollow(FOLLOW_pointcutExpression_in_pointcutAtom698);
+                    pushFollow(FOLLOW_pointcutExpression_in_pointcutAtom696);
                     expr2=pointcutExpression();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expr2.getTree());
-                    char_literal12=(Token)match(input,67,FOLLOW_67_in_pointcutAtom700); if (state.failed) return retval;
+                    char_literal12=(Token)match(input,67,FOLLOW_67_in_pointcutAtom698); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal12_tree = (Object)adaptor.create(char_literal12);
                     adaptor.addChild(root_0, char_literal12_tree);
@@ -1615,7 +1616,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "advice"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:374:1: advice returns [Advice element] : advtype= ( 'before_' | 'after_' ) ':' decl= pointcutDecl '(' ( Identifier )? ( ',' Identifier )* ')' bdy= methodBody ;
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:378:1: advice returns [Advice element] : advtype= ( 'before_' | 'after_' ) ':' decl= pointcutDecl '(' ( Identifier )? ( ',' Identifier )* ')' bdy= methodBody ;
     public final AspectParser.advice_return advice() throws RecognitionException {
         AspectParser.advice_return retval = new AspectParser.advice_return();
         retval.start = input.LT(1);
@@ -1644,8 +1645,8 @@ public class AspectParser extends ChameleonParser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 415) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:376:2: (advtype= ( 'before_' | 'after_' ) ':' decl= pointcutDecl '(' ( Identifier )? ( ',' Identifier )* ')' bdy= methodBody )
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:376:5: advtype= ( 'before_' | 'after_' ) ':' decl= pointcutDecl '(' ( Identifier )? ( ',' Identifier )* ')' bdy= methodBody
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:380:2: (advtype= ( 'before_' | 'after_' ) ':' decl= pointcutDecl '(' ( Identifier )? ( ',' Identifier )* ')' bdy= methodBody )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:380:5: advtype= ( 'before_' | 'after_' ) ':' decl= pointcutDecl '(' ( Identifier )? ( ',' Identifier )* ')' bdy= methodBody
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1661,23 +1662,23 @@ public class AspectParser extends ChameleonParser {
                 throw mse;
             }
 
-            char_literal13=(Token)match(input,75,FOLLOW_75_in_advice732); if (state.failed) return retval;
+            char_literal13=(Token)match(input,75,FOLLOW_75_in_advice730); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal13_tree = (Object)adaptor.create(char_literal13);
             adaptor.addChild(root_0, char_literal13_tree);
             }
-            pushFollow(FOLLOW_pointcutDecl_in_advice736);
+            pushFollow(FOLLOW_pointcutDecl_in_advice734);
             decl=pointcutDecl();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, decl.getTree());
-            char_literal14=(Token)match(input,66,FOLLOW_66_in_advice738); if (state.failed) return retval;
+            char_literal14=(Token)match(input,66,FOLLOW_66_in_advice736); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal14_tree = (Object)adaptor.create(char_literal14);
             adaptor.addChild(root_0, char_literal14_tree);
             }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:376:62: ( Identifier )?
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:380:62: ( Identifier )?
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -1688,7 +1689,7 @@ public class AspectParser extends ChameleonParser {
                 case 1 :
                     // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:0:0: Identifier
                     {
-                    Identifier15=(Token)match(input,Identifier,FOLLOW_Identifier_in_advice740); if (state.failed) return retval;
+                    Identifier15=(Token)match(input,Identifier,FOLLOW_Identifier_in_advice738); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     Identifier15_tree = (Object)adaptor.create(Identifier15);
                     adaptor.addChild(root_0, Identifier15_tree);
@@ -1699,7 +1700,7 @@ public class AspectParser extends ChameleonParser {
 
             }
 
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:376:74: ( ',' Identifier )*
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:380:74: ( ',' Identifier )*
             loop14:
             do {
                 int alt14=2;
@@ -1712,14 +1713,14 @@ public class AspectParser extends ChameleonParser {
 
                 switch (alt14) {
             	case 1 :
-            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:376:75: ',' Identifier
+            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:380:75: ',' Identifier
             	    {
-            	    char_literal16=(Token)match(input,41,FOLLOW_41_in_advice744); if (state.failed) return retval;
+            	    char_literal16=(Token)match(input,41,FOLLOW_41_in_advice742); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal16_tree = (Object)adaptor.create(char_literal16);
             	    adaptor.addChild(root_0, char_literal16_tree);
             	    }
-            	    Identifier17=(Token)match(input,Identifier,FOLLOW_Identifier_in_advice746); if (state.failed) return retval;
+            	    Identifier17=(Token)match(input,Identifier,FOLLOW_Identifier_in_advice744); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    Identifier17_tree = (Object)adaptor.create(Identifier17);
             	    adaptor.addChild(root_0, Identifier17_tree);
@@ -1733,7 +1734,7 @@ public class AspectParser extends ChameleonParser {
                 }
             } while (true);
 
-            char_literal18=(Token)match(input,67,FOLLOW_67_in_advice750); if (state.failed) return retval;
+            char_literal18=(Token)match(input,67,FOLLOW_67_in_advice748); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal18_tree = (Object)adaptor.create(char_literal18);
             adaptor.addChild(root_0, char_literal18_tree);
@@ -1746,7 +1747,7 @@ public class AspectParser extends ChameleonParser {
               		setLocation(ref, decl.start, decl.stop);
               	
             }
-            pushFollow(FOLLOW_methodBody_in_advice761);
+            pushFollow(FOLLOW_methodBody_in_advice759);
             bdy=methodBody();
 
             state._fsp--;
@@ -1792,7 +1793,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "methodReference"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:391:1: methodReference returns [MethodReference element] : t= methodReferenceType name= fqn ;
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:395:1: methodReference returns [MethodReference element] : t= methodReferenceType name= fqn ;
     public final AspectParser.methodReference_return methodReference() throws RecognitionException {
         AspectParser.methodReference_return retval = new AspectParser.methodReference_return();
         retval.start = input.LT(1);
@@ -1807,18 +1808,18 @@ public class AspectParser extends ChameleonParser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 416) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:393:2: (t= methodReferenceType name= fqn )
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:393:4: t= methodReferenceType name= fqn
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:397:2: (t= methodReferenceType name= fqn )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:397:4: t= methodReferenceType name= fqn
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_methodReferenceType_in_methodReference785);
+            pushFollow(FOLLOW_methodReferenceType_in_methodReference783);
             t=methodReferenceType();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, t.getTree());
-            pushFollow(FOLLOW_fqn_in_methodReference789);
+            pushFollow(FOLLOW_fqn_in_methodReference787);
             name=fqn();
 
             state._fsp--;
@@ -1861,7 +1862,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "methodReferenceType"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:396:1: methodReferenceType returns [JavaTypeReference element] : (vt= voidType | t= type );
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:400:1: methodReferenceType returns [JavaTypeReference element] : (vt= voidType | t= type );
     public final AspectParser.methodReferenceType_return methodReferenceType() throws RecognitionException {
         AspectParser.methodReferenceType_return retval = new AspectParser.methodReferenceType_return();
         retval.start = input.LT(1);
@@ -1876,7 +1877,7 @@ public class AspectParser extends ChameleonParser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 417) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:397:2: (vt= voidType | t= type )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:401:2: (vt= voidType | t= type )
             int alt15=2;
             int LA15_0 = input.LA(1);
 
@@ -1895,11 +1896,11 @@ public class AspectParser extends ChameleonParser {
             }
             switch (alt15) {
                 case 1 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:397:4: vt= voidType
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:401:4: vt= voidType
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_voidType_in_methodReferenceType809);
+                    pushFollow(FOLLOW_voidType_in_methodReferenceType807);
                     vt=voidType();
 
                     state._fsp--;
@@ -1912,11 +1913,11 @@ public class AspectParser extends ChameleonParser {
                     }
                     break;
                 case 2 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:398:4: t= type
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:402:4: t= type
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_type_in_methodReferenceType818);
+                    pushFollow(FOLLOW_type_in_methodReferenceType816);
                     t=type();
 
                     state._fsp--;
@@ -1958,7 +1959,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "fqn"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:402:1: fqn returns [QualifiedMethodHeader element] : (id= Identifier '.' )* mth= simpleMethodHeader ;
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:406:1: fqn returns [QualifiedMethodHeader element] : (id= Identifier '.' )* mth= simpleMethodHeader ;
     public final AspectParser.fqn_return fqn() throws RecognitionException {
         AspectParser.fqn_return retval = new AspectParser.fqn_return();
         retval.start = input.LT(1);
@@ -1976,12 +1977,12 @@ public class AspectParser extends ChameleonParser {
         CompositeQualifiedName prefixes = new CompositeQualifiedName();
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 418) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:405:2: ( (id= Identifier '.' )* mth= simpleMethodHeader )
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:405:4: (id= Identifier '.' )* mth= simpleMethodHeader
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:409:2: ( (id= Identifier '.' )* mth= simpleMethodHeader )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:409:4: (id= Identifier '.' )* mth= simpleMethodHeader
             {
             root_0 = (Object)adaptor.nil();
 
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:405:4: (id= Identifier '.' )*
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:409:4: (id= Identifier '.' )*
             loop16:
             do {
                 int alt16=2;
@@ -2000,14 +2001,14 @@ public class AspectParser extends ChameleonParser {
 
                 switch (alt16) {
             	case 1 :
-            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:405:5: id= Identifier '.'
+            	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:409:5: id= Identifier '.'
             	    {
-            	    id=(Token)match(input,Identifier,FOLLOW_Identifier_in_fqn856); if (state.failed) return retval;
+            	    id=(Token)match(input,Identifier,FOLLOW_Identifier_in_fqn854); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    id_tree = (Object)adaptor.create(id);
             	    adaptor.addChild(root_0, id_tree);
             	    }
-            	    char_literal19=(Token)match(input,29,FOLLOW_29_in_fqn858); if (state.failed) return retval;
+            	    char_literal19=(Token)match(input,29,FOLLOW_29_in_fqn856); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    char_literal19_tree = (Object)adaptor.create(char_literal19);
             	    adaptor.addChild(root_0, char_literal19_tree);
@@ -2024,7 +2025,7 @@ public class AspectParser extends ChameleonParser {
                 }
             } while (true);
 
-            pushFollow(FOLLOW_simpleMethodHeader_in_fqn866);
+            pushFollow(FOLLOW_simpleMethodHeader_in_fqn864);
             mth=simpleMethodHeader();
 
             state._fsp--;
@@ -2067,7 +2068,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "simpleMethodHeader"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:409:1: simpleMethodHeader returns [PointcutMethodHeader element] : name= Identifier pars= formalParameterTypes ;
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:413:1: simpleMethodHeader returns [PointcutMethodHeader element] : name= Identifier pars= formalParameterTypes ;
     public final AspectParser.simpleMethodHeader_return simpleMethodHeader() throws RecognitionException {
         AspectParser.simpleMethodHeader_return retval = new AspectParser.simpleMethodHeader_return();
         retval.start = input.LT(1);
@@ -2082,17 +2083,17 @@ public class AspectParser extends ChameleonParser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 419) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:411:9: (name= Identifier pars= formalParameterTypes )
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:411:11: name= Identifier pars= formalParameterTypes
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:415:9: (name= Identifier pars= formalParameterTypes )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:415:11: name= Identifier pars= formalParameterTypes
             {
             root_0 = (Object)adaptor.nil();
 
-            name=(Token)match(input,Identifier,FOLLOW_Identifier_in_simpleMethodHeader905); if (state.failed) return retval;
+            name=(Token)match(input,Identifier,FOLLOW_Identifier_in_simpleMethodHeader903); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             name_tree = (Object)adaptor.create(name);
             adaptor.addChild(root_0, name_tree);
             }
-            pushFollow(FOLLOW_formalParameterTypes_in_simpleMethodHeader909);
+            pushFollow(FOLLOW_formalParameterTypes_in_simpleMethodHeader907);
             pars=formalParameterTypes();
 
             state._fsp--;
@@ -2135,7 +2136,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "formalParameterTypes"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:414:1: formalParameterTypes returns [List<TypeReference> element] : '(' (pars= formalParameterTypeDecls )? ')' ;
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:418:1: formalParameterTypes returns [List<TypeReference> element] : '(' (pars= formalParameterTypeDecls )? ')' ;
     public final AspectParser.formalParameterTypes_return formalParameterTypes() throws RecognitionException {
         AspectParser.formalParameterTypes_return retval = new AspectParser.formalParameterTypes_return();
         retval.start = input.LT(1);
@@ -2153,17 +2154,17 @@ public class AspectParser extends ChameleonParser {
         retval.element = new ArrayList<TypeReference>();
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 420) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:416:5: ( '(' (pars= formalParameterTypeDecls )? ')' )
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:416:9: '(' (pars= formalParameterTypeDecls )? ')'
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:420:5: ( '(' (pars= formalParameterTypeDecls )? ')' )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:420:9: '(' (pars= formalParameterTypeDecls )? ')'
             {
             root_0 = (Object)adaptor.nil();
 
-            char_literal20=(Token)match(input,66,FOLLOW_66_in_formalParameterTypes951); if (state.failed) return retval;
+            char_literal20=(Token)match(input,66,FOLLOW_66_in_formalParameterTypes949); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal20_tree = (Object)adaptor.create(char_literal20);
             adaptor.addChild(root_0, char_literal20_tree);
             }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:416:13: (pars= formalParameterTypeDecls )?
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:420:13: (pars= formalParameterTypeDecls )?
             int alt17=2;
             int LA17_0 = input.LA(1);
 
@@ -2172,9 +2173,9 @@ public class AspectParser extends ChameleonParser {
             }
             switch (alt17) {
                 case 1 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:416:14: pars= formalParameterTypeDecls
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:420:14: pars= formalParameterTypeDecls
                     {
-                    pushFollow(FOLLOW_formalParameterTypeDecls_in_formalParameterTypes956);
+                    pushFollow(FOLLOW_formalParameterTypeDecls_in_formalParameterTypes954);
                     pars=formalParameterTypeDecls();
 
                     state._fsp--;
@@ -2189,7 +2190,7 @@ public class AspectParser extends ChameleonParser {
 
             }
 
-            char_literal21=(Token)match(input,67,FOLLOW_67_in_formalParameterTypes962); if (state.failed) return retval;
+            char_literal21=(Token)match(input,67,FOLLOW_67_in_formalParameterTypes960); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             char_literal21_tree = (Object)adaptor.create(char_literal21);
             adaptor.addChild(root_0, char_literal21_tree);
@@ -2225,7 +2226,7 @@ public class AspectParser extends ChameleonParser {
     };
 
     // $ANTLR start "formalParameterTypeDecls"
-    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:419:1: formalParameterTypeDecls returns [List<TypeReference> element] : t= type ( ',' decls= formalParameterTypeDecls )? ;
+    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:423:1: formalParameterTypeDecls returns [List<TypeReference> element] : t= type ( ',' decls= formalParameterTypeDecls )? ;
     public final AspectParser.formalParameterTypeDecls_return formalParameterTypeDecls() throws RecognitionException {
         AspectParser.formalParameterTypeDecls_return retval = new AspectParser.formalParameterTypeDecls_return();
         retval.start = input.LT(1);
@@ -2242,18 +2243,18 @@ public class AspectParser extends ChameleonParser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 421) ) { return retval; }
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:420:5: (t= type ( ',' decls= formalParameterTypeDecls )? )
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:420:9: t= type ( ',' decls= formalParameterTypeDecls )?
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:424:5: (t= type ( ',' decls= formalParameterTypeDecls )? )
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:424:9: t= type ( ',' decls= formalParameterTypeDecls )?
             {
             root_0 = (Object)adaptor.nil();
 
-            pushFollow(FOLLOW_type_in_formalParameterTypeDecls987);
+            pushFollow(FOLLOW_type_in_formalParameterTypeDecls985);
             t=type();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, t.getTree());
-            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:420:16: ( ',' decls= formalParameterTypeDecls )?
+            // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:424:16: ( ',' decls= formalParameterTypeDecls )?
             int alt18=2;
             int LA18_0 = input.LA(1);
 
@@ -2262,14 +2263,14 @@ public class AspectParser extends ChameleonParser {
             }
             switch (alt18) {
                 case 1 :
-                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:420:17: ',' decls= formalParameterTypeDecls
+                    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:424:17: ',' decls= formalParameterTypeDecls
                     {
-                    char_literal22=(Token)match(input,41,FOLLOW_41_in_formalParameterTypeDecls990); if (state.failed) return retval;
+                    char_literal22=(Token)match(input,41,FOLLOW_41_in_formalParameterTypeDecls988); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal22_tree = (Object)adaptor.create(char_literal22);
                     adaptor.addChild(root_0, char_literal22_tree);
                     }
-                    pushFollow(FOLLOW_formalParameterTypeDecls_in_formalParameterTypeDecls994);
+                    pushFollow(FOLLOW_formalParameterTypeDecls_in_formalParameterTypeDecls992);
                     decls=formalParameterTypeDecls();
 
                     state._fsp--;
@@ -2325,15 +2326,15 @@ public class AspectParser extends ChameleonParser {
         Aspect_JavaP.classOrInterfaceDeclaration_return cd = null;
 
 
-        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:280:10: ( annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* ) )
-        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:280:10: annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* )
+        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:281:10: ( annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* ) )
+        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:281:10: annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* )
         {
         pushFollow(FOLLOW_annotations_in_synpred5_Aspect80);
         annotations();
 
         state._fsp--;
         if (state.failed) return ;
-        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:281:9: (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* )
+        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:282:9: (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* )
         int alt24=2;
         int LA24_0 = input.LA(1);
 
@@ -2352,14 +2353,14 @@ public class AspectParser extends ChameleonParser {
         }
         switch (alt24) {
             case 1 :
-                // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:281:13: np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )*
+                // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:282:13: np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )*
                 {
                 pushFollow(FOLLOW_packageDeclaration_in_synpred5_Aspect96);
                 np=packageDeclaration();
 
                 state._fsp--;
                 if (state.failed) return ;
-                // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:286:13: (imp= importDeclaration )*
+                // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:287:13: (imp= importDeclaration )*
                 loop21:
                 do {
                     int alt21=2;
@@ -2372,7 +2373,7 @@ public class AspectParser extends ChameleonParser {
 
                     switch (alt21) {
                 	case 1 :
-                	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:286:14: imp= importDeclaration
+                	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:287:14: imp= importDeclaration
                 	    {
                 	    pushFollow(FOLLOW_importDeclaration_in_synpred5_Aspect132);
                 	    imp=importDeclaration();
@@ -2388,7 +2389,7 @@ public class AspectParser extends ChameleonParser {
                     }
                 } while (true);
 
-                // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:287:13: (typech= typeDeclaration )*
+                // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:288:13: (typech= typeDeclaration )*
                 loop22:
                 do {
                     int alt22=2;
@@ -2401,7 +2402,7 @@ public class AspectParser extends ChameleonParser {
 
                     switch (alt22) {
                 	case 1 :
-                	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:287:14: typech= typeDeclaration
+                	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:288:14: typech= typeDeclaration
                 	    {
                 	    pushFollow(FOLLOW_typeDeclaration_in_synpred5_Aspect153);
                 	    typech=typeDeclaration();
@@ -2421,14 +2422,14 @@ public class AspectParser extends ChameleonParser {
                 }
                 break;
             case 2 :
-                // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:291:13: cd= classOrInterfaceDeclaration (typech= typeDeclaration )*
+                // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:292:13: cd= classOrInterfaceDeclaration (typech= typeDeclaration )*
                 {
                 pushFollow(FOLLOW_classOrInterfaceDeclaration_in_synpred5_Aspect202);
                 cd=classOrInterfaceDeclaration();
 
                 state._fsp--;
                 if (state.failed) return ;
-                // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:297:13: (typech= typeDeclaration )*
+                // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:298:13: (typech= typeDeclaration )*
                 loop23:
                 do {
                     int alt23=2;
@@ -2441,7 +2442,7 @@ public class AspectParser extends ChameleonParser {
 
                     switch (alt23) {
                 	case 1 :
-                	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:297:14: typech= typeDeclaration
+                	    // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:298:14: typech= typeDeclaration
                 	    {
                 	    pushFollow(FOLLOW_typeDeclaration_in_synpred5_Aspect237);
                 	    typech=typeDeclaration();
@@ -2475,16 +2476,16 @@ public class AspectParser extends ChameleonParser {
         AspectParser.pointcutExpression_return expr2 = null;
 
 
-        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:356:4: (expr1= pointcutExpressionOr '&&' expr2= pointcutExpression )
-        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:356:4: expr1= pointcutExpressionOr '&&' expr2= pointcutExpression
+        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:360:4: (expr1= pointcutExpressionOr '&&' expr2= pointcutExpression )
+        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:360:4: expr1= pointcutExpressionOr '&&' expr2= pointcutExpression
         {
-        pushFollow(FOLLOW_pointcutExpressionOr_in_synpred12_Aspect590);
+        pushFollow(FOLLOW_pointcutExpressionOr_in_synpred12_Aspect588);
         expr1=pointcutExpressionOr();
 
         state._fsp--;
         if (state.failed) return ;
-        match(input,99,FOLLOW_99_in_synpred12_Aspect592); if (state.failed) return ;
-        pushFollow(FOLLOW_pointcutExpression_in_synpred12_Aspect596);
+        match(input,99,FOLLOW_99_in_synpred12_Aspect590); if (state.failed) return ;
+        pushFollow(FOLLOW_pointcutExpression_in_synpred12_Aspect594);
         expr2=pointcutExpression();
 
         state._fsp--;
@@ -2501,16 +2502,16 @@ public class AspectParser extends ChameleonParser {
         AspectParser.pointcutExpressionOr_return expr2 = null;
 
 
-        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:362:4: (expr1= pointcutAtom '||' expr2= pointcutExpressionOr )
-        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:362:4: expr1= pointcutAtom '||' expr2= pointcutExpressionOr
+        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:366:4: (expr1= pointcutAtom '||' expr2= pointcutExpressionOr )
+        // C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g:366:4: expr1= pointcutAtom '||' expr2= pointcutExpressionOr
         {
-        pushFollow(FOLLOW_pointcutAtom_in_synpred13_Aspect628);
+        pushFollow(FOLLOW_pointcutAtom_in_synpred13_Aspect626);
         expr1=pointcutAtom();
 
         state._fsp--;
         if (state.failed) return ;
-        match(input,98,FOLLOW_98_in_synpred13_Aspect630); if (state.failed) return ;
-        pushFollow(FOLLOW_pointcutExpressionOr_in_synpred13_Aspect634);
+        match(input,98,FOLLOW_98_in_synpred13_Aspect628); if (state.failed) return ;
+        pushFollow(FOLLOW_pointcutExpressionOr_in_synpred13_Aspect632);
         expr2=pointcutExpressionOr();
 
         state._fsp--;
@@ -2521,146 +2522,146 @@ public class AspectParser extends ChameleonParser {
     // $ANTLR end synpred13_Aspect
 
     // Delegated rules
-    public Aspect_JavaP.shiftOp_return shiftOp() throws RecognitionException { return gJavaP.shiftOp(); }
-    public Aspect_JavaP.primitiveType_return primitiveType() throws RecognitionException { return gJavaP.primitiveType(); }
-    public Aspect_JavaP.identifierSuffixRubbush_return identifierSuffixRubbush() throws RecognitionException { return gJavaP.identifierSuffixRubbush(); }
+    public Aspect_JavaP.localVariableDeclaration_return localVariableDeclaration() throws RecognitionException { return gJavaP.localVariableDeclaration(); }
+    public Aspect_JavaP.integerLiteral_return integerLiteral() throws RecognitionException { return gJavaP.integerLiteral(); }
+    public Aspect_JavaP.methodDeclaration_return methodDeclaration() throws RecognitionException { return gJavaP.methodDeclaration(); }
+    public Aspect_JavaP.interfaceBodyDeclaration_return interfaceBodyDeclaration() throws RecognitionException { return gJavaP.interfaceBodyDeclaration(); }
+    public Aspect_JavaP.memberDeclaration_return memberDeclaration() throws RecognitionException { return gJavaP.memberDeclaration(); }
     public Aspect_JavaP.blockStatement_return blockStatement() throws RecognitionException { return gJavaP.blockStatement(); }
+    public Aspect_JavaP.fieldDeclaration_return fieldDeclaration() throws RecognitionException { return gJavaP.fieldDeclaration(); }
+    public Aspect_JavaP.nonTargetPrimary_return nonTargetPrimary() throws RecognitionException { return gJavaP.nonTargetPrimary(); }
+    public Aspect_JavaP.moreIdentifierSuffixRubbish_return moreIdentifierSuffixRubbish() throws RecognitionException { return gJavaP.moreIdentifierSuffixRubbish(); }
+    public Aspect_JavaP.interfaceGenericMethodDecl_return interfaceGenericMethodDecl() throws RecognitionException { return gJavaP.interfaceGenericMethodDecl(); }
+    public Aspect_JavaP.classOrInterfaceType_return classOrInterfaceType() throws RecognitionException { return gJavaP.classOrInterfaceType(); }
+    public Aspect_JavaP.classBodyDeclaration_return classBodyDeclaration() throws RecognitionException { return gJavaP.classBodyDeclaration(); }
+    public Aspect_JavaP.qualifiedName_return qualifiedName() throws RecognitionException { return gJavaP.qualifiedName(); }
+    public Aspect_JavaP.formalParameter_return formalParameter() throws RecognitionException { return gJavaP.formalParameter(); }
+    public Aspect_JavaP.relationalExpression_return relationalExpression() throws RecognitionException { return gJavaP.relationalExpression(); }
+    public Aspect_JavaP.primitiveType_return primitiveType() throws RecognitionException { return gJavaP.primitiveType(); }
+    public Aspect_JavaP.explicitGenericInvocation_return explicitGenericInvocation() throws RecognitionException { return gJavaP.explicitGenericInvocation(); }
+    public Aspect_JavaP.equalityExpression_return equalityExpression() throws RecognitionException { return gJavaP.equalityExpression(); }
+    public Aspect_JavaP.voidInterfaceMethodDeclaratorRest_return voidInterfaceMethodDeclaratorRest() throws RecognitionException { return gJavaP.voidInterfaceMethodDeclaratorRest(); }
+    public Aspect_JavaP.annotations_return annotations() throws RecognitionException { return gJavaP.annotations(); }
+    public Aspect_JavaP.annotation_return annotation() throws RecognitionException { return gJavaP.annotation(); }
+    public Aspect_JavaP.forUpdate_return forUpdate() throws RecognitionException { return gJavaP.forUpdate(); }
     public Aspect_JavaP.relationalOp_return relationalOp() throws RecognitionException { return gJavaP.relationalOp(); }
     public Aspect_JavaP.primary_return primary() throws RecognitionException { return gJavaP.primary(); }
-    public Aspect_JavaP.classOrInterfaceDeclaration_return classOrInterfaceDeclaration() throws RecognitionException { return gJavaP.classOrInterfaceDeclaration(); }
-    public Aspect_JavaP.typeParameter_return typeParameter() throws RecognitionException { return gJavaP.typeParameter(); }
-    public Aspect_JavaP.argumentsSuffixRubbish_return argumentsSuffixRubbish() throws RecognitionException { return gJavaP.argumentsSuffixRubbish(); }
-    public Aspect_JavaP.genericMethodOrConstructorRest_return genericMethodOrConstructorRest() throws RecognitionException { return gJavaP.genericMethodOrConstructorRest(); }
-    public Aspect_JavaP.nonTargetPrimary_return nonTargetPrimary() throws RecognitionException { return gJavaP.nonTargetPrimary(); }
-    public Aspect_JavaP.elementValue_return elementValue() throws RecognitionException { return gJavaP.elementValue(); }
-    public Aspect_JavaP.classBody_return classBody() throws RecognitionException { return gJavaP.classBody(); }
-    public Aspect_JavaP.packageDeclaration_return packageDeclaration() throws RecognitionException { return gJavaP.packageDeclaration(); }
-    public Aspect_JavaP.nameAndParams_return nameAndParams() throws RecognitionException { return gJavaP.nameAndParams(); }
-    public Aspect_JavaP.expressionList_return expressionList() throws RecognitionException { return gJavaP.expressionList(); }
-    public Aspect_JavaP.methodDeclaration_return methodDeclaration() throws RecognitionException { return gJavaP.methodDeclaration(); }
-    public Aspect_JavaP.explicitGenericInvocation_return explicitGenericInvocation() throws RecognitionException { return gJavaP.explicitGenericInvocation(); }
-    public Aspect_JavaP.switchLabel_return switchLabel() throws RecognitionException { return gJavaP.switchLabel(); }
-    public Aspect_JavaP.methodBody_return methodBody() throws RecognitionException { return gJavaP.methodBody(); }
-    public Aspect_JavaP.typeList_return typeList() throws RecognitionException { return gJavaP.typeList(); }
-    public Aspect_JavaP.conditionalAndExpression_return conditionalAndExpression() throws RecognitionException { return gJavaP.conditionalAndExpression(); }
-    public Aspect_JavaP.arguments_return arguments() throws RecognitionException { return gJavaP.arguments(); }
-    public Aspect_JavaP.enumConstant_return enumConstant() throws RecognitionException { return gJavaP.enumConstant(); }
-    public Aspect_JavaP.integerLiteral_return integerLiteral() throws RecognitionException { return gJavaP.integerLiteral(); }
-    public Aspect_JavaP.voidType_return voidType() throws RecognitionException { return gJavaP.voidType(); }
-    public Aspect_JavaP.arrayInitializer_return arrayInitializer() throws RecognitionException { return gJavaP.arrayInitializer(); }
-    public Aspect_JavaP.formalParameter_return formalParameter() throws RecognitionException { return gJavaP.formalParameter(); }
-    public Aspect_JavaP.moreIdentifierSuffixRubbish_return moreIdentifierSuffixRubbish() throws RecognitionException { return gJavaP.moreIdentifierSuffixRubbish(); }
-    public Aspect_JavaP.annotationTypeElementRest_return annotationTypeElementRest() throws RecognitionException { return gJavaP.annotationTypeElementRest(); }
-    public Aspect_JavaP.voidInterfaceMethodDeclaration_return voidInterfaceMethodDeclaration() throws RecognitionException { return gJavaP.voidInterfaceMethodDeclaration(); }
-    public Aspect_JavaP.block_return block() throws RecognitionException { return gJavaP.block(); }
-    public Aspect_JavaP.parExpression_return parExpression() throws RecognitionException { return gJavaP.parExpression(); }
-    public Aspect_JavaP.equalityExpression_return equalityExpression() throws RecognitionException { return gJavaP.equalityExpression(); }
-    public Aspect_JavaP.classBodyDeclaration_return classBodyDeclaration() throws RecognitionException { return gJavaP.classBodyDeclaration(); }
     public Aspect_JavaP.enumConstantName_return enumConstantName() throws RecognitionException { return gJavaP.enumConstantName(); }
-    public Aspect_JavaP.catches_return catches() throws RecognitionException { return gJavaP.catches(); }
-    public Aspect_JavaP.qualifiedName_return qualifiedName() throws RecognitionException { return gJavaP.qualifiedName(); }
-    public Aspect_JavaP.typeName_return typeName() throws RecognitionException { return gJavaP.typeName(); }
-    public Aspect_JavaP.creator_return creator() throws RecognitionException { return gJavaP.creator(); }
-    public Aspect_JavaP.modifiers_return modifiers() throws RecognitionException { return gJavaP.modifiers(); }
-    public Aspect_JavaP.switchBlockStatementGroups_return switchBlockStatementGroups() throws RecognitionException { return gJavaP.switchBlockStatementGroups(); }
-    public Aspect_JavaP.memberDeclaration_return memberDeclaration() throws RecognitionException { return gJavaP.memberDeclaration(); }
-    public Aspect_JavaP.constantDeclarator_return constantDeclarator() throws RecognitionException { return gJavaP.constantDeclarator(); }
-    public Aspect_JavaP.typeArguments_return typeArguments() throws RecognitionException { return gJavaP.typeArguments(); }
-    public Aspect_JavaP.statementExpression_return statementExpression() throws RecognitionException { return gJavaP.statementExpression(); }
-    public Aspect_JavaP.fieldDeclaration_return fieldDeclaration() throws RecognitionException { return gJavaP.fieldDeclaration(); }
-    public Aspect_JavaP.castExpression_return castExpression() throws RecognitionException { return gJavaP.castExpression(); }
-    public Aspect_JavaP.constructorBody_return constructorBody() throws RecognitionException { return gJavaP.constructorBody(); }
-    public Aspect_JavaP.createClassHereBecauseANTLRisAnnoying_return createClassHereBecauseANTLRisAnnoying() throws RecognitionException { return gJavaP.createClassHereBecauseANTLRisAnnoying(); }
-    public Aspect_JavaP.explicitConstructorInvocation_return explicitConstructorInvocation() throws RecognitionException { return gJavaP.explicitConstructorInvocation(); }
-    public Aspect_JavaP.qualifiedNameList_return qualifiedNameList() throws RecognitionException { return gJavaP.qualifiedNameList(); }
-    public Aspect_JavaP.multiplicativeExpression_return multiplicativeExpression() throws RecognitionException { return gJavaP.multiplicativeExpression(); }
-    public Aspect_JavaP.methodDeclaratorRest_return methodDeclaratorRest() throws RecognitionException { return gJavaP.methodDeclaratorRest(); }
-    public Aspect_JavaP.unaryExpressionNotPlusMinus_return unaryExpressionNotPlusMinus() throws RecognitionException { return gJavaP.unaryExpressionNotPlusMinus(); }
-    public Aspect_JavaP.voidInterfaceMethodDeclaratorRest_return voidInterfaceMethodDeclaratorRest() throws RecognitionException { return gJavaP.voidInterfaceMethodDeclaratorRest(); }
-    public Aspect_JavaP.elementValueArrayInitializer_return elementValueArrayInitializer() throws RecognitionException { return gJavaP.elementValueArrayInitializer(); }
-    public Aspect_JavaP.interfaceMethodDeclaratorRest_return interfaceMethodDeclaratorRest() throws RecognitionException { return gJavaP.interfaceMethodDeclaratorRest(); }
-    public Aspect_JavaP.unaryExpression_return unaryExpression() throws RecognitionException { return gJavaP.unaryExpression(); }
-    public Aspect_JavaP.annotationMethodRest_return annotationMethodRest(TypeReference type) throws RecognitionException { return gJavaP.annotationMethodRest(type); }
-    public Aspect_JavaP.arrayAccessSuffixRubbish_return arrayAccessSuffixRubbish() throws RecognitionException { return gJavaP.arrayAccessSuffixRubbish(); }
-    public Aspect_JavaP.typeArgument_return typeArgument() throws RecognitionException { return gJavaP.typeArgument(); }
-    public Aspect_JavaP.variableModifiers_return variableModifiers() throws RecognitionException { return gJavaP.variableModifiers(); }
-    public Aspect_JavaP.selector_return selector() throws RecognitionException { return gJavaP.selector(); }
-    public Aspect_JavaP.switchCase_return switchCase() throws RecognitionException { return gJavaP.switchCase(); }
-    public Aspect_JavaP.localVariableDeclaration_return localVariableDeclaration() throws RecognitionException { return gJavaP.localVariableDeclaration(); }
-    public Aspect_JavaP.nonWildcardTypeArguments_return nonWildcardTypeArguments() throws RecognitionException { return gJavaP.nonWildcardTypeArguments(); }
-    public Aspect_JavaP.variableDeclaratorId_return variableDeclaratorId() throws RecognitionException { return gJavaP.variableDeclaratorId(); }
-    public Aspect_JavaP.annotationTypeDeclaration_return annotationTypeDeclaration() throws RecognitionException { return gJavaP.annotationTypeDeclaration(); }
-    public Aspect_JavaP.assignmentOperator_return assignmentOperator() throws RecognitionException { return gJavaP.assignmentOperator(); }
-    public Aspect_JavaP.interfaceMemberDecl_return interfaceMemberDecl() throws RecognitionException { return gJavaP.interfaceMemberDecl(); }
-    public Aspect_JavaP.formalParameterDecls_return formalParameterDecls() throws RecognitionException { return gJavaP.formalParameterDecls(); }
-    public Aspect_JavaP.importDeclaration_return importDeclaration() throws RecognitionException { return gJavaP.importDeclaration(); }
-    public Aspect_JavaP.relationalExpression_return relationalExpression() throws RecognitionException { return gJavaP.relationalExpression(); }
-    public Aspect_JavaP.literal_return literal() throws RecognitionException { return gJavaP.literal(); }
-    public Aspect_JavaP.annotationTypeElementDeclaration_return annotationTypeElementDeclaration() throws RecognitionException { return gJavaP.annotationTypeElementDeclaration(); }
-    public Aspect_JavaP.constantExpression_return constantExpression() throws RecognitionException { return gJavaP.constantExpression(); }
-    public Aspect_JavaP.shiftExpression_return shiftExpression() throws RecognitionException { return gJavaP.shiftExpression(); }
-    public Aspect_JavaP.annotations_return annotations() throws RecognitionException { return gJavaP.annotations(); }
-    public Aspect_JavaP.andExpression_return andExpression() throws RecognitionException { return gJavaP.andExpression(); }
-    public Aspect_JavaP.interfaceMethodOrFieldDecl_return interfaceMethodOrFieldDecl() throws RecognitionException { return gJavaP.interfaceMethodOrFieldDecl(); }
-    public Aspect_JavaP.superSuffix_return superSuffix() throws RecognitionException { return gJavaP.superSuffix(); }
-    public Aspect_JavaP.interfaceMethod_return interfaceMethod() throws RecognitionException { return gJavaP.interfaceMethod(); }
-    public Aspect_JavaP.conditionalExpression_return conditionalExpression() throws RecognitionException { return gJavaP.conditionalExpression(); }
-    public Aspect_JavaP.typeBound_return typeBound() throws RecognitionException { return gJavaP.typeBound(); }
-    public Aspect_JavaP.enumDeclaration_return enumDeclaration() throws RecognitionException { return gJavaP.enumDeclaration(); }
-    public Aspect_JavaP.normalClassDeclaration_return normalClassDeclaration() throws RecognitionException { return gJavaP.normalClassDeclaration(); }
-    public Aspect_JavaP.memberDecl_return memberDecl() throws RecognitionException { return gJavaP.memberDecl(); }
-    public Aspect_JavaP.interfaceBodyDeclaration_return interfaceBodyDeclaration() throws RecognitionException { return gJavaP.interfaceBodyDeclaration(); }
-    public Aspect_JavaP.annotationMethodOrConstantRest_return annotationMethodOrConstantRest(TypeReference type) throws RecognitionException { return gJavaP.annotationMethodOrConstantRest(type); }
-    public Aspect_JavaP.booleanLiteral_return booleanLiteral() throws RecognitionException { return gJavaP.booleanLiteral(); }
-    public Aspect_JavaP.localVariableDeclarationStatement_return localVariableDeclarationStatement() throws RecognitionException { return gJavaP.localVariableDeclarationStatement(); }
-    public Aspect_JavaP.enumBodyDeclarations_return enumBodyDeclarations() throws RecognitionException { return gJavaP.enumBodyDeclarations(); }
-    public Aspect_JavaP.exclusiveOrExpression_return exclusiveOrExpression() throws RecognitionException { return gJavaP.exclusiveOrExpression(); }
-    public Aspect_JavaP.inclusiveOrExpression_return inclusiveOrExpression() throws RecognitionException { return gJavaP.inclusiveOrExpression(); }
-    public Aspect_JavaP.voidMethodDeclaratorRest_return voidMethodDeclaratorRest() throws RecognitionException { return gJavaP.voidMethodDeclaratorRest(); }
-    public Aspect_JavaP.enumConstants_return enumConstants() throws RecognitionException { return gJavaP.enumConstants(); }
-    public Aspect_JavaP.variableDeclarators_return variableDeclarators() throws RecognitionException { return gJavaP.variableDeclarators(); }
-    public Aspect_JavaP.conditionalOrExpression_return conditionalOrExpression() throws RecognitionException { return gJavaP.conditionalOrExpression(); }
-    public Aspect_JavaP.defaultValue_return defaultValue() throws RecognitionException { return gJavaP.defaultValue(); }
-    public Aspect_JavaP.statement_return statement() throws RecognitionException { return gJavaP.statement(); }
-    public Aspect_JavaP.forInit_return forInit() throws RecognitionException { return gJavaP.forInit(); }
-    public Aspect_JavaP.typeParameters_return typeParameters() throws RecognitionException { return gJavaP.typeParameters(); }
+    public Aspect_JavaP.arguments_return arguments() throws RecognitionException { return gJavaP.arguments(); }
+    public Aspect_JavaP.argumentsSuffixRubbish_return argumentsSuffixRubbish() throws RecognitionException { return gJavaP.argumentsSuffixRubbish(); }
     public Aspect_JavaP.normalInterfaceDeclaration_return normalInterfaceDeclaration() throws RecognitionException { return gJavaP.normalInterfaceDeclaration(); }
+    public Aspect_JavaP.parExpression_return parExpression() throws RecognitionException { return gJavaP.parExpression(); }
+    public Aspect_JavaP.block_return block() throws RecognitionException { return gJavaP.block(); }
+    public Aspect_JavaP.selector_return selector() throws RecognitionException { return gJavaP.selector(); }
+    public Aspect_JavaP.booleanLiteral_return booleanLiteral() throws RecognitionException { return gJavaP.booleanLiteral(); }
     public Aspect_JavaP.variableInitializer_return variableInitializer() throws RecognitionException { return gJavaP.variableInitializer(); }
-    public Aspect_JavaP.classOrInterfaceType_return classOrInterfaceType() throws RecognitionException { return gJavaP.classOrInterfaceType(); }
-    public Aspect_JavaP.elementValuePair_return elementValuePair() throws RecognitionException { return gJavaP.elementValuePair(); }
-    public Aspect_JavaP.enhancedForControl_return enhancedForControl() throws RecognitionException { return gJavaP.enhancedForControl(); }
-    public Aspect_JavaP.additiveExpression_return additiveExpression() throws RecognitionException { return gJavaP.additiveExpression(); }
-    public Aspect_JavaP.typeDeclaration_return typeDeclaration() throws RecognitionException { return gJavaP.typeDeclaration(); }
-    public Aspect_JavaP.formalParameters_return formalParameters() throws RecognitionException { return gJavaP.formalParameters(); }
-    public Aspect_JavaP.catchClause_return catchClause() throws RecognitionException { return gJavaP.catchClause(); }
-    public Aspect_JavaP.enumBody_return enumBody() throws RecognitionException { return gJavaP.enumBody(); }
-    public Aspect_JavaP.genericMethodOrConstructorDecl_return genericMethodOrConstructorDecl() throws RecognitionException { return gJavaP.genericMethodOrConstructorDecl(); }
-    public Aspect_JavaP.classCreatorRest_return classCreatorRest() throws RecognitionException { return gJavaP.classCreatorRest(); }
-    public Aspect_JavaP.modifier_return modifier() throws RecognitionException { return gJavaP.modifier(); }
-    public Aspect_JavaP.annotationName_return annotationName() throws RecognitionException { return gJavaP.annotationName(); }
-    public Aspect_JavaP.createdName_return createdName() throws RecognitionException { return gJavaP.createdName(); }
-    public Aspect_JavaP.expression_return expression() throws RecognitionException { return gJavaP.expression(); }
-    public Aspect_JavaP.variableDeclarator_return variableDeclarator() throws RecognitionException { return gJavaP.variableDeclarator(); }
-    public Aspect_JavaP.variableModifier_return variableModifier() throws RecognitionException { return gJavaP.variableModifier(); }
-    public Aspect_JavaP.forUpdate_return forUpdate() throws RecognitionException { return gJavaP.forUpdate(); }
-    public Aspect_JavaP.annotation_return annotation() throws RecognitionException { return gJavaP.annotation(); }
-    public Aspect_JavaP.forControl_return forControl() throws RecognitionException { return gJavaP.forControl(); }
-    public Aspect_JavaP.interfaceGenericMethodDecl_return interfaceGenericMethodDecl() throws RecognitionException { return gJavaP.interfaceGenericMethodDecl(); }
-    public Aspect_JavaP.interfaceDeclaration_return interfaceDeclaration() throws RecognitionException { return gJavaP.interfaceDeclaration(); }
-    public Aspect_JavaP.innerCreator_return innerCreator() throws RecognitionException { return gJavaP.innerCreator(); }
-    public Aspect_JavaP.elementValuePairs_return elementValuePairs() throws RecognitionException { return gJavaP.elementValuePairs(); }
-    public Aspect_JavaP.interfaceBody_return interfaceBody() throws RecognitionException { return gJavaP.interfaceBody(); }
-    public Aspect_JavaP.classOrInterfaceModifier_return classOrInterfaceModifier() throws RecognitionException { return gJavaP.classOrInterfaceModifier(); }
+    public Aspect_JavaP.multiplicativeExpression_return multiplicativeExpression() throws RecognitionException { return gJavaP.multiplicativeExpression(); }
+    public Aspect_JavaP.memberDecl_return memberDecl() throws RecognitionException { return gJavaP.memberDecl(); }
+    public Aspect_JavaP.elementValue_return elementValue() throws RecognitionException { return gJavaP.elementValue(); }
+    public Aspect_JavaP.classOrInterfaceDeclaration_return classOrInterfaceDeclaration() throws RecognitionException { return gJavaP.classOrInterfaceDeclaration(); }
     public Aspect_JavaP.type_return type() throws RecognitionException { return gJavaP.type(); }
-    public Aspect_JavaP.constructorDeclaratorRest_return constructorDeclaratorRest() throws RecognitionException { return gJavaP.constructorDeclaratorRest(); }
-    public Aspect_JavaP.annotationConstantRest_return annotationConstantRest(TypeReference type) throws RecognitionException { return gJavaP.annotationConstantRest(type); }
-    public Aspect_JavaP.constructorDeclaration_return constructorDeclaration() throws RecognitionException { return gJavaP.constructorDeclaration(); }
-    public Aspect_JavaP.instanceOfExpression_return instanceOfExpression() throws RecognitionException { return gJavaP.instanceOfExpression(); }
-    public Aspect_JavaP.classOrInterfaceModifiers_return classOrInterfaceModifiers() throws RecognitionException { return gJavaP.classOrInterfaceModifiers(); }
-    public Aspect_JavaP.annotationTypeBody_return annotationTypeBody() throws RecognitionException { return gJavaP.annotationTypeBody(); }
+    public Aspect_JavaP.constructorBody_return constructorBody() throws RecognitionException { return gJavaP.constructorBody(); }
+    public Aspect_JavaP.methodDeclaratorRest_return methodDeclaratorRest() throws RecognitionException { return gJavaP.methodDeclaratorRest(); }
+    public Aspect_JavaP.formalParameterDecls_return formalParameterDecls() throws RecognitionException { return gJavaP.formalParameterDecls(); }
+    public Aspect_JavaP.exclusiveOrExpression_return exclusiveOrExpression() throws RecognitionException { return gJavaP.exclusiveOrExpression(); }
     public Aspect_JavaP.classDeclaration_return classDeclaration() throws RecognitionException { return gJavaP.classDeclaration(); }
+    public Aspect_JavaP.interfaceBody_return interfaceBody() throws RecognitionException { return gJavaP.interfaceBody(); }
+    public Aspect_JavaP.conditionalOrExpression_return conditionalOrExpression() throws RecognitionException { return gJavaP.conditionalOrExpression(); }
+    public Aspect_JavaP.enumConstant_return enumConstant() throws RecognitionException { return gJavaP.enumConstant(); }
+    public Aspect_JavaP.switchCase_return switchCase() throws RecognitionException { return gJavaP.switchCase(); }
+    public Aspect_JavaP.packageDeclaration_return packageDeclaration() throws RecognitionException { return gJavaP.packageDeclaration(); }
+    public Aspect_JavaP.enhancedForControl_return enhancedForControl() throws RecognitionException { return gJavaP.enhancedForControl(); }
+    public Aspect_JavaP.voidType_return voidType() throws RecognitionException { return gJavaP.voidType(); }
+    public Aspect_JavaP.nonWildcardTypeArguments_return nonWildcardTypeArguments() throws RecognitionException { return gJavaP.nonWildcardTypeArguments(); }
+    public Aspect_JavaP.expressionList_return expressionList() throws RecognitionException { return gJavaP.expressionList(); }
     public Aspect_JavaP.voidMethodDeclaration_return voidMethodDeclaration() throws RecognitionException { return gJavaP.voidMethodDeclaration(); }
+    public Aspect_JavaP.enumDeclaration_return enumDeclaration() throws RecognitionException { return gJavaP.enumDeclaration(); }
+    public Aspect_JavaP.enumBody_return enumBody() throws RecognitionException { return gJavaP.enumBody(); }
+    public Aspect_JavaP.inclusiveOrExpression_return inclusiveOrExpression() throws RecognitionException { return gJavaP.inclusiveOrExpression(); }
+    public Aspect_JavaP.shiftOp_return shiftOp() throws RecognitionException { return gJavaP.shiftOp(); }
+    public Aspect_JavaP.qualifiedNameList_return qualifiedNameList() throws RecognitionException { return gJavaP.qualifiedNameList(); }
+    public Aspect_JavaP.expression_return expression() throws RecognitionException { return gJavaP.expression(); }
+    public Aspect_JavaP.voidInterfaceMethodDeclaration_return voidInterfaceMethodDeclaration() throws RecognitionException { return gJavaP.voidInterfaceMethodDeclaration(); }
+    public Aspect_JavaP.enumConstants_return enumConstants() throws RecognitionException { return gJavaP.enumConstants(); }
+    public Aspect_JavaP.defaultValue_return defaultValue() throws RecognitionException { return gJavaP.defaultValue(); }
+    public Aspect_JavaP.interfaceMemberDecl_return interfaceMemberDecl() throws RecognitionException { return gJavaP.interfaceMemberDecl(); }
+    public Aspect_JavaP.typeDeclaration_return typeDeclaration() throws RecognitionException { return gJavaP.typeDeclaration(); }
+    public Aspect_JavaP.variableModifiers_return variableModifiers() throws RecognitionException { return gJavaP.variableModifiers(); }
+    public Aspect_JavaP.genericMethodOrConstructorDecl_return genericMethodOrConstructorDecl() throws RecognitionException { return gJavaP.genericMethodOrConstructorDecl(); }
+    public Aspect_JavaP.arrayAccessSuffixRubbish_return arrayAccessSuffixRubbish() throws RecognitionException { return gJavaP.arrayAccessSuffixRubbish(); }
+    public Aspect_JavaP.statement_return statement() throws RecognitionException { return gJavaP.statement(); }
+    public Aspect_JavaP.innerCreator_return innerCreator() throws RecognitionException { return gJavaP.innerCreator(); }
+    public Aspect_JavaP.annotationTypeElementRest_return annotationTypeElementRest() throws RecognitionException { return gJavaP.annotationTypeElementRest(); }
+    public Aspect_JavaP.interfaceMethodOrFieldDecl_return interfaceMethodOrFieldDecl() throws RecognitionException { return gJavaP.interfaceMethodOrFieldDecl(); }
+    public Aspect_JavaP.annotationConstantRest_return annotationConstantRest(TypeReference type) throws RecognitionException { return gJavaP.annotationConstantRest(type); }
+    public Aspect_JavaP.variableDeclarator_return variableDeclarator() throws RecognitionException { return gJavaP.variableDeclarator(); }
+    public Aspect_JavaP.methodBody_return methodBody() throws RecognitionException { return gJavaP.methodBody(); }
+    public Aspect_JavaP.interfaceMethodDeclaratorRest_return interfaceMethodDeclaratorRest() throws RecognitionException { return gJavaP.interfaceMethodDeclaratorRest(); }
+    public Aspect_JavaP.interfaceDeclaration_return interfaceDeclaration() throws RecognitionException { return gJavaP.interfaceDeclaration(); }
+    public Aspect_JavaP.forControl_return forControl() throws RecognitionException { return gJavaP.forControl(); }
+    public Aspect_JavaP.constantExpression_return constantExpression() throws RecognitionException { return gJavaP.constantExpression(); }
+    public Aspect_JavaP.identifierSuffixRubbush_return identifierSuffixRubbush() throws RecognitionException { return gJavaP.identifierSuffixRubbush(); }
+    public Aspect_JavaP.typeName_return typeName() throws RecognitionException { return gJavaP.typeName(); }
+    public Aspect_JavaP.variableModifier_return variableModifier() throws RecognitionException { return gJavaP.variableModifier(); }
+    public Aspect_JavaP.creator_return creator() throws RecognitionException { return gJavaP.creator(); }
+    public Aspect_JavaP.annotationTypeElementDeclaration_return annotationTypeElementDeclaration() throws RecognitionException { return gJavaP.annotationTypeElementDeclaration(); }
     public Aspect_JavaP.interfaceConstant_return interfaceConstant() throws RecognitionException { return gJavaP.interfaceConstant(); }
+    public Aspect_JavaP.classBody_return classBody() throws RecognitionException { return gJavaP.classBody(); }
+    public Aspect_JavaP.catches_return catches() throws RecognitionException { return gJavaP.catches(); }
+    public Aspect_JavaP.shiftExpression_return shiftExpression() throws RecognitionException { return gJavaP.shiftExpression(); }
+    public Aspect_JavaP.typeArgument_return typeArgument() throws RecognitionException { return gJavaP.typeArgument(); }
+    public Aspect_JavaP.unaryExpressionNotPlusMinus_return unaryExpressionNotPlusMinus() throws RecognitionException { return gJavaP.unaryExpressionNotPlusMinus(); }
+    public Aspect_JavaP.importDeclaration_return importDeclaration() throws RecognitionException { return gJavaP.importDeclaration(); }
+    public Aspect_JavaP.castExpression_return castExpression() throws RecognitionException { return gJavaP.castExpression(); }
+    public Aspect_JavaP.elementValueArrayInitializer_return elementValueArrayInitializer() throws RecognitionException { return gJavaP.elementValueArrayInitializer(); }
+    public Aspect_JavaP.variableDeclarators_return variableDeclarators() throws RecognitionException { return gJavaP.variableDeclarators(); }
+    public Aspect_JavaP.elementValuePairs_return elementValuePairs() throws RecognitionException { return gJavaP.elementValuePairs(); }
+    public Aspect_JavaP.annotationName_return annotationName() throws RecognitionException { return gJavaP.annotationName(); }
+    public Aspect_JavaP.enumBodyDeclarations_return enumBodyDeclarations() throws RecognitionException { return gJavaP.enumBodyDeclarations(); }
+    public Aspect_JavaP.classCreatorRest_return classCreatorRest() throws RecognitionException { return gJavaP.classCreatorRest(); }
+    public Aspect_JavaP.typeParameter_return typeParameter() throws RecognitionException { return gJavaP.typeParameter(); }
+    public Aspect_JavaP.normalClassDeclaration_return normalClassDeclaration() throws RecognitionException { return gJavaP.normalClassDeclaration(); }
+    public Aspect_JavaP.forInit_return forInit() throws RecognitionException { return gJavaP.forInit(); }
+    public Aspect_JavaP.instanceOfExpression_return instanceOfExpression() throws RecognitionException { return gJavaP.instanceOfExpression(); }
+    public Aspect_JavaP.constructorDeclaration_return constructorDeclaration() throws RecognitionException { return gJavaP.constructorDeclaration(); }
+    public Aspect_JavaP.additiveExpression_return additiveExpression() throws RecognitionException { return gJavaP.additiveExpression(); }
+    public Aspect_JavaP.typeArguments_return typeArguments() throws RecognitionException { return gJavaP.typeArguments(); }
+    public Aspect_JavaP.variableDeclaratorId_return variableDeclaratorId() throws RecognitionException { return gJavaP.variableDeclaratorId(); }
+    public Aspect_JavaP.andExpression_return andExpression() throws RecognitionException { return gJavaP.andExpression(); }
+    public Aspect_JavaP.typeBound_return typeBound() throws RecognitionException { return gJavaP.typeBound(); }
+    public Aspect_JavaP.assignmentOperator_return assignmentOperator() throws RecognitionException { return gJavaP.assignmentOperator(); }
+    public Aspect_JavaP.arrayInitializer_return arrayInitializer() throws RecognitionException { return gJavaP.arrayInitializer(); }
+    public Aspect_JavaP.annotationMethodRest_return annotationMethodRest(TypeReference type) throws RecognitionException { return gJavaP.annotationMethodRest(type); }
+    public Aspect_JavaP.createClassHereBecauseANTLRisAnnoying_return createClassHereBecauseANTLRisAnnoying() throws RecognitionException { return gJavaP.createClassHereBecauseANTLRisAnnoying(); }
+    public Aspect_JavaP.modifiers_return modifiers() throws RecognitionException { return gJavaP.modifiers(); }
+    public Aspect_JavaP.catchClause_return catchClause() throws RecognitionException { return gJavaP.catchClause(); }
+    public Aspect_JavaP.modifier_return modifier() throws RecognitionException { return gJavaP.modifier(); }
+    public Aspect_JavaP.annotationMethodOrConstantRest_return annotationMethodOrConstantRest(TypeReference type) throws RecognitionException { return gJavaP.annotationMethodOrConstantRest(type); }
+    public Aspect_JavaP.literal_return literal() throws RecognitionException { return gJavaP.literal(); }
+    public Aspect_JavaP.classOrInterfaceModifier_return classOrInterfaceModifier() throws RecognitionException { return gJavaP.classOrInterfaceModifier(); }
+    public Aspect_JavaP.genericMethodOrConstructorRest_return genericMethodOrConstructorRest() throws RecognitionException { return gJavaP.genericMethodOrConstructorRest(); }
+    public Aspect_JavaP.superSuffix_return superSuffix() throws RecognitionException { return gJavaP.superSuffix(); }
+    public Aspect_JavaP.unaryExpression_return unaryExpression() throws RecognitionException { return gJavaP.unaryExpression(); }
+    public Aspect_JavaP.nameAndParams_return nameAndParams() throws RecognitionException { return gJavaP.nameAndParams(); }
+    public Aspect_JavaP.localVariableDeclarationStatement_return localVariableDeclarationStatement() throws RecognitionException { return gJavaP.localVariableDeclarationStatement(); }
+    public Aspect_JavaP.classOrInterfaceModifiers_return classOrInterfaceModifiers() throws RecognitionException { return gJavaP.classOrInterfaceModifiers(); }
+    public Aspect_JavaP.createdName_return createdName() throws RecognitionException { return gJavaP.createdName(); }
+    public Aspect_JavaP.interfaceMethod_return interfaceMethod() throws RecognitionException { return gJavaP.interfaceMethod(); }
+    public Aspect_JavaP.switchLabel_return switchLabel() throws RecognitionException { return gJavaP.switchLabel(); }
+    public Aspect_JavaP.switchBlockStatementGroups_return switchBlockStatementGroups() throws RecognitionException { return gJavaP.switchBlockStatementGroups(); }
+    public Aspect_JavaP.formalParameters_return formalParameters() throws RecognitionException { return gJavaP.formalParameters(); }
+    public Aspect_JavaP.elementValuePair_return elementValuePair() throws RecognitionException { return gJavaP.elementValuePair(); }
+    public Aspect_JavaP.conditionalAndExpression_return conditionalAndExpression() throws RecognitionException { return gJavaP.conditionalAndExpression(); }
+    public Aspect_JavaP.typeList_return typeList() throws RecognitionException { return gJavaP.typeList(); }
+    public Aspect_JavaP.typeParameters_return typeParameters() throws RecognitionException { return gJavaP.typeParameters(); }
+    public Aspect_JavaP.constantDeclarator_return constantDeclarator() throws RecognitionException { return gJavaP.constantDeclarator(); }
+    public Aspect_JavaP.voidMethodDeclaratorRest_return voidMethodDeclaratorRest() throws RecognitionException { return gJavaP.voidMethodDeclaratorRest(); }
+    public Aspect_JavaP.explicitConstructorInvocation_return explicitConstructorInvocation() throws RecognitionException { return gJavaP.explicitConstructorInvocation(); }
+    public Aspect_JavaP.constructorDeclaratorRest_return constructorDeclaratorRest() throws RecognitionException { return gJavaP.constructorDeclaratorRest(); }
+    public Aspect_JavaP.conditionalExpression_return conditionalExpression() throws RecognitionException { return gJavaP.conditionalExpression(); }
+    public Aspect_JavaP.statementExpression_return statementExpression() throws RecognitionException { return gJavaP.statementExpression(); }
+    public Aspect_JavaP.annotationTypeDeclaration_return annotationTypeDeclaration() throws RecognitionException { return gJavaP.annotationTypeDeclaration(); }
+    public Aspect_JavaP.annotationTypeBody_return annotationTypeBody() throws RecognitionException { return gJavaP.annotationTypeBody(); }
 
     public final boolean synpred13_Aspect() {
         state.backtracking++;
@@ -2771,7 +2772,7 @@ public class AspectParser extends ChameleonParser {
             this.transition = DFA8_transition;
         }
         public String getDescription() {
-            return "280:8: ( annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* ) | (np= packageDeclaration )? (imp= importDeclaration )* (typech= typeDeclaration | ad= aspect )* )";
+            return "281:8: ( annotations (np= packageDeclaration (imp= importDeclaration )* (typech= typeDeclaration )* | cd= classOrInterfaceDeclaration (typech= typeDeclaration )* ) | (np= packageDeclaration )? (imp= importDeclaration )* (typech= typeDeclaration | ad= aspect )* )";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -2823,60 +2824,60 @@ public class AspectParser extends ChameleonParser {
     public static final BitSet FOLLOW_formalParameters_in_pointcut534 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000800L});
     public static final BitSet FOLLOW_75_in_pointcut536 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
     public static final BitSet FOLLOW_pointcutExpression_in_pointcut540 = new BitSet(new long[]{0x0000000004000000L});
-    public static final BitSet FOLLOW_26_in_pointcut544 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Identifier_in_pointcutDecl566 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_pointcutExpressionOr_in_pointcutExpression590 = new BitSet(new long[]{0x0000000000000000L,0x0000000800000000L});
-    public static final BitSet FOLLOW_99_in_pointcutExpression592 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
-    public static final BitSet FOLLOW_pointcutExpression_in_pointcutExpression596 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_pointcutExpressionOr_in_pointcutExpression605 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_pointcutAtom_in_pointcutExpressionOr628 = new BitSet(new long[]{0x0000000000000000L,0x0000000400000000L});
-    public static final BitSet FOLLOW_98_in_pointcutExpressionOr630 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
-    public static final BitSet FOLLOW_pointcutExpressionOr_in_pointcutExpressionOr634 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_pointcutAtom_in_pointcutExpressionOr643 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_116_in_pointcutAtom668 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_66_in_pointcutAtom670 = new BitSet(new long[]{0xFF00800000000010L});
-    public static final BitSet FOLLOW_methodReference_in_pointcutAtom674 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_67_in_pointcutAtom676 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_112_in_pointcutAtom683 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
-    public static final BitSet FOLLOW_pointcutAtom_in_pointcutAtom687 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_66_in_pointcutAtom694 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
-    public static final BitSet FOLLOW_pointcutExpression_in_pointcutAtom698 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_67_in_pointcutAtom700 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_advice724 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000800L});
-    public static final BitSet FOLLOW_75_in_advice732 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_pointcutDecl_in_advice736 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_66_in_advice738 = new BitSet(new long[]{0x0000020000000010L,0x0000000000000008L});
-    public static final BitSet FOLLOW_Identifier_in_advice740 = new BitSet(new long[]{0x0000020000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_41_in_advice744 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_Identifier_in_advice746 = new BitSet(new long[]{0x0000020000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_67_in_advice750 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_methodBody_in_advice761 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_methodReferenceType_in_methodReference785 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_fqn_in_methodReference789 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_voidType_in_methodReferenceType809 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_type_in_methodReferenceType818 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Identifier_in_fqn856 = new BitSet(new long[]{0x0000000020000000L});
-    public static final BitSet FOLLOW_29_in_fqn858 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_simpleMethodHeader_in_fqn866 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Identifier_in_simpleMethodHeader905 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_formalParameterTypes_in_simpleMethodHeader909 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_66_in_formalParameterTypes951 = new BitSet(new long[]{0xFF00800000000010L,0x0000000000000008L});
-    public static final BitSet FOLLOW_formalParameterTypeDecls_in_formalParameterTypes956 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_67_in_formalParameterTypes962 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_type_in_formalParameterTypeDecls987 = new BitSet(new long[]{0x0000020000000002L});
-    public static final BitSet FOLLOW_41_in_formalParameterTypeDecls990 = new BitSet(new long[]{0xFF00800000000010L});
-    public static final BitSet FOLLOW_formalParameterTypeDecls_in_formalParameterTypeDecls994 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_26_in_pointcut542 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Identifier_in_pointcutDecl564 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_pointcutExpressionOr_in_pointcutExpression588 = new BitSet(new long[]{0x0000000000000000L,0x0000000800000000L});
+    public static final BitSet FOLLOW_99_in_pointcutExpression590 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
+    public static final BitSet FOLLOW_pointcutExpression_in_pointcutExpression594 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_pointcutExpressionOr_in_pointcutExpression603 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_pointcutAtom_in_pointcutExpressionOr626 = new BitSet(new long[]{0x0000000000000000L,0x0000000400000000L});
+    public static final BitSet FOLLOW_98_in_pointcutExpressionOr628 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
+    public static final BitSet FOLLOW_pointcutExpressionOr_in_pointcutExpressionOr632 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_pointcutAtom_in_pointcutExpressionOr641 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_116_in_pointcutAtom666 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_66_in_pointcutAtom668 = new BitSet(new long[]{0xFF00800000000010L});
+    public static final BitSet FOLLOW_methodReference_in_pointcutAtom672 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_67_in_pointcutAtom674 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_112_in_pointcutAtom681 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
+    public static final BitSet FOLLOW_pointcutAtom_in_pointcutAtom685 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_66_in_pointcutAtom692 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
+    public static final BitSet FOLLOW_pointcutExpression_in_pointcutAtom696 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_67_in_pointcutAtom698 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_advice722 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000800L});
+    public static final BitSet FOLLOW_75_in_advice730 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_pointcutDecl_in_advice734 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_66_in_advice736 = new BitSet(new long[]{0x0000020000000010L,0x0000000000000008L});
+    public static final BitSet FOLLOW_Identifier_in_advice738 = new BitSet(new long[]{0x0000020000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_41_in_advice742 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_Identifier_in_advice744 = new BitSet(new long[]{0x0000020000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_67_in_advice748 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_methodBody_in_advice759 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_methodReferenceType_in_methodReference783 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_fqn_in_methodReference787 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_voidType_in_methodReferenceType807 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_type_in_methodReferenceType816 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Identifier_in_fqn854 = new BitSet(new long[]{0x0000000020000000L});
+    public static final BitSet FOLLOW_29_in_fqn856 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_simpleMethodHeader_in_fqn864 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Identifier_in_simpleMethodHeader903 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_formalParameterTypes_in_simpleMethodHeader907 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_66_in_formalParameterTypes949 = new BitSet(new long[]{0xFF00800000000010L,0x0000000000000008L});
+    public static final BitSet FOLLOW_formalParameterTypeDecls_in_formalParameterTypes954 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_67_in_formalParameterTypes960 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_type_in_formalParameterTypeDecls985 = new BitSet(new long[]{0x0000020000000002L});
+    public static final BitSet FOLLOW_41_in_formalParameterTypeDecls988 = new BitSet(new long[]{0xFF00800000000010L});
+    public static final BitSet FOLLOW_formalParameterTypeDecls_in_formalParameterTypeDecls992 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_annotations_in_synpred5_Aspect80 = new BitSet(new long[]{0x0000403F92000020L,0x0000000000000200L});
     public static final BitSet FOLLOW_packageDeclaration_in_synpred5_Aspect96 = new BitSet(new long[]{0x0000403F9E000022L,0x0000000000000200L});
     public static final BitSet FOLLOW_importDeclaration_in_synpred5_Aspect132 = new BitSet(new long[]{0x0000403F9E000022L,0x0000000000000200L});
     public static final BitSet FOLLOW_typeDeclaration_in_synpred5_Aspect153 = new BitSet(new long[]{0x0000403F96000022L,0x0000000000000200L});
     public static final BitSet FOLLOW_classOrInterfaceDeclaration_in_synpred5_Aspect202 = new BitSet(new long[]{0x0000403F96000022L,0x0000000000000200L});
     public static final BitSet FOLLOW_typeDeclaration_in_synpred5_Aspect237 = new BitSet(new long[]{0x0000403F96000022L,0x0000000000000200L});
-    public static final BitSet FOLLOW_pointcutExpressionOr_in_synpred12_Aspect590 = new BitSet(new long[]{0x0000000000000000L,0x0000000800000000L});
-    public static final BitSet FOLLOW_99_in_synpred12_Aspect592 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
-    public static final BitSet FOLLOW_pointcutExpression_in_synpred12_Aspect596 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_pointcutAtom_in_synpred13_Aspect628 = new BitSet(new long[]{0x0000000000000000L,0x0000000400000000L});
-    public static final BitSet FOLLOW_98_in_synpred13_Aspect630 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
-    public static final BitSet FOLLOW_pointcutExpressionOr_in_synpred13_Aspect634 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_pointcutExpressionOr_in_synpred12_Aspect588 = new BitSet(new long[]{0x0000000000000000L,0x0000000800000000L});
+    public static final BitSet FOLLOW_99_in_synpred12_Aspect590 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
+    public static final BitSet FOLLOW_pointcutExpression_in_synpred12_Aspect594 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_pointcutAtom_in_synpred13_Aspect626 = new BitSet(new long[]{0x0000000000000000L,0x0000000400000000L});
+    public static final BitSet FOLLOW_98_in_synpred13_Aspect628 = new BitSet(new long[]{0x0000000000000000L,0x0011000000000004L});
+    public static final BitSet FOLLOW_pointcutExpressionOr_in_synpred13_Aspect632 = new BitSet(new long[]{0x0000000000000002L});
 
 }
