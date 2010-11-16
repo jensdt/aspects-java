@@ -1,6 +1,6 @@
 package aspectsjava.input;
 
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 Aspect__.g 2010-11-11 15:03:41
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 Aspect__.g 2010-11-16 09:47:20
 
 import org.antlr.runtime.*;
 import java.util.Stack;

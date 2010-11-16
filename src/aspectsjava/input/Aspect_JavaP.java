@@ -1,14 +1,10 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 JavaP.g 2010-11-11 15:03:41
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 JavaP.g 2010-11-16 09:47:20
 
 package aspectsjava.input;
 
-import chameleon.aspects.Advice;
-import chameleon.aspects.Aspect;
-import chameleon.aspects.pointcut.CrossReferencePointcut;
-import chameleon.aspects.pointcut.MethodReference;
-import chameleon.aspects.pointcut.PointcutHeader;
-import chameleon.aspects.pointcut.PointcutMethodHeader;
-import chameleon.aspects.pointcut.QualifiedMethodHeader;
+import chameleon.aspects.*;
+import chameleon.aspects.advice.*;
+import chameleon.aspects.pointcut.*;
 import chameleon.aspects.pointcut.expression.*;
 
 import chameleon.exception.ModelException;
@@ -29,7 +25,7 @@ import chameleon.core.element.Element;
 
 import chameleon.core.reference.SimpleReference;
 import chameleon.core.expression.Expression;
-import chameleon.core.expression.Invocation;
+import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.Literal;
 import chameleon.core.expression.Assignable;
 import chameleon.core.expression.NamedTarget;
@@ -3655,11 +3651,11 @@ public class Aspect_JavaP extends ChameleonParser {
                 {
                 int LA40_2 = input.LA(2);
 
-                if ( (LA40_2==66) ) {
-                    alt40=4;
-                }
-                else if ( (LA40_2==Identifier||LA40_2==29||LA40_2==40||LA40_2==48) ) {
+                if ( (LA40_2==Identifier||LA40_2==29||LA40_2==40||LA40_2==48) ) {
                     alt40=2;
+                }
+                else if ( (LA40_2==66) ) {
+                    alt40=4;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
@@ -4233,11 +4229,11 @@ public class Aspect_JavaP extends ChameleonParser {
             if ( (LA43_0==Identifier) ) {
                 int LA43_1 = input.LA(2);
 
-                if ( (LA43_1==Identifier||LA43_1==29||LA43_1==40||LA43_1==48) ) {
-                    alt43=1;
-                }
-                else if ( (LA43_1==66) ) {
+                if ( (LA43_1==66) ) {
                     alt43=2;
+                }
+                else if ( (LA43_1==Identifier||LA43_1==29||LA43_1==40||LA43_1==48) ) {
+                    alt43=1;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
@@ -8540,13 +8536,13 @@ public class Aspect_JavaP extends ChameleonParser {
     // $ANTLR end "constructorBody"
 
     public static class explicitConstructorInvocation_return extends ParserRuleReturnScope {
-        public Invocation element;
+        public MethodInvocation element;
         Object tree;
         public Object getTree() { return tree; }
     };
 
     // $ANTLR start "explicitConstructorInvocation"
-    // JavaP.g:999:1: explicitConstructorInvocation returns [Invocation element] : ( ( nonWildcardTypeArguments )? 'this' args= arguments ';' | (prim= primary '.' )? ( nonWildcardTypeArguments )? 'super' argsx= arguments ';' );
+    // JavaP.g:999:1: explicitConstructorInvocation returns [MethodInvocation element] : ( ( nonWildcardTypeArguments )? 'this' args= arguments ';' | (prim= primary '.' )? ( nonWildcardTypeArguments )? 'super' argsx= arguments ';' );
     public final Aspect_JavaP.explicitConstructorInvocation_return explicitConstructorInvocation() throws RecognitionException {
         Aspect_JavaP.explicitConstructorInvocation_return retval = new Aspect_JavaP.explicitConstructorInvocation_return();
         retval.start = input.LT(1);
@@ -11602,7 +11598,7 @@ public class Aspect_JavaP extends ChameleonParser {
                     int LA114_0 = input.LA(1);
 
                     if ( (LA114_0==77) ) {
-                        int LA114_2 = input.LA(2);
+                        int LA114_1 = input.LA(2);
 
                         if ( (synpred150_JavaP()) ) {
                             alt114=1;
@@ -21695,7 +21691,7 @@ public class Aspect_JavaP extends ChameleonParser {
             this.transition = DFA88_transition;
         }
         public String getDescription() {
-            return "999:1: explicitConstructorInvocation returns [Invocation element] : ( ( nonWildcardTypeArguments )? 'this' args= arguments ';' | (prim= primary '.' )? ( nonWildcardTypeArguments )? 'super' argsx= arguments ';' );";
+            return "999:1: explicitConstructorInvocation returns [MethodInvocation element] : ( ( nonWildcardTypeArguments )? 'this' args= arguments ';' | (prim= primary '.' )? ( nonWildcardTypeArguments )? 'super' argsx= arguments ';' );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -22100,17 +22096,17 @@ public class Aspect_JavaP extends ChameleonParser {
     static final String DFA127_eofS =
         "\u010c\uffff";
     static final String DFA127_minS =
-        "\14\4\25\uffff\17\4\1\32\35\uffff\1\61\1\32\1\uffff\1\61\1\32\1"+
+        "\14\4\25\uffff\17\4\1\32\35\uffff\1\61\1\uffff\1\32\1\61\1\32\1"+
         "\uffff\1\61\1\32\1\uffff\1\61\1\uffff\1\32\1\61\1\32\1\uffff\1\61"+
-        "\1\32\1\uffff\1\61\1\uffff\1\32\1\61\1\32\1\uffff\55\0\25\uffff"+
+        "\1\32\1\uffff\1\61\1\32\1\uffff\1\61\1\32\1\uffff\55\0\25\uffff"+
         "\1\0\1\uffff\12\0\5\uffff\1\0\35\uffff\3\0\2\uffff\4\0\2\uffff\4"+
         "\0\2\uffff\4\0\2\uffff\4\0\2\uffff\4\0\2\uffff\4\0\2\uffff\4\0\2"+
         "\uffff\4\0\2\uffff";
     static final String DFA127_maxS =
         "\1\161\1\111\1\4\1\156\10\60\25\uffff\11\60\1\111\1\4\1\111\3\161"+
-        "\1\113\35\uffff\1\61\1\113\1\uffff\1\61\1\113\1\uffff\1\61\1\113"+
+        "\1\113\35\uffff\1\61\1\uffff\1\113\1\61\1\113\1\uffff\1\61\1\113"+
         "\1\uffff\1\61\1\uffff\1\113\1\61\1\113\1\uffff\1\61\1\113\1\uffff"+
-        "\1\61\1\uffff\1\113\1\61\1\113\1\uffff\55\0\25\uffff\1\0\1\uffff"+
+        "\1\61\1\113\1\uffff\1\61\1\113\1\uffff\55\0\25\uffff\1\0\1\uffff"+
         "\12\0\5\uffff\1\0\35\uffff\3\0\2\uffff\4\0\2\uffff\4\0\2\uffff\4"+
         "\0\2\uffff\4\0\2\uffff\4\0\2\uffff\4\0\2\uffff\4\0\2\uffff\4\0\2"+
         "\uffff";
@@ -22137,13 +22133,13 @@ public class Aspect_JavaP extends ChameleonParser {
             "\1\60\25\uffff\1\14\2\uffff\1\56\1\14\11\uffff\1\55\3\14\4"+
             "\uffff\1\57\2\uffff\1\14\14\uffff\1\14\1\uffff\1\14\27\uffff"+
             "\25\14",
-            "\1\117\30\uffff\1\14\22\uffff\1\116",
+            "\1\120\30\uffff\1\14\22\uffff\1\116",
             "\1\122\30\uffff\1\14\22\uffff\1\121",
             "\1\125\30\uffff\1\14\22\uffff\1\124",
             "\1\131\30\uffff\1\14\22\uffff\1\127",
             "\1\133\30\uffff\1\14\22\uffff\1\132",
             "\1\136\30\uffff\1\14\22\uffff\1\135",
-            "\1\142\30\uffff\1\14\22\uffff\1\140",
+            "\1\141\30\uffff\1\14\22\uffff\1\140",
             "\1\144\30\uffff\1\14\22\uffff\1\143",
             "",
             "",
@@ -22221,9 +22217,9 @@ public class Aspect_JavaP extends ChameleonParser {
             "",
             "",
             "\1\u00dc",
+            "",
             "\1\14\16\uffff\1\u00df\6\uffff\1\u00dd\2\uffff\1\u00de\27"+
             "\uffff\1\u00db",
-            "",
             "\1\u00e2",
             "\1\14\16\uffff\1\u00e5\6\uffff\1\u00e3\2\uffff\1\u00e4\27"+
             "\uffff\1\u00db",
@@ -22245,9 +22241,9 @@ public class Aspect_JavaP extends ChameleonParser {
             "\uffff\1\u00db",
             "",
             "\1\u0100",
-            "",
             "\1\14\16\uffff\1\u0103\6\uffff\1\u0101\2\uffff\1\u0102\27"+
             "\uffff\1\u00db",
+            "",
             "\1\u0106",
             "\1\14\16\uffff\1\u0109\6\uffff\1\u0107\2\uffff\1\u0108\27"+
             "\uffff\1\u00db",
@@ -24083,7 +24079,7 @@ public class Aspect_JavaP extends ChameleonParser {
     static final String DFA130_acceptS =
         "\14\uffff\1\2\1\1";
     static final String DFA130_specialS =
-        "\1\uffff\1\11\1\1\1\4\1\7\1\12\1\3\1\5\1\6\1\10\1\0\1\2\2\uffff}>";
+        "\1\uffff\1\10\1\4\1\1\1\12\1\6\1\3\1\0\1\5\1\11\1\2\1\7\2\uffff}>";
     static final String[] DFA130_transitionS = {
             "\1\14\15\uffff\1\12\1\14\1\13\2\uffff\1\14\3\uffff\1\14\1\uffff"+
             "\1\1\17\uffff\1\14\7\uffff\1\14\16\uffff\1\2\1\3\1\4\1\5\1\6"+
@@ -24140,6 +24136,36 @@ public class Aspect_JavaP extends ChameleonParser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
+                        int LA130_7 = input.LA(1);
+
+                         
+                        int index130_7 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred180_JavaP()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 12;}
+
+                         
+                        input.seek(index130_7);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA130_3 = input.LA(1);
+
+                         
+                        int index130_3 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred180_JavaP()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 12;}
+
+                         
+                        input.seek(index130_3);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 2 : 
                         int LA130_10 = input.LA(1);
 
                          
@@ -24152,36 +24178,6 @@ public class Aspect_JavaP extends ChameleonParser {
 
                          
                         input.seek(index130_10);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
-                        int LA130_2 = input.LA(1);
-
-                         
-                        int index130_2 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred180_JavaP()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 12;}
-
-                         
-                        input.seek(index130_2);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA130_11 = input.LA(1);
-
-                         
-                        int index130_11 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred180_JavaP()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 12;}
-
-                         
-                        input.seek(index130_11);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
@@ -24200,10 +24196,10 @@ public class Aspect_JavaP extends ChameleonParser {
                         if ( s>=0 ) return s;
                         break;
                     case 4 : 
-                        int LA130_3 = input.LA(1);
+                        int LA130_2 = input.LA(1);
 
                          
-                        int index130_3 = input.index();
+                        int index130_2 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred180_JavaP()) ) {s = 13;}
@@ -24211,25 +24207,10 @@ public class Aspect_JavaP extends ChameleonParser {
                         else if ( (true) ) {s = 12;}
 
                          
-                        input.seek(index130_3);
+                        input.seek(index130_2);
                         if ( s>=0 ) return s;
                         break;
                     case 5 : 
-                        int LA130_7 = input.LA(1);
-
-                         
-                        int index130_7 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred180_JavaP()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 12;}
-
-                         
-                        input.seek(index130_7);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 6 : 
                         int LA130_8 = input.LA(1);
 
                          
@@ -24244,11 +24225,11 @@ public class Aspect_JavaP extends ChameleonParser {
                         input.seek(index130_8);
                         if ( s>=0 ) return s;
                         break;
-                    case 7 : 
-                        int LA130_4 = input.LA(1);
+                    case 6 : 
+                        int LA130_5 = input.LA(1);
 
                          
-                        int index130_4 = input.index();
+                        int index130_5 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred180_JavaP()) ) {s = 13;}
@@ -24256,25 +24237,25 @@ public class Aspect_JavaP extends ChameleonParser {
                         else if ( (true) ) {s = 12;}
 
                          
-                        input.seek(index130_4);
+                        input.seek(index130_5);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 7 : 
+                        int LA130_11 = input.LA(1);
+
+                         
+                        int index130_11 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred180_JavaP()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 12;}
+
+                         
+                        input.seek(index130_11);
                         if ( s>=0 ) return s;
                         break;
                     case 8 : 
-                        int LA130_9 = input.LA(1);
-
-                         
-                        int index130_9 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred180_JavaP()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 12;}
-
-                         
-                        input.seek(index130_9);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 9 : 
                         int LA130_1 = input.LA(1);
 
                          
@@ -24289,11 +24270,11 @@ public class Aspect_JavaP extends ChameleonParser {
                         input.seek(index130_1);
                         if ( s>=0 ) return s;
                         break;
-                    case 10 : 
-                        int LA130_5 = input.LA(1);
+                    case 9 : 
+                        int LA130_9 = input.LA(1);
 
                          
-                        int index130_5 = input.index();
+                        int index130_9 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred180_JavaP()) ) {s = 13;}
@@ -24301,7 +24282,22 @@ public class Aspect_JavaP extends ChameleonParser {
                         else if ( (true) ) {s = 12;}
 
                          
-                        input.seek(index130_5);
+                        input.seek(index130_9);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 10 : 
+                        int LA130_4 = input.LA(1);
+
+                         
+                        int index130_4 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred180_JavaP()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 12;}
+
+                         
+                        input.seek(index130_4);
                         if ( s>=0 ) return s;
                         break;
             }

@@ -15,7 +15,7 @@ import chameleon.core.declaration.TargetDeclaration;
 import chameleon.core.element.Element;
 
 import chameleon.core.expression.Expression;
-import chameleon.core.expression.Invocation;
+import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.Literal;
 import chameleon.core.expression.Assignable;
 import chameleon.core.expression.NamedTarget;
@@ -8859,7 +8859,7 @@ public class Java_JavaP extends ChameleonParser {
     // $ANTLR end "constructorBody"
 
     public static class explicitConstructorInvocation_return extends ParserRuleReturnScope {
-        public Invocation element;
+        public MethodInvocation element;
         Object tree;
         public Object getTree() { return tree; }
     };

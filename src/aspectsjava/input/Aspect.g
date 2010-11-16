@@ -10,13 +10,9 @@ import JavaP,JavaL;
 @header {
 package aspectsjava.input;
 
-import chameleon.aspects.Advice;
-import chameleon.aspects.Aspect;
-import chameleon.aspects.pointcut.CrossReferencePointcut;
-import chameleon.aspects.pointcut.MethodReference;
-import chameleon.aspects.pointcut.PointcutHeader;
-import chameleon.aspects.pointcut.PointcutMethodHeader;
-import chameleon.aspects.pointcut.QualifiedMethodHeader;
+import chameleon.aspects.*;
+import chameleon.aspects.advice.*;
+import chameleon.aspects.pointcut.*;
 import chameleon.aspects.pointcut.expression.*;
 
 import chameleon.exception.ModelException;
@@ -37,7 +33,7 @@ import chameleon.core.element.Element;
 
 import chameleon.core.reference.SimpleReference;
 import chameleon.core.expression.Expression;
-import chameleon.core.expression.Invocation;
+import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.Literal;
 import chameleon.core.expression.Assignable;
 import chameleon.core.expression.NamedTarget;
@@ -346,6 +342,7 @@ pointcut returns [CrossReferencePointcut element]
 	{
 		PointcutHeader header = new PointcutHeader(decl.element);
 		header.addFormalParameters(pars.element);
+		setLocation(header, decl.start, pars.stop);
 		retval.element = new CrossReferencePointcut(header, expr.element);
 		setKeyword(retval.element, pct);
 	}
@@ -377,13 +374,16 @@ pointcutAtom returns [PointcutExpression element]
 
 advice returns [Advice element]
 @after{setLocation(retval.element, retval.start, retval.stop);}
-	:  advtype=('before_' | 'after_') ':' decl=pointcutDecl '(' Identifier? (',' Identifier)* ')'
+	:  advtype=('before_' | 'after_') pars=formalParameters ':' decl=pointcutDecl args=arguments
 	
 	{
 		retval.element=new Advice();
-		SimpleReference<CrossReferencePointcut> ref = new SimpleReference<CrossReferencePointcut>(decl.element, CrossReferencePointcut.class); 
+		PointcutReference ref = new PointcutReference();
+		ref.addAllArguments(args.element);
+		ref.setName(decl.element);
 		retval.element.setPointcutReference(ref);
-		setLocation(ref, decl.start, decl.stop);
+		retval.element.addFormalParameters(pars.element);
+		setLocation(ref, decl.start, args.stop);
 	} 
 	bdy=methodBody
 	{

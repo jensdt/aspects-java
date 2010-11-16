@@ -996,7 +996,7 @@ constructorBody returns [Block element]
          (bs=blockStatement {retval.element.addStatement(bs.element);})* '}'
     ;
 
-explicitConstructorInvocation returns [Invocation element]
+explicitConstructorInvocation returns [MethodInvocation element]
 @init{Expression target=null;}
     :   nonWildcardTypeArguments? 'this' args=arguments ';'
        {retval.element = new ThisConstructorDelegation();
