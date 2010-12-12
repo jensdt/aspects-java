@@ -9,6 +9,7 @@ import chameleon.core.lookup.LookupStrategyFactory;
 
 import chameleon.core.compilationunit.CompilationUnit;
 
+import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameSignature;
 import chameleon.core.declaration.TargetDeclaration;
 
@@ -96,7 +97,6 @@ import chameleon.support.expression.ClassCastExpression;
 import chameleon.support.expression.SuperTarget;
 
 import chameleon.support.member.simplename.method.NormalMethod;
-import chameleon.support.member.simplename.SimpleNameMethodHeader;
 import chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import chameleon.support.member.simplename.operator.infix.InfixOperatorInvocation;
 import chameleon.support.member.simplename.operator.prefix.PrefixOperatorInvocation;
@@ -4195,7 +4195,7 @@ public class Java_JavaP extends ChameleonParser {
             adaptor.addChild(root_0, methodname_tree);
             }
             if ( state.backtracking==0 ) {
-              retval.element = new NormalMethod(new SimpleNameMethodHeader((methodname!=null?methodname.getText():null)), vt.element); ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
+              retval.element = new NormalMethod(new SimpleNameDeclarationWithParametersHeader((methodname!=null?methodname.getText():null)), vt.element); ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
             }
             pushFollow(FOLLOW_voidMethodDeclaratorRest_in_voidMethodDeclaration2218);
             voidMethodDeclaratorRest31=voidMethodDeclaratorRest();
@@ -4328,7 +4328,7 @@ public class Java_JavaP extends ChameleonParser {
             }
             if ( state.backtracking==0 ) {
 
-                           retval.element = new NormalMethod(new SimpleNameMethodHeader((consname!=null?consname.getText():null)), typeRef((consname!=null?consname.getText():null))); 
+                           retval.element = new NormalMethod(new SimpleNameDeclarationWithParametersHeader((consname!=null?consname.getText():null)), typeRef((consname!=null?consname.getText():null))); 
                            retval.element.addModifier(new JavaConstructor());
                            ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
                           
@@ -4638,7 +4638,7 @@ public class Java_JavaP extends ChameleonParser {
                     adaptor.addChild(root_0, name_tree);
                     }
                     if ( state.backtracking==0 ) {
-                      retval.element = new NormalMethod(new SimpleNameMethodHeader((name!=null?name.getText():null)),tref); ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
+                      retval.element = new NormalMethod(new SimpleNameDeclarationWithParametersHeader((name!=null?name.getText():null)),tref); ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
                     }
                     pushFollow(FOLLOW_methodDeclaratorRest_in_genericMethodOrConstructorRest2452);
                     methodDeclaratorRest35=methodDeclaratorRest();
@@ -4660,7 +4660,7 @@ public class Java_JavaP extends ChameleonParser {
                     adaptor.addChild(root_0, name_tree);
                     }
                     if ( state.backtracking==0 ) {
-                      retval.element = new NormalMethod(new SimpleNameMethodHeader((name!=null?name.getText():null)),typeRef((name!=null?name.getText():null))); ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
+                      retval.element = new NormalMethod(new SimpleNameDeclarationWithParametersHeader((name!=null?name.getText():null)),typeRef((name!=null?name.getText():null))); ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
                     }
                     pushFollow(FOLLOW_constructorDeclaratorRest_in_genericMethodOrConstructorRest2468);
                     constructorDeclaratorRest36=constructorDeclaratorRest();
@@ -4742,7 +4742,7 @@ public class Java_JavaP extends ChameleonParser {
             adaptor.addChild(root_0, name_tree);
             }
             if ( state.backtracking==0 ) {
-              retval.element = new NormalMethod(new SimpleNameMethodHeader((name!=null?name.getText():null)),t.element); ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
+              retval.element = new NormalMethod(new SimpleNameDeclarationWithParametersHeader((name!=null?name.getText():null)),t.element); ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
             }
             pushFollow(FOLLOW_methodDeclaratorRest_in_methodDeclaration2506);
             methodDeclaratorRest37=methodDeclaratorRest();
@@ -5179,7 +5179,7 @@ public class Java_JavaP extends ChameleonParser {
             adaptor.addChild(root_0, methodname_tree);
             }
             if ( state.backtracking==0 ) {
-              retval.element = new NormalMethod(new SimpleNameMethodHeader((methodname!=null?methodname.getText():null)), vt.element); ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
+              retval.element = new NormalMethod(new SimpleNameDeclarationWithParametersHeader((methodname!=null?methodname.getText():null)), vt.element); ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
             }
             pushFollow(FOLLOW_voidInterfaceMethodDeclaratorRest_in_voidInterfaceMethodDeclaration2715);
             voidInterfaceMethodDeclaratorRest40=voidInterfaceMethodDeclaratorRest();
@@ -5457,7 +5457,7 @@ public class Java_JavaP extends ChameleonParser {
             adaptor.addChild(root_0, methodname_tree);
             }
             if ( state.backtracking==0 ) {
-              retval.element = new NormalMethod(new SimpleNameMethodHeader((methodname!=null?methodname.getText():null)), tref.element); ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
+              retval.element = new NormalMethod(new SimpleNameDeclarationWithParametersHeader((methodname!=null?methodname.getText():null)), tref.element); ((MethodScope_scope)MethodScope_stack.peek()).method = retval.element;
             }
             pushFollow(FOLLOW_interfaceMethodDeclaratorRest_in_interfaceMethod2852);
             interfaceMethodDeclaratorRest43=interfaceMethodDeclaratorRest();
@@ -11079,7 +11079,7 @@ public class Java_JavaP extends ChameleonParser {
             adaptor.addChild(root_0, char_literal147_tree);
             }
             if ( state.backtracking==0 ) {
-              retval.element = new NormalMethod(new SimpleNameMethodHeader((name!=null?name.getText():null)),type);
+              retval.element = new NormalMethod(new SimpleNameDeclarationWithParametersHeader((name!=null?name.getText():null)),type);
             }
             // JavaP.g:1108:115: ( defaultValue )?
             int alt109=2;

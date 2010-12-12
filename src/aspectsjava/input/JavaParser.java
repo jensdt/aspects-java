@@ -9,6 +9,7 @@ import chameleon.core.lookup.LookupStrategyFactory;
 
 import chameleon.core.compilationunit.CompilationUnit;
 
+import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameSignature;
 import chameleon.core.declaration.TargetDeclaration;
 
@@ -96,7 +97,6 @@ import chameleon.support.expression.ClassCastExpression;
 import chameleon.support.expression.SuperTarget;
 
 import chameleon.support.member.simplename.method.NormalMethod;
-import chameleon.support.member.simplename.SimpleNameMethodHeader;
 import chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import chameleon.support.member.simplename.operator.infix.InfixOperatorInvocation;
 import chameleon.support.member.simplename.operator.prefix.PrefixOperatorInvocation;

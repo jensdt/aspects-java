@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 JavaL.g 2010-11-16 09:47:21
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 JavaL.g 2010-12-08 20:25:06
 
   package aspectsjava.input;
 
@@ -9,123 +9,123 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Aspect_JavaL extends Lexer {
-    public static final int T__29=29;
-    public static final int T__28=28;
-    public static final int T__27=27;
-    public static final int T__26=26;
-    public static final int FloatTypeSuffix=16;
-    public static final int T__25=25;
-    public static final int OctalLiteral=10;
     public static final int EOF=-1;
-    public static final int Identifier=4;
-    public static final int T__93=93;
-    public static final int T__94=94;
-    public static final int T__91=91;
-    public static final int T__92=92;
-    public static final int T__90=90;
-    public static final int COMMENT=23;
-    public static final int T__99=99;
-    public static final int T__98=98;
-    public static final int T__97=97;
-    public static final int T__96=96;
-    public static final int T__95=95;
-    public static final int T__80=80;
-    public static final int T__81=81;
-    public static final int T__82=82;
-    public static final int T__83=83;
-    public static final int LINE_COMMENT=24;
-    public static final int IntegerTypeSuffix=14;
-    public static final int T__85=85;
-    public static final int T__84=84;
-    public static final int T__87=87;
-    public static final int ASSERT=12;
-    public static final int T__86=86;
-    public static final int T__89=89;
-    public static final int T__88=88;
-    public static final int T__71=71;
-    public static final int WS=22;
-    public static final int T__72=72;
-    public static final int T__70=70;
-    public static final int FloatingPointLiteral=6;
-    public static final int JavaIDDigit=21;
-    public static final int T__76=76;
-    public static final int T__75=75;
-    public static final int T__74=74;
-    public static final int Letter=20;
-    public static final int EscapeSequence=17;
-    public static final int T__73=73;
-    public static final int T__79=79;
-    public static final int T__78=78;
-    public static final int T__77=77;
-    public static final int T__68=68;
-    public static final int T__69=69;
-    public static final int T__66=66;
-    public static final int T__67=67;
-    public static final int T__64=64;
-    public static final int T__65=65;
-    public static final int T__62=62;
-    public static final int T__63=63;
-    public static final int T__118=118;
-    public static final int CharacterLiteral=7;
-    public static final int T__116=116;
-    public static final int T__117=117;
-    public static final int T__114=114;
-    public static final int T__115=115;
-    public static final int Exponent=15;
-    public static final int T__61=61;
-    public static final int T__60=60;
-    public static final int HexDigit=13;
-    public static final int T__55=55;
-    public static final int T__56=56;
-    public static final int T__57=57;
-    public static final int T__58=58;
-    public static final int T__51=51;
-    public static final int T__52=52;
-    public static final int T__53=53;
-    public static final int T__54=54;
-    public static final int T__107=107;
-    public static final int T__108=108;
-    public static final int T__109=109;
-    public static final int T__59=59;
-    public static final int T__103=103;
-    public static final int T__104=104;
-    public static final int T__105=105;
-    public static final int T__106=106;
-    public static final int T__111=111;
-    public static final int T__110=110;
-    public static final int T__113=113;
-    public static final int T__112=112;
-    public static final int T__50=50;
-    public static final int T__42=42;
-    public static final int T__43=43;
-    public static final int HexLiteral=9;
-    public static final int T__40=40;
-    public static final int T__41=41;
-    public static final int T__46=46;
-    public static final int T__47=47;
-    public static final int T__44=44;
-    public static final int T__45=45;
-    public static final int T__48=48;
-    public static final int T__49=49;
-    public static final int T__102=102;
-    public static final int T__101=101;
-    public static final int T__100=100;
-    public static final int Tokens=119;
-    public static final int DecimalLiteral=11;
-    public static final int StringLiteral=8;
+    public static final int T__25=25;
+    public static final int T__26=26;
+    public static final int T__27=27;
+    public static final int T__28=28;
+    public static final int T__29=29;
     public static final int T__30=30;
     public static final int T__31=31;
     public static final int T__32=32;
     public static final int T__33=33;
     public static final int T__34=34;
-    public static final int ENUM=5;
     public static final int T__35=35;
     public static final int T__36=36;
     public static final int T__37=37;
     public static final int T__38=38;
     public static final int T__39=39;
+    public static final int T__40=40;
+    public static final int T__41=41;
+    public static final int T__42=42;
+    public static final int T__43=43;
+    public static final int T__44=44;
+    public static final int T__45=45;
+    public static final int T__46=46;
+    public static final int T__47=47;
+    public static final int T__48=48;
+    public static final int T__49=49;
+    public static final int T__50=50;
+    public static final int T__51=51;
+    public static final int T__52=52;
+    public static final int T__53=53;
+    public static final int T__54=54;
+    public static final int T__55=55;
+    public static final int T__56=56;
+    public static final int T__57=57;
+    public static final int T__58=58;
+    public static final int T__59=59;
+    public static final int T__60=60;
+    public static final int T__61=61;
+    public static final int T__62=62;
+    public static final int T__63=63;
+    public static final int T__64=64;
+    public static final int T__65=65;
+    public static final int T__66=66;
+    public static final int T__67=67;
+    public static final int T__68=68;
+    public static final int T__69=69;
+    public static final int T__70=70;
+    public static final int T__71=71;
+    public static final int T__72=72;
+    public static final int T__73=73;
+    public static final int T__74=74;
+    public static final int T__75=75;
+    public static final int T__76=76;
+    public static final int T__77=77;
+    public static final int T__78=78;
+    public static final int T__79=79;
+    public static final int T__80=80;
+    public static final int T__81=81;
+    public static final int T__82=82;
+    public static final int T__83=83;
+    public static final int T__84=84;
+    public static final int T__85=85;
+    public static final int T__86=86;
+    public static final int T__87=87;
+    public static final int T__88=88;
+    public static final int T__89=89;
+    public static final int T__90=90;
+    public static final int T__91=91;
+    public static final int T__92=92;
+    public static final int T__93=93;
+    public static final int T__94=94;
+    public static final int T__95=95;
+    public static final int T__96=96;
+    public static final int T__97=97;
+    public static final int T__98=98;
+    public static final int T__99=99;
+    public static final int T__100=100;
+    public static final int T__101=101;
+    public static final int T__102=102;
+    public static final int T__103=103;
+    public static final int T__104=104;
+    public static final int T__105=105;
+    public static final int T__106=106;
+    public static final int T__107=107;
+    public static final int T__108=108;
+    public static final int T__109=109;
+    public static final int T__110=110;
+    public static final int T__111=111;
+    public static final int T__112=112;
+    public static final int T__113=113;
+    public static final int T__114=114;
+    public static final int T__115=115;
+    public static final int T__116=116;
+    public static final int T__117=117;
+    public static final int T__118=118;
+    public static final int Identifier=4;
+    public static final int ENUM=5;
+    public static final int FloatingPointLiteral=6;
+    public static final int CharacterLiteral=7;
+    public static final int StringLiteral=8;
+    public static final int HexLiteral=9;
+    public static final int OctalLiteral=10;
+    public static final int DecimalLiteral=11;
+    public static final int ASSERT=12;
+    public static final int HexDigit=13;
+    public static final int IntegerTypeSuffix=14;
+    public static final int Exponent=15;
+    public static final int FloatTypeSuffix=16;
+    public static final int EscapeSequence=17;
     public static final int UnicodeEscape=18;
     public static final int OctalEscape=19;
+    public static final int Letter=20;
+    public static final int JavaIDDigit=21;
+    public static final int WS=22;
+    public static final int COMMENT=23;
+    public static final int LINE_COMMENT=24;
+    public static final int Tokens=119;
 
       protected boolean enumIsKeyword = true;
       protected boolean assertIsKeyword = true;
@@ -1643,21 +1643,20 @@ public class Aspect_JavaL extends Lexer {
         }
     }
     static final String DFA29_eotS =
-        "\1\uffff\2\15\3\uffff\2\10\4\uffff\1\23\1\uffff\1\15\2\10\3\uffff"+
-        "\2\10\1\30\1\10\1\uffff\1\10\1\33\1\uffff";
+        "\1\uffff\2\14\3\uffff\2\10\5\uffff\1\23\1\14\2\10\3\uffff\2\10"+
+        "\1\30\1\10\1\uffff\1\10\1\33\1\uffff";
     static final String DFA29_eofS =
         "\34\uffff";
     static final String DFA29_minS =
-        "\1\11\2\56\3\uffff\1\156\1\163\2\uffff\1\52\1\uffff\1\56\1\uffff"+
-        "\1\56\1\165\1\163\3\uffff\1\155\1\145\1\44\1\162\1\uffff\1\164\1"+
-        "\44\1\uffff";
+        "\1\11\2\56\3\uffff\1\156\1\163\2\uffff\1\52\2\uffff\2\56\1\165"+
+        "\1\163\3\uffff\1\155\1\145\1\44\1\162\1\uffff\1\164\1\44\1\uffff";
     static final String DFA29_maxS =
-        "\1\ufaff\1\170\1\146\3\uffff\1\156\1\163\2\uffff\1\57\1\uffff\1"+
-        "\146\1\uffff\1\146\1\165\1\163\3\uffff\1\155\1\145\1\ufaff\1\162"+
-        "\1\uffff\1\164\1\ufaff\1\uffff";
+        "\1\ufaff\1\170\1\146\3\uffff\1\156\1\163\2\uffff\1\57\2\uffff\2"+
+        "\146\1\165\1\163\3\uffff\1\155\1\145\1\ufaff\1\162\1\uffff\1\164"+
+        "\1\ufaff\1\uffff";
     static final String DFA29_acceptS =
-        "\3\uffff\1\4\1\5\1\6\2\uffff\1\11\1\12\1\uffff\1\1\1\uffff\1\2"+
-        "\3\uffff\1\13\1\14\1\3\4\uffff\1\7\2\uffff\1\10";
+        "\3\uffff\1\4\1\5\1\6\2\uffff\1\11\1\12\1\uffff\1\1\1\2\4\uffff"+
+        "\1\13\1\14\1\3\4\uffff\1\7\2\uffff\1\10";
     static final String DFA29_specialS =
         "\34\uffff}>";
     static final String[] DFA29_transitionS = {
@@ -1667,7 +1666,7 @@ public class Aspect_JavaL extends Lexer {
             "\1\uffff\u1f08\10\u1040\uffff\u0150\10\u0170\uffff\u0080\10"+
             "\u0080\uffff\u092e\10\u10d2\uffff\u5200\10\u5900\uffff\u0200"+
             "\10",
-            "\1\3\1\uffff\10\14\2\3\12\uffff\3\3\21\uffff\1\13\13\uffff"+
+            "\1\3\1\uffff\10\15\2\3\12\uffff\3\3\21\uffff\1\13\13\uffff"+
             "\3\3\21\uffff\1\13",
             "\1\3\1\uffff\12\16\12\uffff\3\3\35\uffff\3\3",
             "",
@@ -1679,8 +1678,8 @@ public class Aspect_JavaL extends Lexer {
             "",
             "\1\21\4\uffff\1\22",
             "",
-            "\1\3\1\uffff\10\14\2\3\12\uffff\3\3\35\uffff\3\3",
             "",
+            "\1\3\1\uffff\10\15\2\3\12\uffff\3\3\35\uffff\3\3",
             "\1\3\1\uffff\12\16\12\uffff\3\3\35\uffff\3\3",
             "\1\24",
             "\1\25",

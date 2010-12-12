@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g 2010-11-16 09:47:13
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 C:\\GIT\\aspects-java\\src\\aspectsjava\\input\\Aspect.g 2010-12-08 20:25:02
 
 package aspectsjava.input;
 
@@ -16,6 +16,9 @@ import chameleon.core.lookup.LookupStrategyFactory;
 import chameleon.core.compilationunit.CompilationUnit;
 
 import chameleon.core.declaration.CompositeQualifiedName;
+import chameleon.core.declaration.DeclarationWithParametersHeader;
+import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
+import chameleon.core.declaration.SimpleNameDeclarationWithParametersSignature;
 import chameleon.core.declaration.SimpleNameSignature;
 import chameleon.core.declaration.TargetDeclaration;
 import chameleon.core.declaration.QualifiedName;
@@ -39,7 +42,6 @@ import chameleon.core.language.Language;
 import chameleon.core.member.Member;
 
 import chameleon.core.method.Method;
-import chameleon.core.method.MethodHeader;
 import chameleon.core.method.Implementation;
 import chameleon.core.method.RegularImplementation;
 
@@ -107,13 +109,11 @@ import chameleon.support.expression.ClassCastExpression;
 import chameleon.support.expression.SuperTarget;
 
 import chameleon.support.member.simplename.method.NormalMethod;
-import chameleon.support.member.simplename.SimpleNameMethodHeader;
 import chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import chameleon.support.member.simplename.operator.infix.InfixOperatorInvocation;
 import chameleon.support.member.simplename.operator.prefix.PrefixOperatorInvocation;
 import chameleon.support.member.simplename.operator.postfix.PostfixOperatorInvocation;
 import chameleon.support.member.simplename.method.RegularMethodInvocation;
-import chameleon.support.member.simplename.SimpleNameMethodSignature;
 
 import chameleon.support.modifier.Abstract;
 import chameleon.support.modifier.Final;
@@ -213,122 +213,122 @@ public class AspectParser extends ChameleonParser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "Identifier", "ENUM", "FloatingPointLiteral", "CharacterLiteral", "StringLiteral", "HexLiteral", "OctalLiteral", "DecimalLiteral", "ASSERT", "HexDigit", "IntegerTypeSuffix", "Exponent", "FloatTypeSuffix", "EscapeSequence", "UnicodeEscape", "OctalEscape", "Letter", "JavaIDDigit", "WS", "COMMENT", "LINE_COMMENT", "'package'", "';'", "'import'", "'static'", "'.'", "'*'", "'public'", "'protected'", "'private'", "'abstract'", "'final'", "'strictfp'", "'class'", "'extends'", "'implements'", "'<'", "','", "'>'", "'&'", "'{'", "'}'", "'interface'", "'void'", "'['", "']'", "'throws'", "'='", "'native'", "'synchronized'", "'transient'", "'volatile'", "'boolean'", "'char'", "'byte'", "'short'", "'int'", "'long'", "'float'", "'double'", "'?'", "'super'", "'('", "')'", "'...'", "'this'", "'null'", "'true'", "'false'", "'@'", "'default'", "':'", "'if'", "'else'", "'for'", "'while'", "'do'", "'try'", "'finally'", "'switch'", "'return'", "'throw'", "'break'", "'continue'", "'catch'", "'case'", "'+='", "'-='", "'*='", "'/='", "'&='", "'|='", "'^='", "'%='", "'||'", "'&&'", "'|'", "'^'", "'=='", "'!='", "'instanceof'", "'+'", "'-'", "'/'", "'%'", "'++'", "'--'", "'~'", "'!'", "'new'", "'aspect'", "'pointcut'", "'call'", "'before_'", "'after_'"
     };
-    public static final int T__29=29;
-    public static final int T__28=28;
-    public static final int T__27=27;
-    public static final int T__26=26;
-    public static final int FloatTypeSuffix=16;
-    public static final int T__25=25;
-    public static final int OctalLiteral=10;
     public static final int EOF=-1;
-    public static final int Identifier=4;
-    public static final int T__93=93;
-    public static final int T__94=94;
-    public static final int T__91=91;
-    public static final int T__92=92;
-    public static final int T__90=90;
-    public static final int COMMENT=23;
-    public static final int T__99=99;
-    public static final int T__98=98;
-    public static final int T__97=97;
-    public static final int T__96=96;
-    public static final int T__95=95;
-    public static final int T__80=80;
-    public static final int T__81=81;
-    public static final int T__82=82;
-    public static final int T__83=83;
-    public static final int LINE_COMMENT=24;
-    public static final int IntegerTypeSuffix=14;
-    public static final int T__85=85;
-    public static final int T__84=84;
-    public static final int ASSERT=12;
-    public static final int T__87=87;
-    public static final int T__86=86;
-    public static final int T__89=89;
-    public static final int T__88=88;
-    public static final int WS=22;
-    public static final int T__71=71;
-    public static final int T__72=72;
-    public static final int T__70=70;
-    public static final int FloatingPointLiteral=6;
-    public static final int JavaIDDigit=21;
-    public static final int T__76=76;
-    public static final int T__75=75;
-    public static final int T__74=74;
-    public static final int Letter=20;
-    public static final int EscapeSequence=17;
-    public static final int T__73=73;
-    public static final int T__79=79;
-    public static final int T__78=78;
-    public static final int T__77=77;
-    public static final int T__68=68;
-    public static final int T__69=69;
-    public static final int T__66=66;
-    public static final int T__67=67;
-    public static final int T__64=64;
-    public static final int T__65=65;
-    public static final int T__62=62;
-    public static final int T__63=63;
-    public static final int T__118=118;
-    public static final int CharacterLiteral=7;
-    public static final int T__116=116;
-    public static final int T__117=117;
-    public static final int T__114=114;
-    public static final int T__115=115;
-    public static final int Exponent=15;
-    public static final int T__61=61;
-    public static final int T__60=60;
-    public static final int HexDigit=13;
-    public static final int T__55=55;
-    public static final int T__56=56;
-    public static final int T__57=57;
-    public static final int T__58=58;
-    public static final int T__51=51;
-    public static final int T__52=52;
-    public static final int T__53=53;
-    public static final int T__54=54;
-    public static final int T__107=107;
-    public static final int T__108=108;
-    public static final int T__109=109;
-    public static final int T__59=59;
-    public static final int T__103=103;
-    public static final int T__104=104;
-    public static final int T__105=105;
-    public static final int T__106=106;
-    public static final int T__111=111;
-    public static final int T__110=110;
-    public static final int T__113=113;
-    public static final int T__112=112;
-    public static final int T__50=50;
-    public static final int T__42=42;
-    public static final int HexLiteral=9;
-    public static final int T__43=43;
-    public static final int T__40=40;
-    public static final int T__41=41;
-    public static final int T__46=46;
-    public static final int T__47=47;
-    public static final int T__44=44;
-    public static final int T__45=45;
-    public static final int T__48=48;
-    public static final int T__49=49;
-    public static final int T__102=102;
-    public static final int T__101=101;
-    public static final int T__100=100;
-    public static final int DecimalLiteral=11;
-    public static final int StringLiteral=8;
+    public static final int T__25=25;
+    public static final int T__26=26;
+    public static final int T__27=27;
+    public static final int T__28=28;
+    public static final int T__29=29;
     public static final int T__30=30;
     public static final int T__31=31;
     public static final int T__32=32;
     public static final int T__33=33;
-    public static final int ENUM=5;
     public static final int T__34=34;
     public static final int T__35=35;
     public static final int T__36=36;
     public static final int T__37=37;
     public static final int T__38=38;
     public static final int T__39=39;
+    public static final int T__40=40;
+    public static final int T__41=41;
+    public static final int T__42=42;
+    public static final int T__43=43;
+    public static final int T__44=44;
+    public static final int T__45=45;
+    public static final int T__46=46;
+    public static final int T__47=47;
+    public static final int T__48=48;
+    public static final int T__49=49;
+    public static final int T__50=50;
+    public static final int T__51=51;
+    public static final int T__52=52;
+    public static final int T__53=53;
+    public static final int T__54=54;
+    public static final int T__55=55;
+    public static final int T__56=56;
+    public static final int T__57=57;
+    public static final int T__58=58;
+    public static final int T__59=59;
+    public static final int T__60=60;
+    public static final int T__61=61;
+    public static final int T__62=62;
+    public static final int T__63=63;
+    public static final int T__64=64;
+    public static final int T__65=65;
+    public static final int T__66=66;
+    public static final int T__67=67;
+    public static final int T__68=68;
+    public static final int T__69=69;
+    public static final int T__70=70;
+    public static final int T__71=71;
+    public static final int T__72=72;
+    public static final int T__73=73;
+    public static final int T__74=74;
+    public static final int T__75=75;
+    public static final int T__76=76;
+    public static final int T__77=77;
+    public static final int T__78=78;
+    public static final int T__79=79;
+    public static final int T__80=80;
+    public static final int T__81=81;
+    public static final int T__82=82;
+    public static final int T__83=83;
+    public static final int T__84=84;
+    public static final int T__85=85;
+    public static final int T__86=86;
+    public static final int T__87=87;
+    public static final int T__88=88;
+    public static final int T__89=89;
+    public static final int T__90=90;
+    public static final int T__91=91;
+    public static final int T__92=92;
+    public static final int T__93=93;
+    public static final int T__94=94;
+    public static final int T__95=95;
+    public static final int T__96=96;
+    public static final int T__97=97;
+    public static final int T__98=98;
+    public static final int T__99=99;
+    public static final int T__100=100;
+    public static final int T__101=101;
+    public static final int T__102=102;
+    public static final int T__103=103;
+    public static final int T__104=104;
+    public static final int T__105=105;
+    public static final int T__106=106;
+    public static final int T__107=107;
+    public static final int T__108=108;
+    public static final int T__109=109;
+    public static final int T__110=110;
+    public static final int T__111=111;
+    public static final int T__112=112;
+    public static final int T__113=113;
+    public static final int T__114=114;
+    public static final int T__115=115;
+    public static final int T__116=116;
+    public static final int T__117=117;
+    public static final int T__118=118;
+    public static final int Identifier=4;
+    public static final int ENUM=5;
+    public static final int FloatingPointLiteral=6;
+    public static final int CharacterLiteral=7;
+    public static final int StringLiteral=8;
+    public static final int HexLiteral=9;
+    public static final int OctalLiteral=10;
+    public static final int DecimalLiteral=11;
+    public static final int ASSERT=12;
+    public static final int HexDigit=13;
+    public static final int IntegerTypeSuffix=14;
+    public static final int Exponent=15;
+    public static final int FloatTypeSuffix=16;
+    public static final int EscapeSequence=17;
     public static final int UnicodeEscape=18;
     public static final int OctalEscape=19;
+    public static final int Letter=20;
+    public static final int JavaIDDigit=21;
+    public static final int WS=22;
+    public static final int COMMENT=23;
+    public static final int LINE_COMMENT=24;
 
     // delegates
     public Aspect_JavaP gJavaP;
@@ -2462,146 +2462,146 @@ public class AspectParser extends ChameleonParser {
     // $ANTLR end synpred13_Aspect
 
     // Delegated rules
-    public Aspect_JavaP.equalityExpression_return equalityExpression() throws RecognitionException { return gJavaP.equalityExpression(); }
-    public Aspect_JavaP.switchCase_return switchCase() throws RecognitionException { return gJavaP.switchCase(); }
-    public Aspect_JavaP.shiftOp_return shiftOp() throws RecognitionException { return gJavaP.shiftOp(); }
-    public Aspect_JavaP.normalInterfaceDeclaration_return normalInterfaceDeclaration() throws RecognitionException { return gJavaP.normalInterfaceDeclaration(); }
-    public Aspect_JavaP.explicitConstructorInvocation_return explicitConstructorInvocation() throws RecognitionException { return gJavaP.explicitConstructorInvocation(); }
-    public Aspect_JavaP.variableModifiers_return variableModifiers() throws RecognitionException { return gJavaP.variableModifiers(); }
-    public Aspect_JavaP.forInit_return forInit() throws RecognitionException { return gJavaP.forInit(); }
-    public Aspect_JavaP.localVariableDeclarationStatement_return localVariableDeclarationStatement() throws RecognitionException { return gJavaP.localVariableDeclarationStatement(); }
-    public Aspect_JavaP.methodBody_return methodBody() throws RecognitionException { return gJavaP.methodBody(); }
-    public Aspect_JavaP.classBodyDeclaration_return classBodyDeclaration() throws RecognitionException { return gJavaP.classBodyDeclaration(); }
-    public Aspect_JavaP.andExpression_return andExpression() throws RecognitionException { return gJavaP.andExpression(); }
-    public Aspect_JavaP.argumentsSuffixRubbish_return argumentsSuffixRubbish() throws RecognitionException { return gJavaP.argumentsSuffixRubbish(); }
-    public Aspect_JavaP.typeParameter_return typeParameter() throws RecognitionException { return gJavaP.typeParameter(); }
-    public Aspect_JavaP.typeList_return typeList() throws RecognitionException { return gJavaP.typeList(); }
-    public Aspect_JavaP.formalParameters_return formalParameters() throws RecognitionException { return gJavaP.formalParameters(); }
-    public Aspect_JavaP.unaryExpression_return unaryExpression() throws RecognitionException { return gJavaP.unaryExpression(); }
-    public Aspect_JavaP.constructorDeclaration_return constructorDeclaration() throws RecognitionException { return gJavaP.constructorDeclaration(); }
-    public Aspect_JavaP.voidType_return voidType() throws RecognitionException { return gJavaP.voidType(); }
-    public Aspect_JavaP.elementValuePair_return elementValuePair() throws RecognitionException { return gJavaP.elementValuePair(); }
-    public Aspect_JavaP.modifiers_return modifiers() throws RecognitionException { return gJavaP.modifiers(); }
-    public Aspect_JavaP.moreIdentifierSuffixRubbish_return moreIdentifierSuffixRubbish() throws RecognitionException { return gJavaP.moreIdentifierSuffixRubbish(); }
-    public Aspect_JavaP.conditionalExpression_return conditionalExpression() throws RecognitionException { return gJavaP.conditionalExpression(); }
-    public Aspect_JavaP.methodDeclaratorRest_return methodDeclaratorRest() throws RecognitionException { return gJavaP.methodDeclaratorRest(); }
-    public Aspect_JavaP.relationalOp_return relationalOp() throws RecognitionException { return gJavaP.relationalOp(); }
-    public Aspect_JavaP.fieldDeclaration_return fieldDeclaration() throws RecognitionException { return gJavaP.fieldDeclaration(); }
-    public Aspect_JavaP.elementValuePairs_return elementValuePairs() throws RecognitionException { return gJavaP.elementValuePairs(); }
-    public Aspect_JavaP.conditionalOrExpression_return conditionalOrExpression() throws RecognitionException { return gJavaP.conditionalOrExpression(); }
-    public Aspect_JavaP.castExpression_return castExpression() throws RecognitionException { return gJavaP.castExpression(); }
-    public Aspect_JavaP.inclusiveOrExpression_return inclusiveOrExpression() throws RecognitionException { return gJavaP.inclusiveOrExpression(); }
-    public Aspect_JavaP.createClassHereBecauseANTLRisAnnoying_return createClassHereBecauseANTLRisAnnoying() throws RecognitionException { return gJavaP.createClassHereBecauseANTLRisAnnoying(); }
-    public Aspect_JavaP.memberDeclaration_return memberDeclaration() throws RecognitionException { return gJavaP.memberDeclaration(); }
-    public Aspect_JavaP.annotationConstantRest_return annotationConstantRest(TypeReference type) throws RecognitionException { return gJavaP.annotationConstantRest(type); }
-    public Aspect_JavaP.createdName_return createdName() throws RecognitionException { return gJavaP.createdName(); }
-    public Aspect_JavaP.integerLiteral_return integerLiteral() throws RecognitionException { return gJavaP.integerLiteral(); }
-    public Aspect_JavaP.constantDeclarator_return constantDeclarator() throws RecognitionException { return gJavaP.constantDeclarator(); }
-    public Aspect_JavaP.interfaceBodyDeclaration_return interfaceBodyDeclaration() throws RecognitionException { return gJavaP.interfaceBodyDeclaration(); }
-    public Aspect_JavaP.importDeclaration_return importDeclaration() throws RecognitionException { return gJavaP.importDeclaration(); }
-    public Aspect_JavaP.literal_return literal() throws RecognitionException { return gJavaP.literal(); }
-    public Aspect_JavaP.qualifiedNameList_return qualifiedNameList() throws RecognitionException { return gJavaP.qualifiedNameList(); }
-    public Aspect_JavaP.enumDeclaration_return enumDeclaration() throws RecognitionException { return gJavaP.enumDeclaration(); }
-    public Aspect_JavaP.variableModifier_return variableModifier() throws RecognitionException { return gJavaP.variableModifier(); }
-    public Aspect_JavaP.statement_return statement() throws RecognitionException { return gJavaP.statement(); }
-    public Aspect_JavaP.expressionList_return expressionList() throws RecognitionException { return gJavaP.expressionList(); }
-    public Aspect_JavaP.interfaceGenericMethodDecl_return interfaceGenericMethodDecl() throws RecognitionException { return gJavaP.interfaceGenericMethodDecl(); }
-    public Aspect_JavaP.innerCreator_return innerCreator() throws RecognitionException { return gJavaP.innerCreator(); }
-    public Aspect_JavaP.annotationTypeBody_return annotationTypeBody() throws RecognitionException { return gJavaP.annotationTypeBody(); }
-    public Aspect_JavaP.variableDeclarator_return variableDeclarator() throws RecognitionException { return gJavaP.variableDeclarator(); }
-    public Aspect_JavaP.classBody_return classBody() throws RecognitionException { return gJavaP.classBody(); }
-    public Aspect_JavaP.genericMethodOrConstructorDecl_return genericMethodOrConstructorDecl() throws RecognitionException { return gJavaP.genericMethodOrConstructorDecl(); }
-    public Aspect_JavaP.classOrInterfaceType_return classOrInterfaceType() throws RecognitionException { return gJavaP.classOrInterfaceType(); }
-    public Aspect_JavaP.interfaceMemberDecl_return interfaceMemberDecl() throws RecognitionException { return gJavaP.interfaceMemberDecl(); }
-    public Aspect_JavaP.primitiveType_return primitiveType() throws RecognitionException { return gJavaP.primitiveType(); }
-    public Aspect_JavaP.primary_return primary() throws RecognitionException { return gJavaP.primary(); }
-    public Aspect_JavaP.exclusiveOrExpression_return exclusiveOrExpression() throws RecognitionException { return gJavaP.exclusiveOrExpression(); }
-    public Aspect_JavaP.nonWildcardTypeArguments_return nonWildcardTypeArguments() throws RecognitionException { return gJavaP.nonWildcardTypeArguments(); }
-    public Aspect_JavaP.classCreatorRest_return classCreatorRest() throws RecognitionException { return gJavaP.classCreatorRest(); }
-    public Aspect_JavaP.arguments_return arguments() throws RecognitionException { return gJavaP.arguments(); }
-    public Aspect_JavaP.arrayInitializer_return arrayInitializer() throws RecognitionException { return gJavaP.arrayInitializer(); }
-    public Aspect_JavaP.elementValueArrayInitializer_return elementValueArrayInitializer() throws RecognitionException { return gJavaP.elementValueArrayInitializer(); }
-    public Aspect_JavaP.classOrInterfaceModifier_return classOrInterfaceModifier() throws RecognitionException { return gJavaP.classOrInterfaceModifier(); }
-    public Aspect_JavaP.conditionalAndExpression_return conditionalAndExpression() throws RecognitionException { return gJavaP.conditionalAndExpression(); }
-    public Aspect_JavaP.additiveExpression_return additiveExpression() throws RecognitionException { return gJavaP.additiveExpression(); }
-    public Aspect_JavaP.typeBound_return typeBound() throws RecognitionException { return gJavaP.typeBound(); }
-    public Aspect_JavaP.booleanLiteral_return booleanLiteral() throws RecognitionException { return gJavaP.booleanLiteral(); }
-    public Aspect_JavaP.interfaceMethodOrFieldDecl_return interfaceMethodOrFieldDecl() throws RecognitionException { return gJavaP.interfaceMethodOrFieldDecl(); }
-    public Aspect_JavaP.enumBody_return enumBody() throws RecognitionException { return gJavaP.enumBody(); }
-    public Aspect_JavaP.explicitGenericInvocation_return explicitGenericInvocation() throws RecognitionException { return gJavaP.explicitGenericInvocation(); }
-    public Aspect_JavaP.catches_return catches() throws RecognitionException { return gJavaP.catches(); }
-    public Aspect_JavaP.annotationTypeElementDeclaration_return annotationTypeElementDeclaration() throws RecognitionException { return gJavaP.annotationTypeElementDeclaration(); }
-    public Aspect_JavaP.arrayAccessSuffixRubbish_return arrayAccessSuffixRubbish() throws RecognitionException { return gJavaP.arrayAccessSuffixRubbish(); }
-    public Aspect_JavaP.enumConstantName_return enumConstantName() throws RecognitionException { return gJavaP.enumConstantName(); }
-    public Aspect_JavaP.enumConstant_return enumConstant() throws RecognitionException { return gJavaP.enumConstant(); }
-    public Aspect_JavaP.voidMethodDeclaratorRest_return voidMethodDeclaratorRest() throws RecognitionException { return gJavaP.voidMethodDeclaratorRest(); }
-    public Aspect_JavaP.formalParameterDecls_return formalParameterDecls() throws RecognitionException { return gJavaP.formalParameterDecls(); }
-    public Aspect_JavaP.switchLabel_return switchLabel() throws RecognitionException { return gJavaP.switchLabel(); }
-    public Aspect_JavaP.typeArguments_return typeArguments() throws RecognitionException { return gJavaP.typeArguments(); }
-    public Aspect_JavaP.enumConstants_return enumConstants() throws RecognitionException { return gJavaP.enumConstants(); }
-    public Aspect_JavaP.typeDeclaration_return typeDeclaration() throws RecognitionException { return gJavaP.typeDeclaration(); }
-    public Aspect_JavaP.annotationTypeDeclaration_return annotationTypeDeclaration() throws RecognitionException { return gJavaP.annotationTypeDeclaration(); }
-    public Aspect_JavaP.constantExpression_return constantExpression() throws RecognitionException { return gJavaP.constantExpression(); }
-    public Aspect_JavaP.variableDeclarators_return variableDeclarators() throws RecognitionException { return gJavaP.variableDeclarators(); }
-    public Aspect_JavaP.voidInterfaceMethodDeclaration_return voidInterfaceMethodDeclaration() throws RecognitionException { return gJavaP.voidInterfaceMethodDeclaration(); }
-    public Aspect_JavaP.variableInitializer_return variableInitializer() throws RecognitionException { return gJavaP.variableInitializer(); }
-    public Aspect_JavaP.methodDeclaration_return methodDeclaration() throws RecognitionException { return gJavaP.methodDeclaration(); }
-    public Aspect_JavaP.interfaceBody_return interfaceBody() throws RecognitionException { return gJavaP.interfaceBody(); }
-    public Aspect_JavaP.blockStatement_return blockStatement() throws RecognitionException { return gJavaP.blockStatement(); }
-    public Aspect_JavaP.unaryExpressionNotPlusMinus_return unaryExpressionNotPlusMinus() throws RecognitionException { return gJavaP.unaryExpressionNotPlusMinus(); }
-    public Aspect_JavaP.annotationMethodOrConstantRest_return annotationMethodOrConstantRest(TypeReference type) throws RecognitionException { return gJavaP.annotationMethodOrConstantRest(type); }
-    public Aspect_JavaP.typeArgument_return typeArgument() throws RecognitionException { return gJavaP.typeArgument(); }
-    public Aspect_JavaP.block_return block() throws RecognitionException { return gJavaP.block(); }
-    public Aspect_JavaP.modifier_return modifier() throws RecognitionException { return gJavaP.modifier(); }
-    public Aspect_JavaP.classOrInterfaceModifiers_return classOrInterfaceModifiers() throws RecognitionException { return gJavaP.classOrInterfaceModifiers(); }
-    public Aspect_JavaP.statementExpression_return statementExpression() throws RecognitionException { return gJavaP.statementExpression(); }
-    public Aspect_JavaP.interfaceConstant_return interfaceConstant() throws RecognitionException { return gJavaP.interfaceConstant(); }
-    public Aspect_JavaP.multiplicativeExpression_return multiplicativeExpression() throws RecognitionException { return gJavaP.multiplicativeExpression(); }
-    public Aspect_JavaP.voidInterfaceMethodDeclaratorRest_return voidInterfaceMethodDeclaratorRest() throws RecognitionException { return gJavaP.voidInterfaceMethodDeclaratorRest(); }
     public Aspect_JavaP.enhancedForControl_return enhancedForControl() throws RecognitionException { return gJavaP.enhancedForControl(); }
-    public Aspect_JavaP.constructorBody_return constructorBody() throws RecognitionException { return gJavaP.constructorBody(); }
-    public Aspect_JavaP.annotationMethodRest_return annotationMethodRest(TypeReference type) throws RecognitionException { return gJavaP.annotationMethodRest(type); }
-    public Aspect_JavaP.variableDeclaratorId_return variableDeclaratorId() throws RecognitionException { return gJavaP.variableDeclaratorId(); }
-    public Aspect_JavaP.interfaceMethod_return interfaceMethod() throws RecognitionException { return gJavaP.interfaceMethod(); }
-    public Aspect_JavaP.annotationName_return annotationName() throws RecognitionException { return gJavaP.annotationName(); }
-    public Aspect_JavaP.creator_return creator() throws RecognitionException { return gJavaP.creator(); }
-    public Aspect_JavaP.interfaceDeclaration_return interfaceDeclaration() throws RecognitionException { return gJavaP.interfaceDeclaration(); }
-    public Aspect_JavaP.formalParameter_return formalParameter() throws RecognitionException { return gJavaP.formalParameter(); }
-    public Aspect_JavaP.annotation_return annotation() throws RecognitionException { return gJavaP.annotation(); }
+    public Aspect_JavaP.explicitGenericInvocation_return explicitGenericInvocation() throws RecognitionException { return gJavaP.explicitGenericInvocation(); }
+    public Aspect_JavaP.nameAndParams_return nameAndParams() throws RecognitionException { return gJavaP.nameAndParams(); }
+    public Aspect_JavaP.exclusiveOrExpression_return exclusiveOrExpression() throws RecognitionException { return gJavaP.exclusiveOrExpression(); }
+    public Aspect_JavaP.packageDeclaration_return packageDeclaration() throws RecognitionException { return gJavaP.packageDeclaration(); }
+    public Aspect_JavaP.superSuffix_return superSuffix() throws RecognitionException { return gJavaP.superSuffix(); }
+    public Aspect_JavaP.classOrInterfaceDeclaration_return classOrInterfaceDeclaration() throws RecognitionException { return gJavaP.classOrInterfaceDeclaration(); }
+    public Aspect_JavaP.conditionalExpression_return conditionalExpression() throws RecognitionException { return gJavaP.conditionalExpression(); }
+    public Aspect_JavaP.switchLabel_return switchLabel() throws RecognitionException { return gJavaP.switchLabel(); }
     public Aspect_JavaP.selector_return selector() throws RecognitionException { return gJavaP.selector(); }
-    public Aspect_JavaP.parExpression_return parExpression() throws RecognitionException { return gJavaP.parExpression(); }
-    public Aspect_JavaP.elementValue_return elementValue() throws RecognitionException { return gJavaP.elementValue(); }
-    public Aspect_JavaP.assignmentOperator_return assignmentOperator() throws RecognitionException { return gJavaP.assignmentOperator(); }
+    public Aspect_JavaP.enumConstantName_return enumConstantName() throws RecognitionException { return gJavaP.enumConstantName(); }
+    public Aspect_JavaP.moreIdentifierSuffixRubbish_return moreIdentifierSuffixRubbish() throws RecognitionException { return gJavaP.moreIdentifierSuffixRubbish(); }
+    public Aspect_JavaP.forInit_return forInit() throws RecognitionException { return gJavaP.forInit(); }
     public Aspect_JavaP.forControl_return forControl() throws RecognitionException { return gJavaP.forControl(); }
     public Aspect_JavaP.type_return type() throws RecognitionException { return gJavaP.type(); }
-    public Aspect_JavaP.classOrInterfaceDeclaration_return classOrInterfaceDeclaration() throws RecognitionException { return gJavaP.classOrInterfaceDeclaration(); }
-    public Aspect_JavaP.qualifiedName_return qualifiedName() throws RecognitionException { return gJavaP.qualifiedName(); }
-    public Aspect_JavaP.annotationTypeElementRest_return annotationTypeElementRest() throws RecognitionException { return gJavaP.annotationTypeElementRest(); }
-    public Aspect_JavaP.classDeclaration_return classDeclaration() throws RecognitionException { return gJavaP.classDeclaration(); }
-    public Aspect_JavaP.memberDecl_return memberDecl() throws RecognitionException { return gJavaP.memberDecl(); }
-    public Aspect_JavaP.defaultValue_return defaultValue() throws RecognitionException { return gJavaP.defaultValue(); }
-    public Aspect_JavaP.enumBodyDeclarations_return enumBodyDeclarations() throws RecognitionException { return gJavaP.enumBodyDeclarations(); }
-    public Aspect_JavaP.voidMethodDeclaration_return voidMethodDeclaration() throws RecognitionException { return gJavaP.voidMethodDeclaration(); }
-    public Aspect_JavaP.relationalExpression_return relationalExpression() throws RecognitionException { return gJavaP.relationalExpression(); }
-    public Aspect_JavaP.identifierSuffixRubbush_return identifierSuffixRubbush() throws RecognitionException { return gJavaP.identifierSuffixRubbush(); }
-    public Aspect_JavaP.annotations_return annotations() throws RecognitionException { return gJavaP.annotations(); }
-    public Aspect_JavaP.instanceOfExpression_return instanceOfExpression() throws RecognitionException { return gJavaP.instanceOfExpression(); }
-    public Aspect_JavaP.forUpdate_return forUpdate() throws RecognitionException { return gJavaP.forUpdate(); }
-    public Aspect_JavaP.constructorDeclaratorRest_return constructorDeclaratorRest() throws RecognitionException { return gJavaP.constructorDeclaratorRest(); }
-    public Aspect_JavaP.nonTargetPrimary_return nonTargetPrimary() throws RecognitionException { return gJavaP.nonTargetPrimary(); }
-    public Aspect_JavaP.nameAndParams_return nameAndParams() throws RecognitionException { return gJavaP.nameAndParams(); }
-    public Aspect_JavaP.catchClause_return catchClause() throws RecognitionException { return gJavaP.catchClause(); }
-    public Aspect_JavaP.switchBlockStatementGroups_return switchBlockStatementGroups() throws RecognitionException { return gJavaP.switchBlockStatementGroups(); }
-    public Aspect_JavaP.expression_return expression() throws RecognitionException { return gJavaP.expression(); }
-    public Aspect_JavaP.typeParameters_return typeParameters() throws RecognitionException { return gJavaP.typeParameters(); }
-    public Aspect_JavaP.packageDeclaration_return packageDeclaration() throws RecognitionException { return gJavaP.packageDeclaration(); }
-    public Aspect_JavaP.interfaceMethodDeclaratorRest_return interfaceMethodDeclaratorRest() throws RecognitionException { return gJavaP.interfaceMethodDeclaratorRest(); }
-    public Aspect_JavaP.typeName_return typeName() throws RecognitionException { return gJavaP.typeName(); }
     public Aspect_JavaP.genericMethodOrConstructorRest_return genericMethodOrConstructorRest() throws RecognitionException { return gJavaP.genericMethodOrConstructorRest(); }
-    public Aspect_JavaP.shiftExpression_return shiftExpression() throws RecognitionException { return gJavaP.shiftExpression(); }
-    public Aspect_JavaP.normalClassDeclaration_return normalClassDeclaration() throws RecognitionException { return gJavaP.normalClassDeclaration(); }
+    public Aspect_JavaP.relationalOp_return relationalOp() throws RecognitionException { return gJavaP.relationalOp(); }
+    public Aspect_JavaP.importDeclaration_return importDeclaration() throws RecognitionException { return gJavaP.importDeclaration(); }
     public Aspect_JavaP.localVariableDeclaration_return localVariableDeclaration() throws RecognitionException { return gJavaP.localVariableDeclaration(); }
-    public Aspect_JavaP.superSuffix_return superSuffix() throws RecognitionException { return gJavaP.superSuffix(); }
+    public Aspect_JavaP.voidMethodDeclaratorRest_return voidMethodDeclaratorRest() throws RecognitionException { return gJavaP.voidMethodDeclaratorRest(); }
+    public Aspect_JavaP.constructorBody_return constructorBody() throws RecognitionException { return gJavaP.constructorBody(); }
+    public Aspect_JavaP.classCreatorRest_return classCreatorRest() throws RecognitionException { return gJavaP.classCreatorRest(); }
+    public Aspect_JavaP.typeName_return typeName() throws RecognitionException { return gJavaP.typeName(); }
+    public Aspect_JavaP.modifiers_return modifiers() throws RecognitionException { return gJavaP.modifiers(); }
+    public Aspect_JavaP.interfaceMethod_return interfaceMethod() throws RecognitionException { return gJavaP.interfaceMethod(); }
+    public Aspect_JavaP.catchClause_return catchClause() throws RecognitionException { return gJavaP.catchClause(); }
+    public Aspect_JavaP.interfaceMemberDecl_return interfaceMemberDecl() throws RecognitionException { return gJavaP.interfaceMemberDecl(); }
+    public Aspect_JavaP.arrayAccessSuffixRubbish_return arrayAccessSuffixRubbish() throws RecognitionException { return gJavaP.arrayAccessSuffixRubbish(); }
+    public Aspect_JavaP.methodBody_return methodBody() throws RecognitionException { return gJavaP.methodBody(); }
+    public Aspect_JavaP.variableModifier_return variableModifier() throws RecognitionException { return gJavaP.variableModifier(); }
+    public Aspect_JavaP.statement_return statement() throws RecognitionException { return gJavaP.statement(); }
+    public Aspect_JavaP.annotationMethodOrConstantRest_return annotationMethodOrConstantRest(TypeReference type) throws RecognitionException { return gJavaP.annotationMethodOrConstantRest(type); }
+    public Aspect_JavaP.instanceOfExpression_return instanceOfExpression() throws RecognitionException { return gJavaP.instanceOfExpression(); }
+    public Aspect_JavaP.enumConstant_return enumConstant() throws RecognitionException { return gJavaP.enumConstant(); }
+    public Aspect_JavaP.statementExpression_return statementExpression() throws RecognitionException { return gJavaP.statementExpression(); }
+    public Aspect_JavaP.creator_return creator() throws RecognitionException { return gJavaP.creator(); }
+    public Aspect_JavaP.annotationName_return annotationName() throws RecognitionException { return gJavaP.annotationName(); }
+    public Aspect_JavaP.classDeclaration_return classDeclaration() throws RecognitionException { return gJavaP.classDeclaration(); }
+    public Aspect_JavaP.annotationConstantRest_return annotationConstantRest(TypeReference type) throws RecognitionException { return gJavaP.annotationConstantRest(type); }
+    public Aspect_JavaP.enumConstants_return enumConstants() throws RecognitionException { return gJavaP.enumConstants(); }
+    public Aspect_JavaP.memberDecl_return memberDecl() throws RecognitionException { return gJavaP.memberDecl(); }
+    public Aspect_JavaP.formalParameters_return formalParameters() throws RecognitionException { return gJavaP.formalParameters(); }
+    public Aspect_JavaP.annotation_return annotation() throws RecognitionException { return gJavaP.annotation(); }
+    public Aspect_JavaP.memberDeclaration_return memberDeclaration() throws RecognitionException { return gJavaP.memberDeclaration(); }
+    public Aspect_JavaP.normalClassDeclaration_return normalClassDeclaration() throws RecognitionException { return gJavaP.normalClassDeclaration(); }
+    public Aspect_JavaP.formalParameter_return formalParameter() throws RecognitionException { return gJavaP.formalParameter(); }
+    public Aspect_JavaP.typeParameters_return typeParameters() throws RecognitionException { return gJavaP.typeParameters(); }
+    public Aspect_JavaP.shiftOp_return shiftOp() throws RecognitionException { return gJavaP.shiftOp(); }
+    public Aspect_JavaP.literal_return literal() throws RecognitionException { return gJavaP.literal(); }
+    public Aspect_JavaP.genericMethodOrConstructorDecl_return genericMethodOrConstructorDecl() throws RecognitionException { return gJavaP.genericMethodOrConstructorDecl(); }
+    public Aspect_JavaP.unaryExpressionNotPlusMinus_return unaryExpressionNotPlusMinus() throws RecognitionException { return gJavaP.unaryExpressionNotPlusMinus(); }
+    public Aspect_JavaP.annotationTypeElementDeclaration_return annotationTypeElementDeclaration() throws RecognitionException { return gJavaP.annotationTypeElementDeclaration(); }
+    public Aspect_JavaP.variableDeclarators_return variableDeclarators() throws RecognitionException { return gJavaP.variableDeclarators(); }
+    public Aspect_JavaP.interfaceBody_return interfaceBody() throws RecognitionException { return gJavaP.interfaceBody(); }
+    public Aspect_JavaP.conditionalOrExpression_return conditionalOrExpression() throws RecognitionException { return gJavaP.conditionalOrExpression(); }
+    public Aspect_JavaP.additiveExpression_return additiveExpression() throws RecognitionException { return gJavaP.additiveExpression(); }
+    public Aspect_JavaP.constructorDeclaratorRest_return constructorDeclaratorRest() throws RecognitionException { return gJavaP.constructorDeclaratorRest(); }
+    public Aspect_JavaP.classBody_return classBody() throws RecognitionException { return gJavaP.classBody(); }
+    public Aspect_JavaP.qualifiedName_return qualifiedName() throws RecognitionException { return gJavaP.qualifiedName(); }
+    public Aspect_JavaP.block_return block() throws RecognitionException { return gJavaP.block(); }
+    public Aspect_JavaP.unaryExpression_return unaryExpression() throws RecognitionException { return gJavaP.unaryExpression(); }
+    public Aspect_JavaP.interfaceDeclaration_return interfaceDeclaration() throws RecognitionException { return gJavaP.interfaceDeclaration(); }
+    public Aspect_JavaP.nonWildcardTypeArguments_return nonWildcardTypeArguments() throws RecognitionException { return gJavaP.nonWildcardTypeArguments(); }
+    public Aspect_JavaP.interfaceBodyDeclaration_return interfaceBodyDeclaration() throws RecognitionException { return gJavaP.interfaceBodyDeclaration(); }
+    public Aspect_JavaP.classBodyDeclaration_return classBodyDeclaration() throws RecognitionException { return gJavaP.classBodyDeclaration(); }
+    public Aspect_JavaP.forUpdate_return forUpdate() throws RecognitionException { return gJavaP.forUpdate(); }
+    public Aspect_JavaP.typeArgument_return typeArgument() throws RecognitionException { return gJavaP.typeArgument(); }
+    public Aspect_JavaP.arguments_return arguments() throws RecognitionException { return gJavaP.arguments(); }
+    public Aspect_JavaP.innerCreator_return innerCreator() throws RecognitionException { return gJavaP.innerCreator(); }
+    public Aspect_JavaP.variableInitializer_return variableInitializer() throws RecognitionException { return gJavaP.variableInitializer(); }
+    public Aspect_JavaP.typeParameter_return typeParameter() throws RecognitionException { return gJavaP.typeParameter(); }
+    public Aspect_JavaP.arrayInitializer_return arrayInitializer() throws RecognitionException { return gJavaP.arrayInitializer(); }
+    public Aspect_JavaP.interfaceConstant_return interfaceConstant() throws RecognitionException { return gJavaP.interfaceConstant(); }
+    public Aspect_JavaP.elementValueArrayInitializer_return elementValueArrayInitializer() throws RecognitionException { return gJavaP.elementValueArrayInitializer(); }
+    public Aspect_JavaP.variableModifiers_return variableModifiers() throws RecognitionException { return gJavaP.variableModifiers(); }
+    public Aspect_JavaP.variableDeclaratorId_return variableDeclaratorId() throws RecognitionException { return gJavaP.variableDeclaratorId(); }
+    public Aspect_JavaP.typeBound_return typeBound() throws RecognitionException { return gJavaP.typeBound(); }
+    public Aspect_JavaP.typeArguments_return typeArguments() throws RecognitionException { return gJavaP.typeArguments(); }
+    public Aspect_JavaP.switchCase_return switchCase() throws RecognitionException { return gJavaP.switchCase(); }
+    public Aspect_JavaP.enumBody_return enumBody() throws RecognitionException { return gJavaP.enumBody(); }
+    public Aspect_JavaP.qualifiedNameList_return qualifiedNameList() throws RecognitionException { return gJavaP.qualifiedNameList(); }
+    public Aspect_JavaP.expressionList_return expressionList() throws RecognitionException { return gJavaP.expressionList(); }
+    public Aspect_JavaP.voidMethodDeclaration_return voidMethodDeclaration() throws RecognitionException { return gJavaP.voidMethodDeclaration(); }
+    public Aspect_JavaP.typeList_return typeList() throws RecognitionException { return gJavaP.typeList(); }
+    public Aspect_JavaP.argumentsSuffixRubbish_return argumentsSuffixRubbish() throws RecognitionException { return gJavaP.argumentsSuffixRubbish(); }
+    public Aspect_JavaP.classOrInterfaceModifiers_return classOrInterfaceModifiers() throws RecognitionException { return gJavaP.classOrInterfaceModifiers(); }
+    public Aspect_JavaP.formalParameterDecls_return formalParameterDecls() throws RecognitionException { return gJavaP.formalParameterDecls(); }
+    public Aspect_JavaP.createClassHereBecauseANTLRisAnnoying_return createClassHereBecauseANTLRisAnnoying() throws RecognitionException { return gJavaP.createClassHereBecauseANTLRisAnnoying(); }
+    public Aspect_JavaP.expression_return expression() throws RecognitionException { return gJavaP.expression(); }
+    public Aspect_JavaP.conditionalAndExpression_return conditionalAndExpression() throws RecognitionException { return gJavaP.conditionalAndExpression(); }
+    public Aspect_JavaP.constructorDeclaration_return constructorDeclaration() throws RecognitionException { return gJavaP.constructorDeclaration(); }
+    public Aspect_JavaP.elementValuePair_return elementValuePair() throws RecognitionException { return gJavaP.elementValuePair(); }
+    public Aspect_JavaP.voidInterfaceMethodDeclaration_return voidInterfaceMethodDeclaration() throws RecognitionException { return gJavaP.voidInterfaceMethodDeclaration(); }
+    public Aspect_JavaP.annotations_return annotations() throws RecognitionException { return gJavaP.annotations(); }
+    public Aspect_JavaP.booleanLiteral_return booleanLiteral() throws RecognitionException { return gJavaP.booleanLiteral(); }
+    public Aspect_JavaP.primitiveType_return primitiveType() throws RecognitionException { return gJavaP.primitiveType(); }
+    public Aspect_JavaP.createdName_return createdName() throws RecognitionException { return gJavaP.createdName(); }
+    public Aspect_JavaP.typeDeclaration_return typeDeclaration() throws RecognitionException { return gJavaP.typeDeclaration(); }
+    public Aspect_JavaP.multiplicativeExpression_return multiplicativeExpression() throws RecognitionException { return gJavaP.multiplicativeExpression(); }
+    public Aspect_JavaP.modifier_return modifier() throws RecognitionException { return gJavaP.modifier(); }
+    public Aspect_JavaP.elementValuePairs_return elementValuePairs() throws RecognitionException { return gJavaP.elementValuePairs(); }
+    public Aspect_JavaP.identifierSuffixRubbush_return identifierSuffixRubbush() throws RecognitionException { return gJavaP.identifierSuffixRubbush(); }
+    public Aspect_JavaP.constantDeclarator_return constantDeclarator() throws RecognitionException { return gJavaP.constantDeclarator(); }
+    public Aspect_JavaP.shiftExpression_return shiftExpression() throws RecognitionException { return gJavaP.shiftExpression(); }
+    public Aspect_JavaP.parExpression_return parExpression() throws RecognitionException { return gJavaP.parExpression(); }
+    public Aspect_JavaP.annotationTypeElementRest_return annotationTypeElementRest() throws RecognitionException { return gJavaP.annotationTypeElementRest(); }
+    public Aspect_JavaP.annotationTypeBody_return annotationTypeBody() throws RecognitionException { return gJavaP.annotationTypeBody(); }
+    public Aspect_JavaP.classOrInterfaceModifier_return classOrInterfaceModifier() throws RecognitionException { return gJavaP.classOrInterfaceModifier(); }
+    public Aspect_JavaP.interfaceGenericMethodDecl_return interfaceGenericMethodDecl() throws RecognitionException { return gJavaP.interfaceGenericMethodDecl(); }
+    public Aspect_JavaP.methodDeclaratorRest_return methodDeclaratorRest() throws RecognitionException { return gJavaP.methodDeclaratorRest(); }
+    public Aspect_JavaP.variableDeclarator_return variableDeclarator() throws RecognitionException { return gJavaP.variableDeclarator(); }
+    public Aspect_JavaP.localVariableDeclarationStatement_return localVariableDeclarationStatement() throws RecognitionException { return gJavaP.localVariableDeclarationStatement(); }
+    public Aspect_JavaP.integerLiteral_return integerLiteral() throws RecognitionException { return gJavaP.integerLiteral(); }
+    public Aspect_JavaP.interfaceMethodOrFieldDecl_return interfaceMethodOrFieldDecl() throws RecognitionException { return gJavaP.interfaceMethodOrFieldDecl(); }
+    public Aspect_JavaP.castExpression_return castExpression() throws RecognitionException { return gJavaP.castExpression(); }
+    public Aspect_JavaP.blockStatement_return blockStatement() throws RecognitionException { return gJavaP.blockStatement(); }
+    public Aspect_JavaP.equalityExpression_return equalityExpression() throws RecognitionException { return gJavaP.equalityExpression(); }
+    public Aspect_JavaP.nonTargetPrimary_return nonTargetPrimary() throws RecognitionException { return gJavaP.nonTargetPrimary(); }
+    public Aspect_JavaP.classOrInterfaceType_return classOrInterfaceType() throws RecognitionException { return gJavaP.classOrInterfaceType(); }
+    public Aspect_JavaP.assignmentOperator_return assignmentOperator() throws RecognitionException { return gJavaP.assignmentOperator(); }
+    public Aspect_JavaP.normalInterfaceDeclaration_return normalInterfaceDeclaration() throws RecognitionException { return gJavaP.normalInterfaceDeclaration(); }
+    public Aspect_JavaP.catches_return catches() throws RecognitionException { return gJavaP.catches(); }
+    public Aspect_JavaP.enumDeclaration_return enumDeclaration() throws RecognitionException { return gJavaP.enumDeclaration(); }
+    public Aspect_JavaP.annotationMethodRest_return annotationMethodRest(TypeReference type) throws RecognitionException { return gJavaP.annotationMethodRest(type); }
+    public Aspect_JavaP.constantExpression_return constantExpression() throws RecognitionException { return gJavaP.constantExpression(); }
+    public Aspect_JavaP.fieldDeclaration_return fieldDeclaration() throws RecognitionException { return gJavaP.fieldDeclaration(); }
+    public Aspect_JavaP.annotationTypeDeclaration_return annotationTypeDeclaration() throws RecognitionException { return gJavaP.annotationTypeDeclaration(); }
+    public Aspect_JavaP.defaultValue_return defaultValue() throws RecognitionException { return gJavaP.defaultValue(); }
+    public Aspect_JavaP.voidInterfaceMethodDeclaratorRest_return voidInterfaceMethodDeclaratorRest() throws RecognitionException { return gJavaP.voidInterfaceMethodDeclaratorRest(); }
+    public Aspect_JavaP.elementValue_return elementValue() throws RecognitionException { return gJavaP.elementValue(); }
+    public Aspect_JavaP.andExpression_return andExpression() throws RecognitionException { return gJavaP.andExpression(); }
+    public Aspect_JavaP.enumBodyDeclarations_return enumBodyDeclarations() throws RecognitionException { return gJavaP.enumBodyDeclarations(); }
+    public Aspect_JavaP.inclusiveOrExpression_return inclusiveOrExpression() throws RecognitionException { return gJavaP.inclusiveOrExpression(); }
+    public Aspect_JavaP.methodDeclaration_return methodDeclaration() throws RecognitionException { return gJavaP.methodDeclaration(); }
+    public Aspect_JavaP.switchBlockStatementGroups_return switchBlockStatementGroups() throws RecognitionException { return gJavaP.switchBlockStatementGroups(); }
+    public Aspect_JavaP.primary_return primary() throws RecognitionException { return gJavaP.primary(); }
+    public Aspect_JavaP.voidType_return voidType() throws RecognitionException { return gJavaP.voidType(); }
+    public Aspect_JavaP.relationalExpression_return relationalExpression() throws RecognitionException { return gJavaP.relationalExpression(); }
+    public Aspect_JavaP.interfaceMethodDeclaratorRest_return interfaceMethodDeclaratorRest() throws RecognitionException { return gJavaP.interfaceMethodDeclaratorRest(); }
+    public Aspect_JavaP.explicitConstructorInvocation_return explicitConstructorInvocation() throws RecognitionException { return gJavaP.explicitConstructorInvocation(); }
 
     public final boolean synpred13_Aspect() {
         state.backtracking++;
