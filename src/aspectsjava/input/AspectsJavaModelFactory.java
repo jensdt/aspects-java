@@ -5,20 +5,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
+import jnome.input.JavaModelFactory;
+import jnome.output.JavaCodeWriter;
+
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.Lexer;
 
+import antlr.Parser;
 import aspectsjava.model.language.AspectsJava;
-
 import chameleon.input.ModelFactory;
 import chameleon.input.ParseException;
 import chameleon.oo.language.ObjectOrientedLanguage;
-import chameleon.output.Syntax;
+import chameleon.plugin.output.Syntax;
 import chameleon.support.input.ChameleonParser;
 import chameleon.support.input.ModelFactoryUsingANTLR;
-import jnome.input.JavaModelFactory;
-import jnome.output.JavaCodeWriter;
 
 public class AspectsJavaModelFactory extends JavaModelFactory {
 	/**
@@ -29,7 +29,7 @@ public class AspectsJavaModelFactory extends JavaModelFactory {
 	 */
 	public AspectsJavaModelFactory() {
 		AspectsJava lang = new AspectsJava();
-		lang.setConnector(Syntax.class, new JavaCodeWriter());
+		lang.setPlugin(Syntax.class, new JavaCodeWriter());
 		setLanguage(lang, ModelFactory.class);
 	}
 	
@@ -57,17 +57,15 @@ public class AspectsJavaModelFactory extends JavaModelFactory {
 		super(language, base);
 	}
 
-    // TODO: documentation (Jens)
 	@Override
-    public Lexer lexer(ANTLRInputStream input) {
-    	return new AspectLexer(input);
-    }
-    
-    // TODO: documentation (Jens)
-	@Override
-    public ChameleonParser parser(CommonTokenStream tokens) {
-    	return new AspectParser(tokens);
-    }
+	  public ChameleonParser getParser(InputStream inputStream, String fileName) throws IOException {
+	    ANTLRInputStream input = new ANTLRInputStream(inputStream);
+	    AspectLexer lexer = new AspectLexer(input);
+	    CommonTokenStream tokens = new CommonTokenStream(lexer);
+	    AspectParser parser = new AspectParser(tokens);
+	    parser.setLanguage((ObjectOrientedLanguage) language());
+	    return parser;
+	  }
 	
   @Override
 	public ModelFactoryUsingANTLR clone() {

@@ -24,6 +24,7 @@ import chameleon.core.lookup.LookupStrategyFactory;
 import chameleon.core.compilationunit.CompilationUnit;
 
 import chameleon.core.declaration.CompositeQualifiedName;
+import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameSignature;
 import chameleon.core.declaration.TargetDeclaration;
 import chameleon.core.declaration.QualifiedName;
@@ -47,7 +48,6 @@ import chameleon.core.language.Language;
 import chameleon.core.member.Member;
 
 import chameleon.core.method.Method;
-import chameleon.core.method.MethodHeader;
 import chameleon.core.method.Implementation;
 import chameleon.core.method.RegularImplementation;
 
@@ -100,8 +100,6 @@ import chameleon.input.Position2D;
 
 import chameleon.support.expression.RegularLiteral;
 import chameleon.support.expression.NullLiteral;
-import chameleon.support.expression.ThisConstructorDelegation;
-import chameleon.support.expression.SuperConstructorDelegation;
 import chameleon.support.expression.AssignmentExpression;
 import chameleon.support.expression.ConditionalExpression;
 import chameleon.support.expression.ConditionalAndExpression;
@@ -115,13 +113,11 @@ import chameleon.support.expression.ClassCastExpression;
 import chameleon.support.expression.SuperTarget;
 
 import chameleon.support.member.simplename.method.NormalMethod;
-import chameleon.support.member.simplename.SimpleNameMethodHeader;
 import chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import chameleon.support.member.simplename.operator.infix.InfixOperatorInvocation;
 import chameleon.support.member.simplename.operator.prefix.PrefixOperatorInvocation;
 import chameleon.support.member.simplename.operator.postfix.PostfixOperatorInvocation;
 import chameleon.support.member.simplename.method.RegularMethodInvocation;
-import chameleon.support.member.simplename.SimpleNameMethodSignature;
 
 import chameleon.support.modifier.Abstract;
 import chameleon.support.modifier.Final;
@@ -177,6 +173,8 @@ import jnome.core.expression.ArrayAccessExpression;
 import jnome.core.expression.ArrayCreationExpression;
 import jnome.core.expression.invocation.ConstructorInvocation;
 import jnome.core.expression.invocation.JavaMethodInvocation;
+import jnome.core.expression.invocation.SuperConstructorDelegation;
+import jnome.core.expression.invocation.ThisConstructorDelegation;
 
 import jnome.core.imports.SingleStaticImport;
 
@@ -264,6 +262,10 @@ import java.util.ArrayList;
   public JavaTypeReference createTypeReference(NamedTarget target) {
     return ((Java)language()).createTypeReference(target);
   }
+  
+  public JavaTypeReference typeRef(String qn) {
+    return ((Java)language()).createTypeReference(qn);
+  }
 
 }
 // starting point for parsing a java file
@@ -340,7 +342,7 @@ pointcut returns [CrossReferencePointcut element]
 	: pct='pointcut' decl=pointcutDecl pars=formalParameters ':' expr=pointcutExpression ';'
 	
 	{
-		PointcutHeader header = new PointcutHeader(decl.element);
+		SimpleNameDeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader(decl.element);
 		header.addFormalParameters(pars.element);
 		setLocation(header, decl.start, pars.stop);
 		retval.element = new CrossReferencePointcut(header, expr.element);
@@ -373,11 +375,12 @@ pointcutAtom returns [PointcutExpression element]
 	;
 
 advice returns [Advice element]
+@init{TypeReference tref = null;}
 @after{setLocation(retval.element, retval.start, retval.stop);}
-	:  advtype=('before_' | 'after_') pars=formalParameters ':' decl=pointcutDecl args=arguments
+	: (t=type {tref=t.element;}| 'void' {tref = typeRef("void");}) advtype=adviceType pars=formalParameters ':' decl=pointcutDecl args=arguments
 	
 	{
-		retval.element=new Advice();
+		retval.element=new Advice(advtype.element, tref);
 		PointcutReference ref = new PointcutReference();
 		ref.addAllArguments(args.element);
 		ref.setName(decl.element);
@@ -388,31 +391,32 @@ advice returns [Advice element]
 	bdy=methodBody
 	{
 		retval.element.setBody(bdy.element);
-		setKeyword(retval.element, advtype);
+		setKeyword(retval.element, advtype.start);
 	}
 	;
 
+adviceType returns [AdviceType element]
+	: 'before_' { retval.element = AdviceType.BEFORE; }
+	| 'after_' {retval.element = AdviceType.AFTER; }
+	| 'around_' {retval.element = AdviceType.AROUND; }
+	;
+        
 methodReference returns [MethodReference element]
 @after{setLocation(retval.element, retval.start, retval.stop);}
-	: t=methodReferenceType name=fqn {retval.element = new MethodReference(t.element, name.element);}
-	;
-	
-methodReferenceType returns [JavaTypeReference element]
-	: vt=voidType {retval.element = vt.element;}
-	| t=type {retval.element = t.element;}
+	: t=(IdentifierWithWC|Identifier|'void') name=fqn {retval.element = new MethodReference($t.text, name.element);}
 	;
 	
         
 fqn returns [QualifiedMethodHeader element]
 @init{CompositeQualifiedName prefixes = new CompositeQualifiedName();}
 @after{setLocation(retval.element, retval.start, retval.stop);}
-	: (id=Identifier '.' {prefixes.append(new SimpleNameSignature($id.text));})* mth=simpleMethodHeader {retval.element = new QualifiedMethodHeader(mth.element); retval.element.setPrefixes(prefixes);}
+	: (id=(IdentifierWithWC|Identifier) '.' {prefixes.append(new SimpleNameSignature($id.text));})* mth=simpleMethodHeader {retval.element = new QualifiedMethodHeader(mth.element); retval.element.setPrefixes(prefixes);}
 	;
         
 
 simpleMethodHeader returns [PointcutMethodHeader element]
 @after{setLocation(retval.element, retval.start, retval.stop);}
-        :	name=Identifier pars=formalParameterTypes {retval.element = new PointcutMethodHeader($name.text, pars.element); } 
+        :	name=(IdentifierWithWC|Identifier) pars=formalParameterTypes {retval.element = new PointcutMethodHeader($name.text, pars.element); } 
         ;
         
 formalParameterTypes returns [List<TypeReference> element]
