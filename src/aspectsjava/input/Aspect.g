@@ -10,6 +10,8 @@ import JavaP,JavaL;
 @header {
 package aspectsjava.input;
 
+import aspectsjava.model.expression.*;
+
 import chameleon.aspects.*;
 import chameleon.aspects.advice.*;
 import chameleon.aspects.pointcut.*;
@@ -430,4 +432,23 @@ formalParameterTypeDecls returns [List<TypeReference> element]
          retval.element=new ArrayList<TypeReference>();}
          retval.element.add(0, t.element);
          }
+    ;
+
+expression returns [Expression element]
+    :   ex=conditionalExpression {retval.element=ex.element;} (op=assignmentOperator exx=expression 
+        {String txt = $op.text; 
+         if(txt.equals("=")) {
+           retval.element = new AssignmentExpression(ex.element,exx.element);
+         } else {
+           retval.element = new InfixOperatorInvocation($op.text,ex.element);
+           ((InfixOperatorInvocation)retval.element).addArgument(exx.element);
+         }
+         setLocation(retval.element,op.start,op.stop,"__NAME");
+         setLocation(retval.element,retval.start,exx.stop);
+        }
+        )?
+        | prcd='proceed()' {
+          retval.element = new ProceedCall();
+          setKeyword(retval.element, prcd);
+        }
     ;
