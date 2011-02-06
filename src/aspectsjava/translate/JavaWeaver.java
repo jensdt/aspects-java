@@ -307,7 +307,7 @@ public class JavaWeaver {
 		for (Advice a : advices) {
 			final PointcutExpression p = a.pointcut().expression();
 			
-			if (p instanceof CrossReferencePointcutExpression) {
+			//if (p instanceof CrossReferencePointcutExpression) {
 				
 				List<CrossReference> refs = source.descendants(CrossReference.class,
 				new UnsafePredicate<CrossReference, LookupException>() {
@@ -357,7 +357,7 @@ public class JavaWeaver {
 					// Weave
 					cr.parentLink().getOtherRelation().replace(cr.parentLink(), adviceInvocation.parentLink());
 				}	
-			}
+			//}
 		}
 		
 		return source;
