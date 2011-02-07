@@ -67,13 +67,8 @@ ASSERT
     :   'assert' {if (!assertIsKeyword) $type=Identifier;}
     ;
     
-    
 Identifier 
-    : Letter (Letter|JavaIDDigit)*
-    ;
-    
-IdentifierWithWC
-    : ('**'|Letter) (Letter|JavaIDDigit|'**')*
+    :   Letter (Letter|JavaIDDigit)*
     ;
 
 /**I found this char range in JavaCC's grammar, but Letter and Digit overlap.
