@@ -10,6 +10,8 @@ import JavaP,JavaL;
 @header {
 package aspectsjava.input;
 
+import aspectsjava.model.expression.*;
+
 import chameleon.aspects.*;
 import chameleon.aspects.advice.*;
 import chameleon.aspects.pointcut.*;
@@ -351,7 +353,7 @@ pointcut returns [CrossReferencePointcut element]
 	;
 
 pointcutDecl returns [String element]
-	: name=Identifier {retval.element = $name.text;}
+	: name=Identifier  {retval.element = $name.text;}
 	;
 	
 pointcutExpression returns [PointcutExpression element]
@@ -370,30 +372,65 @@ pointcutExpressionOr returns [PointcutExpression element]
 pointcutAtom returns [PointcutExpression element]
 @after{setLocation(retval.element, retval.start, retval.stop);}
 	: cl='call' '(' metref=methodReference ')' {retval.element = new CrossReferencePointcutExpression(metref.element); setKeyword(retval.element, cl);}
+	| args='getargs' '(' params=argParams ')' {retval.element = new ArgsPointcutExpression(params.element); setKeyword(retval.element, args); }
 	| '!' expr1=pointcutAtom {retval.element = new PointcutExpressionNot(expr1.element);}
 	| '(' expr2=pointcutExpression ')' {retval.element = expr2.element;}
 	;
+	
+argParams returns [List<PointcutExpressionParameter> element]
+	: name=Identifier (',' otherparams=argParams {retval.element=otherparams.element; })?
+	 {if(retval.element == null) {
+         	retval.element=new ArrayList<PointcutExpressionParameter>();
+	  }
+	  retval.element.add(new PointcutExpressionParameter($name.text));
+         }
+	;
 
 advice returns [Advice element]
-@init{TypeReference tref = null;}
+@init{TypeReference tref = null; List<PointcutExpressionParameter> arguments = null;}
 @after{setLocation(retval.element, retval.start, retval.stop);}
-	: (t=type {tref=t.element;}| 'void' {tref = typeRef("void");}) advtype=adviceType pars=formalParameters ':' decl=pointcutDecl args=arguments
+	: (t=type {tref=t.element;}| 'void' {tref = typeRef("void");})? advtype=adviceType pars=formalParameters ':' decl=pointcutDecl '(' (args=argParams {arguments=args.element;})? end=')'
 	
 	{
 		retval.element=new Advice(advtype.element, tref);
-		PointcutReference ref = new PointcutReference();
-		ref.addAllArguments(args.element);
-		ref.setName(decl.element);
+		PointcutReference ref = new PointcutReference(decl.element);
+		ref.addAllArguments(arguments);
 		retval.element.setPointcutReference(ref);
 		retval.element.addFormalParameters(pars.element);
-		setLocation(ref, decl.start, args.stop);
+		setLocation(ref, decl.start, end);
 	} 
-	bdy=methodBody
+	bdy=adviceBody
 	{
 		retval.element.setBody(bdy.element);
 		setKeyword(retval.element, advtype.start);
 	}
 	;
+	
+adviceBody returns [Block element]
+    :   b=adviceBlock {retval.element = b.element;}
+    ;
+    
+adviceBlock returns [Block element]
+    :   '{' {retval.element = new Block();} (stat=adviceBlockStatement {if(stat != null) {retval.element.addStatement(stat.element);}})* '}'
+    ;
+    
+adviceBlockStatement returns [Statement element]
+@after{assert(retval.element != null);}
+    :   local=localVariableDeclarationStatement {retval.element = local.element;}
+    |   cd=classOrInterfaceDeclaration {retval.element = new LocalClassStatement(cd.element);}
+    |	specialReturn=adviceReturnStatement {retval.element = specialReturn.element;}
+    |   stat=statement {retval.element = stat.element;}
+    ;
+    
+adviceReturnStatement returns [Statement element]
+@after{setLocation(retval.element, (CommonToken)retval.start, (CommonToken)retval.stop);}
+    : retkey='return' 
+      {retval.element = new AdviceReturnStatement();
+       setKeyword(retval.element,retkey);} 
+       (retex=expression {((ReturnStatement)retval.element).setExpression(retex.element);
+      })? ';'
+    ;
+    
 
 adviceType returns [AdviceType element]
 	: 'before_' { retval.element = AdviceType.BEFORE; }
@@ -430,4 +467,24 @@ formalParameterTypeDecls returns [List<TypeReference> element]
          retval.element=new ArrayList<TypeReference>();}
          retval.element.add(0, t.element);
          }
+    ;
+
+expression returns [Expression element]
+    :   ex=conditionalExpression {retval.element=ex.element;} (op=assignmentOperator exx=expression 
+        {String txt = $op.text; 
+         if(txt.equals("=")) {
+           retval.element = new AssignmentExpression(ex.element,exx.element);
+         } else {
+           retval.element = new InfixOperatorInvocation($op.text,ex.element);
+           ((InfixOperatorInvocation)retval.element).addArgument(exx.element);
+         }
+         setLocation(retval.element,op.start,op.stop,"__NAME");
+         setLocation(retval.element,retval.start,exx.stop);
+        }
+        )?
+        | prcd='proceed()' {
+          retval.element = new ProceedCall();
+          setKeyword(retval.element, prcd);
+          setLocation(retval.element,prcd,prcd);
+        }
     ;
