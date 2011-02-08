@@ -1,5 +1,6 @@
 package aspectsjava.translate;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +19,13 @@ import aspectsjava.model.expression.ProceedCall;
 import chameleon.aspects.Aspect;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.AdviceType;
-import chameleon.aspects.pointcut.expression.CrossReferencePointcutExpression;
 import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.declaration.DeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameSignature;
 import chameleon.core.expression.Expression;
+import chameleon.core.expression.InvocationTarget;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.NamedTarget;
 import chameleon.core.expression.NamedTargetExpression;
@@ -47,6 +48,7 @@ import chameleon.support.expression.ClassCastExpression;
 import chameleon.support.expression.FilledArrayIndex;
 import chameleon.support.expression.NullLiteral;
 import chameleon.support.expression.RegularLiteral;
+import chameleon.support.expression.ThisLiteral;
 import chameleon.support.member.simplename.SimpleNameMethodInvocation;
 import chameleon.support.member.simplename.method.NormalMethod;
 import chameleon.support.member.simplename.method.RegularMethodInvocation;
@@ -261,22 +263,52 @@ public class JavaWeaver {
 		
 		Block tryBody = new Block();
 		tryBody.addStatement(method);
-		
-		
+				
 		
 		// return (T) m.invoke(_object, _arguments);
 		RegularMethodInvocation methodInvocation = new RegularMethodInvocation("invoke", new NamedTarget("m"));
 		methodInvocation.addArgument(new NamedTargetExpression("_object"));
 		methodInvocation.addArgument(new NamedTargetExpression("_arguments"));
 		ReturnStatement returnStatement = new ReturnStatement(new ClassCastExpression(new BasicTypeReference("T"), methodInvocation));
+		
 		tryBody.addStatement(returnStatement);
 		
+		TryStatement tryCatch = new TryStatement(tryBody);
 		
+		// catch (NoSuchMethodException nsm)
+		Block nsmBody = new Block();
+		
+		// new try - catch block
+		Block innerBody = new Block();
+		LocalVariableDeclarator invocationClone = method.clone();
+		((RegularMethodInvocation) invocationClone.variableDeclarations().get(0).initialization()).setName("getDeclaredMethod");
+		innerBody.addStatement(invocationClone);
+		
+		// m.setAccessible(true);
+		RegularMethodInvocation setAccessible = new RegularMethodInvocation("setAccessible", new NamedTarget("m"));
+		setAccessible.addArgument(new RegularLiteral(new BasicTypeReference("boolean"), "true"));
+		
+		innerBody.addStatement(new StatementExpression(setAccessible));
+		
+		innerBody.addStatement(returnStatement.clone());
+
+		TryStatement innerTryCatch = new TryStatement(innerBody);
+		
+		Block catchAllBody = new Block();
+		catchAllBody.addStatement(new EmptyStatement());
+		CatchClause catchAll = new CatchClause(new FormalParameter("ex", new BasicTypeReference("Throwable")), catchAllBody);
+		
+		innerTryCatch.addCatchClause(catchAll);
+		
+		nsmBody.addStatement(innerTryCatch);
+		
+		tryCatch.addCatchClause(new CatchClause(new FormalParameter("nsm", new BasicTypeReference("NoSuchMethodException")), nsmBody));
+		
+		// catch (Throwable ex)
 		Block catchBody = new Block();
 		catchBody.addStatement(new EmptyStatement());
 		
-		TryStatement tryCatch = new TryStatement(tryBody);
-		tryCatch.addCatchClause(new CatchClause(new FormalParameter("ex", new BasicTypeReference("Throwable")), catchBody));
+		tryCatch.addCatchClause(catchAll.clone());
 		
 		// Add a -  throw new Error(); - after the try {} catch, 
 		// since the try-block should return anyway. If it doesn't, then an error occurred anyway
@@ -336,7 +368,13 @@ public class JavaWeaver {
 					RegularMethodInvocation adviceInvocation = new RegularMethodInvocation("advice_" + a.name(), new NamedTarget(a.aspect().name()));
 					Statement call = new StatementExpression(adviceInvocation);
 					
-					adviceInvocation.addArgument(new VariableReference("object", ((MethodInvocation) cr).getTarget().clone()));
+					InvocationTarget target = ((MethodInvocation) cr).getTarget();
+					if (target == null)
+						target = new ThisLiteral();
+					else
+						target = target.clone();
+					
+					adviceInvocation.addArgument(new VariableReference("object", target));
 					adviceInvocation.addArgument(new RegularLiteral(new BasicTypeReference("String"), "\"" + ((SimpleNameMethodInvocation) cr).name()+ "\""));
 					List<Expression> methodParameters = ((MethodInvocation) cr).getActualParameters();
 					ArrayCreationExpression parameterArray = new ArrayCreationExpression(new ArrayTypeReference(new BasicJavaTypeReference("Object")));

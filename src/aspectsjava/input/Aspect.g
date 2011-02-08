@@ -372,11 +372,12 @@ pointcutExpressionOr returns [PointcutExpression element]
 pointcutAtom returns [PointcutExpression element]
 @after{setLocation(retval.element, retval.start, retval.stop);}
 	: cl='call' '(' metref=methodReference ')' {retval.element = new CrossReferencePointcutExpression(metref.element); setKeyword(retval.element, cl);}
-	| args='getargs' '(' params=argParams ')' {retval.element = new ArgsPointcutExpression(params.element); setKeyword(retval.element, args); }
+//	| args='getargs' '(' params=argParams ')' {retval.element = new ArgsPointcutExpression(params.element); setKeyword(retval.element, args); }
 	| '!' expr1=pointcutAtom {retval.element = new PointcutExpressionNot(expr1.element);}
 	| '(' expr2=pointcutExpression ')' {retval.element = expr2.element;}
 	;
 	
+	/*
 argParams returns [List<PointcutExpressionParameter> element]
 	: name=Identifier (',' otherparams=argParams {retval.element=otherparams.element; })?
 	 {if(retval.element == null) {
@@ -385,11 +386,11 @@ argParams returns [List<PointcutExpressionParameter> element]
 	  retval.element.add(new PointcutExpressionParameter($name.text));
          }
 	;
-
+¨*/
 advice returns [Advice element]
-@init{TypeReference tref = null; List<PointcutExpressionParameter> arguments = null;}
+@init{TypeReference tref = null; List<PointcutExpressionParameter> arguments = new ArrayList<PointcutExpressionParameter>();}
 @after{setLocation(retval.element, retval.start, retval.stop);}
-	: (t=type {tref=t.element;}| 'void' {tref = typeRef("void");})? advtype=adviceType pars=formalParameters ':' decl=pointcutDecl '(' (args=argParams {arguments=args.element;})? end=')'
+	: (t=type {tref=t.element;}| 'void' {tref = typeRef("void");})? advtype=adviceType pars=formalParameters ':' decl=pointcutDecl '('  end=')'
 	
 	{
 		retval.element=new Advice(advtype.element, tref);
@@ -451,11 +452,12 @@ fqn returns [QualifiedMethodHeader element]
 	;
         
 
-simpleMethodHeader returns [PointcutMethodHeader element]
+simpleMethodHeader returns [SimpleNameDeclarationWithParametersHeader element]
 @after{setLocation(retval.element, retval.start, retval.stop);}
-        :	name=(IdentifierWithWC|Identifier) pars=formalParameterTypes {retval.element = new PointcutMethodHeader($name.text, pars.element); } 
+        :	name=(IdentifierWithWC|Identifier) pars=formalParameters {retval.element = new SimpleNameDeclarationWithParametersHeader($name.text); retval.element.addFormalParameters(pars.element); } 
         ;
         
+        /*
 formalParameterTypes returns [List<TypeReference> element]
 @init{retval.element = new ArrayList<TypeReference>();}
     :   '(' (pars=formalParameterTypeDecls {retval.element=pars.element;})? ')'
@@ -468,6 +470,7 @@ formalParameterTypeDecls returns [List<TypeReference> element]
          retval.element.add(0, t.element);
          }
     ;
+    */
 
 expression returns [Expression element]
     :   ex=conditionalExpression {retval.element=ex.element;} (op=assignmentOperator exx=expression 
