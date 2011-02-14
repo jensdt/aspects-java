@@ -377,20 +377,20 @@ pointcutAtom returns [PointcutExpression element]
 	| '(' expr2=pointcutExpression ')' {retval.element = expr2.element;}
 	;
 	
-	/*
+	
 argParams returns [List<PointcutExpressionParameter> element]
 	: name=Identifier (',' otherparams=argParams {retval.element=otherparams.element; })?
 	 {if(retval.element == null) {
          	retval.element=new ArrayList<PointcutExpressionParameter>();
 	  }
-	  retval.element.add(new PointcutExpressionParameter($name.text));
+	  retval.element.add(0, new PointcutExpressionParameter($name.text));
          }
 	;
-¨*/
+
 advice returns [Advice element]
 @init{TypeReference tref = null; List<PointcutExpressionParameter> arguments = new ArrayList<PointcutExpressionParameter>();}
 @after{setLocation(retval.element, retval.start, retval.stop);}
-	: (t=type {tref=t.element;}| 'void' {tref = typeRef("void");})? advtype=adviceType pars=formalParameters ':' decl=pointcutDecl '('  end=')'
+	: (t=type {tref=t.element;}| 'void' {tref = typeRef("void");})? advtype=adviceType pars=formalParameters ':' decl=pointcutDecl '(' (params=argParams {arguments = params.element;})? end=')'
 	
 	{
 		retval.element=new Advice(advtype.element, tref);
@@ -485,8 +485,10 @@ expression returns [Expression element]
          setLocation(retval.element,retval.start,exx.stop);
         }
         )?
-        | prcd='proceed()' {
-          retval.element = new ProceedCall();
+        | prcd='proceed' args=arguments {
+          ProceedCall result = new ProceedCall();
+          result.addAllArguments(args.element);
+          retval.element = result;
           setKeyword(retval.element, prcd);
           setLocation(retval.element,prcd,prcd);
         }
