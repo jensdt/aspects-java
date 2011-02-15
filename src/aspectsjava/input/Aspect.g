@@ -378,17 +378,17 @@ pointcutAtom returns [PointcutExpression element]
 	;
 	
 	
-argParams returns [List<PointcutExpressionParameter> element]
+argParams returns [List<NamedTargetExpression> element]
 	: name=Identifier (',' otherparams=argParams {retval.element=otherparams.element; })?
 	 {if(retval.element == null) {
-         	retval.element=new ArrayList<PointcutExpressionParameter>();
+         	retval.element=new ArrayList<NamedTargetExpression>();
 	  }
-	  retval.element.add(0, new PointcutExpressionParameter($name.text));
+	  retval.element.add(0, new NamedTargetExpression($name.text));
          }
 	;
 
 advice returns [Advice element]
-@init{TypeReference tref = null; List<PointcutExpressionParameter> arguments = new ArrayList<PointcutExpressionParameter>();}
+@init{TypeReference tref = null; List<NamedTargetExpression> arguments = new ArrayList<NamedTargetExpression>();}
 @after{setLocation(retval.element, retval.start, retval.stop);}
 	: (t=type {tref=t.element;}| 'void' {tref = typeRef("void");})? advtype=adviceType pars=formalParameters ':' decl=pointcutDecl '(' (params=argParams {arguments = params.element;})? end=')'
 	

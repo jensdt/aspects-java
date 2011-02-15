@@ -8,9 +8,11 @@ import java.util.Map;
 import jnome.core.expression.ArrayAccessExpression;
 import jnome.core.expression.ArrayCreationExpression;
 import jnome.core.expression.ArrayInitializer;
+import jnome.core.expression.ClassLiteral;
 import jnome.core.expression.invocation.ConstructorInvocation;
 import jnome.core.type.ArrayTypeReference;
 import jnome.core.type.BasicJavaTypeReference;
+import jnome.core.type.RegularJavaType;
 import jnome.core.variable.JavaVariableDeclaration;
 import jnome.input.JavaFactory;
 
@@ -48,6 +50,7 @@ import chameleon.oo.type.generics.FormalTypeParameter;
 import chameleon.support.expression.AssignmentExpression;
 import chameleon.support.expression.ClassCastExpression;
 import chameleon.support.expression.FilledArrayIndex;
+import chameleon.support.expression.InstanceofExpression;
 import chameleon.support.expression.NullLiteral;
 import chameleon.support.expression.RegularLiteral;
 import chameleon.support.expression.ThisLiteral;
@@ -62,6 +65,7 @@ import chameleon.support.modifier.Static;
 import chameleon.support.statement.CatchClause;
 import chameleon.support.statement.EmptyStatement;
 import chameleon.support.statement.ForStatement;
+import chameleon.support.statement.IfThenElseStatement;
 import chameleon.support.statement.ReturnStatement;
 import chameleon.support.statement.SimpleForControl;
 import chameleon.support.statement.StatementExprList;
@@ -233,7 +237,7 @@ public class JavaWeaver {
 		final String argumentsName = "_$arguments";
 		
 		/*
-		 *	Create a proceed method for the around advice (only if necessary) 
+		 *	Create method header
 		 */
 		
 		FormalParameter object = new FormalParameter(objectName, new BasicTypeReference("Object"));
@@ -252,7 +256,38 @@ public class JavaWeaver {
 		proceedMethod.addModifier(new Private());
 		proceedMethod.addModifier(new Static());
 		
+		/*
+		 * 	Create method body
+		 */
 		Block proceedMethodBody = new Block();
+		
+		// Class invocationClass;
+		LocalVariableDeclarator invocationClass = new LocalVariableDeclarator(new BasicJavaTypeReference("Class"));
+		JavaVariableDeclaration invocationClassDecl = new JavaVariableDeclaration("invocationClass");
+		
+		invocationClass.add(invocationClassDecl);
+		proceedMethodBody.addStatement(invocationClass);
+		/* if (_$object instanceof Class) {
+			invocationClass = (Class) _$object;
+		}
+		else {
+			invocationClass = _$object.getClass();
+		}
+		*/
+		InstanceofExpression testObject = new InstanceofExpression(new NamedTargetExpression(objectName), new BasicJavaTypeReference("Class"));
+		ClassCastExpression objectCastToClass = new ClassCastExpression(new BasicJavaTypeReference("Class"), new NamedTargetExpression(objectName));
+		AssignmentExpression assignObjIf = new AssignmentExpression(new NamedTargetExpression("invocationClass"), objectCastToClass);
+		AssignmentExpression assignObjElse = new AssignmentExpression(new NamedTargetExpression("invocationClass"), new RegularMethodInvocation("getClass", new NamedTarget(objectName)));
+		
+		Block ifBody = new Block();
+		ifBody.addStatement(new StatementExpression(assignObjIf));
+		
+		Block elseBody = new Block();
+		elseBody.addStatement(new StatementExpression(assignObjElse));
+		
+		IfThenElseStatement invocationIte = new IfThenElseStatement(testObject, ifBody, elseBody);
+		
+		proceedMethodBody.addStatement(invocationIte);
 		
 		// Class[] types = new Class[_arguments.length];
 		NamedTargetExpression argumentsDotLength = new NamedTargetExpression("length", new NamedTarget(argumentsName));
@@ -307,8 +342,7 @@ public class JavaWeaver {
 		LocalVariableDeclarator method = new LocalVariableDeclarator(new BasicJavaTypeReference("java.lang.reflect.Method"));
 		JavaVariableDeclaration methodDecl = new JavaVariableDeclaration("m");
 		
-		RegularMethodInvocation getObjectClass = new RegularMethodInvocation("getClass", new NamedTarget(objectName));
-		RegularMethodInvocation getMethod = new RegularMethodInvocation("getMethod", getObjectClass);
+		RegularMethodInvocation getMethod = new RegularMethodInvocation("getMethod", new NamedTargetExpression("invocationClass"));
 		getMethod.addArgument(new NamedTargetExpression(methodName));
 		getMethod.addArgument(new NamedTargetExpression("types"));
 		
@@ -426,9 +460,14 @@ public class JavaWeaver {
 				InvocationTarget target = cr.getTarget();
 				if (target == null)
 					target = new ThisLiteral();
-				else
-					target = target.clone();
-				
+				else {
+					if (target instanceof NamedTarget && ((NamedTarget) target).getElement() instanceof RegularJavaType) {
+						target = new ClassLiteral(new BasicTypeReference(((RegularJavaType) ((NamedTarget) target).getElement()).getType().getFullyQualifiedName()));
+					} else {
+						target = target.clone();
+					}
+				}
+				Object o = MethodInvocation.class;
 				adviceInvocation.addArgument(new VariableReference("object", target));
 				adviceInvocation.addArgument(new RegularLiteral(new BasicTypeReference("String"), "\"" + ((SimpleNameMethodInvocation) cr).name()+ "\""));
 				List<Expression> methodParameters = ((MethodInvocation) cr).getActualParameters();
