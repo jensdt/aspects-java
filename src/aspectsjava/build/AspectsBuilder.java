@@ -2,6 +2,7 @@ package aspectsjava.build;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import jnome.output.CompilationUnitWriter;
 import aspectsjava.model.language.AspectsJava;
 import aspectsjava.translate.AspectCodeWriter;
 import aspectsjava.translate.IncrementalJavaTranslator;
+import chameleon.aspects.Aspect;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.language.Language;
 import chameleon.exception.ChameleonProgrammerException;
@@ -47,14 +49,34 @@ public class AspectsBuilder extends PluginImpl implements Builder {
 
 	CompilationUnitWriter _writer;
 
+	/*
 	public void build(Collection<CompilationUnit> compilationUnits,
 			List<CompilationUnit> allProjectCompilationUnits) throws ModelException, IOException {
 		
+		List<CompilationUnit> allProjectCompilationUnitsWithoutAspects = new ArrayList<CompilationUnit>();
+		
+		boolean hasAspect = false;
 		
 		for(CompilationUnit cu: compilationUnits) {
+			if (!cu.descendants(Aspect.class).isEmpty()) {
+				hasAspect = true;
+				build(cu, allProjectCompilationUnits);
+				allProjectCompilationUnitsWithoutAspects.remove(cu);
+			}
+		}
+		
+		List<CompilationUnit> toBuild;
+		// Need a complete rebuild or not?
+		if (hasAspect)
+			toBuild = allProjectCompilationUnitsWithoutAspects;
+		else
+			toBuild = allProjectCompilationUnits;
+		
+		for(CompilationUnit cu: toBuild) {
 			build(cu, allProjectCompilationUnits);
 		}
 	}
+	*/
 	
 	public void build(CompilationUnit compilationUnit, List<CompilationUnit> allProjectCompilationUnits) throws ModelException, IOException {
 		try {

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 import jnome.core.expression.ArrayAccessExpression;
 import jnome.core.expression.ArrayCreationExpression;
@@ -15,18 +18,16 @@ import jnome.core.type.BasicJavaTypeReference;
 import jnome.core.type.RegularJavaType;
 import jnome.core.variable.JavaVariableDeclaration;
 import jnome.input.JavaFactory;
-
-import org.rejuse.predicate.UnsafePredicate;
-
 import aspectsjava.model.expression.ProceedCall;
 import chameleon.aspects.Aspect;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.AdviceType;
 import chameleon.aspects.pointcut.MatchResult;
 import chameleon.aspects.pointcut.Pointcut;
-import chameleon.aspects.pointcut.expression.PointcutExpression;
+import chameleon.aspects.pointcut.expression.CrossReferencePointcutExpression;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.declaration.DeclarationWithParametersHeader;
+import chameleon.core.declaration.Signature;
 import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameSignature;
 import chameleon.core.expression.Expression;
@@ -36,6 +37,7 @@ import chameleon.core.expression.NamedTarget;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.expression.VariableReference;
 import chameleon.core.lookup.LookupException;
+import chameleon.core.method.Method;
 import chameleon.core.method.RegularImplementation;
 import chameleon.core.namespacepart.NamespacePart;
 import chameleon.core.statement.Block;
@@ -76,12 +78,57 @@ import chameleon.support.variable.LocalVariableDeclarator;
 
 public class JavaWeaver {
 
+	public JavaWeaver() {
+
+	}
+	
+	private Map<Signature, String> methodNames = new HashMap<Signature, String>();
+	
 	
 	public CompilationUnit weave(CompilationUnit source, List<CompilationUnit> allProjectCompilationUnits) throws LookupException {
 		if (!source.descendants(Advice.class).isEmpty())
 			return translateAdvice(source, allProjectCompilationUnits);
 		else
 			return weaveRegularType(source, allProjectCompilationUnits);
+	}
+	
+	private String getName(Signature signature) {
+		String name = getExisting(signature);
+		
+		if (name == null) {
+			do {
+				name = getRandomName();
+			} while (methodNames.values().contains(name));
+			
+			methodNames.put(signature.clone(), name);
+		}
+		
+		return name;
+	}
+	
+	private String getExisting(Signature signature) {
+		Signature signatureToGet = signature;
+		for (Signature s : methodNames.keySet()) {
+			try {
+				if (signature.sameAs(s))
+					signatureToGet = s;
+			} catch (LookupException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+				
+		return methodNames.get(signatureToGet);
+	}
+	
+	private Random r = new Random();
+	private String alphabet = "abcdefghijklmopqrstuvwxyz";
+	private String getRandomName() {
+		StringBuilder name = new StringBuilder();
+		for (int i = 0; i < 8; i++)
+			name.append(alphabet.charAt(r.nextInt(alphabet.length())));
+		
+		return name.toString();
 	}
 	
 	private CompilationUnit translateAdvice(CompilationUnit source, List<CompilationUnit> allProjectCompilationUnits) throws LookupException {	
@@ -96,132 +143,142 @@ public class JavaWeaver {
 		JavaFactory factory = new JavaFactory();
 			
 		for (Advice advice : (List<Advice>) aspect.advices()) {
-			DeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader("advice_" + advice.name());
+			Set<Method> methods = new TreeSet<Method>();
 			
-			TypeReference returnType;
+			for (CompilationUnit cu : allProjectCompilationUnits)
+				for (MatchResult<CrossReferencePointcutExpression, MethodInvocation> matchResult : (List<MatchResult<CrossReferencePointcutExpression, MethodInvocation>>) advice.pointcut().joinpoints(cu))
+					if (matchResult.isMatch())
+						methods.add(matchResult.getJoinpoint().getElement());
 			
-			if (advice.returnType().getType().signature().name().equals("void"))
-				returnType = new BasicTypeReference("T");
-			else
-				returnType = advice.returnType().clone();
+			for (Method m : methods) {
+				DeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader("advice_" + advice.name() + "_" + getName(m.signature()));
 				
-			NormalMethod adviceMethod = new NormalMethod(header, returnType);
-			
-			adviceMethod.addModifier(new Public());
-			adviceMethod.addModifier(new Static());
-			
-			header.addTypeParameter(new FormalTypeParameter(new SimpleNameSignature("T")));
-
-			
-			/*
-			 *	Add all the parameters to allow the reflective invocation 
-			 */
-			FormalParameter object = new FormalParameter("_object", new BasicTypeReference("Object"));
-			header.addFormalParameter(object);
-			
-			FormalParameter methodName = new FormalParameter("_methodName", new BasicTypeReference("String"));
-			header.addFormalParameter(methodName);
-			
-			FormalParameter methodArguments = new FormalParameter("_arguments", new ArrayTypeReference(new BasicJavaTypeReference("Object")));
-			header.addFormalParameter(methodArguments);
-			
-			FormalParameter methodArgumentsIndex = new FormalParameter("_$argumentIndex", new ArrayTypeReference(new BasicJavaTypeReference("int")));
-			header.addFormalParameter(methodArgumentsIndex);
-			
-			/*
-			 * 	Start the method block
-			 */
-			Block adviceBody = new Block();
-			
-			/*
-			 * 	Inject the parameters
-			 */
-			for (FormalParameter fp : (List<FormalParameter>) advice.formalParameters()) {
-				int index = advice.pointcutReference().indexOfParameter(fp);
+				TypeReference returnType;
 				
-				LocalVariableDeclarator parameterInjector = new LocalVariableDeclarator(fp.getTypeReference().clone());
-				VariableDeclaration parameterInjectorDecl = new VariableDeclaration(fp.getName());
-				
-				// Add the indirection to the correct parameter
-				ArrayAccessExpression argumentsIndexAccess = new ArrayAccessExpression(new NamedTargetExpression("_$argumentIndex"));
-				argumentsIndexAccess.addIndex(new FilledArrayIndex(new RegularLiteral(new BasicJavaTypeReference("int"), Integer.toString(index))));
-
-				ArrayAccessExpression argumentsAccess = new ArrayAccessExpression(new NamedTargetExpression("_arguments"));
-				argumentsAccess.addIndex(new FilledArrayIndex(argumentsIndexAccess));
-
-				// Add the cast, since the arguments is just an Object array
-				ClassCastExpression cast = new ClassCastExpression(fp.getTypeReference().clone(), argumentsAccess);
-				
-				parameterInjectorDecl.setInitialization(cast);
-				parameterInjector.add(parameterInjectorDecl);
-				
-				adviceBody.addStatement(parameterInjector);
-			}
-			
-			/*
-			 *	Create the proceed call
-			 */
-			RegularMethodInvocation proceedInvocation = new RegularMethodInvocation("proceed", new NamedTarget(aspect.name()));
-			proceedInvocation.addArgument(new NamedTargetExpression("_object"));
-			proceedInvocation.addArgument(new NamedTargetExpression("_methodName"));
-			proceedInvocation.addArgument((new BasicTypeArgument(returnType.clone())));
-			
-			if (advice.type() == AdviceType.AFTER) {
-				proceedInvocation.addArgument(new NamedTargetExpression("_arguments"));
-				
-				LocalVariableDeclarator returnVal = new LocalVariableDeclarator(new BasicTypeReference("T"));
-				VariableDeclaration returnValDecl = new VariableDeclaration("_retval");
-				returnValDecl.setInitialization(proceedInvocation);
-				returnVal.add(returnValDecl);
-			
-				adviceBody.addStatement(returnVal);
-				adviceBody.addBlock(((Block) advice.body()).clone()); 
-				adviceBody.addStatement(new ReturnStatement(new NamedTargetExpression("_retval")));
-			}
-			else if (advice.type() == AdviceType.BEFORE) {
-				proceedInvocation.addArgument(new NamedTargetExpression("_arguments"));
-				
-				adviceBody.addBlock(((Block) advice.body()).clone()); 
-				adviceBody.addStatement(new ReturnStatement(proceedInvocation));
-			}
-			else if (advice.type() == AdviceType.AROUND) {		
-				// Replace each proceed call to the method call
-				List<ProceedCall> proceedCalls = advice.descendants(ProceedCall.class);
-				
-				if (!proceedCalls.isEmpty()) {
-				
-					for (ProceedCall pc : proceedCalls) {
-						RegularMethodInvocation proceedInvoc = (RegularMethodInvocation) proceedInvocation.clone();
-						
-						// Create the correct parameters for the proceed call
-						ArrayCreationExpression actualArgumentsArray = new ArrayCreationExpression(new ArrayTypeReference(new BasicJavaTypeReference("Object")));
-						ArrayInitializer actualArgumentsInitializer = new ArrayInitializer();					
+				if (advice.returnType().getType().signature().name().equals("void"))
+					returnType = new BasicTypeReference("T");
+				else
+					returnType = advice.returnType().clone();
 					
-						for (Expression e : pc.getActualParameters())
-							actualArgumentsInitializer.addInitializer(e.clone());
-						
-						actualArgumentsArray.setInitializer(actualArgumentsInitializer);
-						
-						proceedInvoc.addArgument(actualArgumentsArray);
-						
-						pc.parentLink().getOtherRelation().replace(pc.parentLink(), proceedInvoc.parentLink());
-					}
+				NormalMethod adviceMethod = new NormalMethod(header, returnType);
+				
+				adviceMethod.addModifier(new Public());
+				adviceMethod.addModifier(new Static());
+				
+				header.addTypeParameter(new FormalTypeParameter(new SimpleNameSignature("T")));
+	
+				
+				/*
+				 *	Add all the parameters to allow the reflective invocation 
+				 */
+				FormalParameter object = new FormalParameter("_object", new BasicTypeReference("Object"));
+				header.addFormalParameter(object);
+				
+				FormalParameter methodName = new FormalParameter("_methodName", new BasicTypeReference("String"));
+				header.addFormalParameter(methodName);
+				
+				FormalParameter methodArguments = new FormalParameter("_arguments", new ArrayTypeReference(new BasicJavaTypeReference("Object")));
+				header.addFormalParameter(methodArguments);
+				
+				FormalParameter methodArgumentsIndex = new FormalParameter("_$argumentIndex", new ArrayTypeReference(new BasicJavaTypeReference("int")));
+				header.addFormalParameter(methodArgumentsIndex);
+				
+				/*
+				 * 	Start the method block
+				 */
+				Block adviceBody = new Block();
+				
+				/*
+				 * 	Inject the parameters
+				 */
+				for (FormalParameter fp : (List<FormalParameter>) advice.formalParameters()) {
+					int index = advice.pointcutReference().indexOfParameter(fp);
+					
+					LocalVariableDeclarator parameterInjector = new LocalVariableDeclarator(fp.getTypeReference().clone());
+					VariableDeclaration parameterInjectorDecl = new VariableDeclaration(fp.getName());
+					
+					// Add the indirection to the correct parameter
+					ArrayAccessExpression argumentsIndexAccess = new ArrayAccessExpression(new NamedTargetExpression("_$argumentIndex"));
+					argumentsIndexAccess.addIndex(new FilledArrayIndex(new RegularLiteral(new BasicJavaTypeReference("int"), Integer.toString(index))));
+	
+					ArrayAccessExpression argumentsAccess = new ArrayAccessExpression(new NamedTargetExpression("_arguments"));
+					argumentsAccess.addIndex(new FilledArrayIndex(argumentsIndexAccess));
+	
+					// Add the cast, since the arguments is just an Object array
+					ClassCastExpression cast = new ClassCastExpression(fp.getTypeReference().clone(), argumentsAccess);
+					
+					parameterInjectorDecl.setInitialization(cast);
+					parameterInjector.add(parameterInjectorDecl);
+					
+					adviceBody.addStatement(parameterInjector);
 				}
 				
-				Block modifiedBody = ((Block) advice.body()).clone();
+				/*
+				 *	Create the proceed call
+				 */
+				RegularMethodInvocation proceedInvocation = new RegularMethodInvocation("proceed", new NamedTarget(aspect.name()));
+				proceedInvocation.addArgument(new NamedTargetExpression("_object"));
+				proceedInvocation.addArgument(new NamedTargetExpression("_methodName"));
+				proceedInvocation.addArgument((new BasicTypeArgument(returnType.clone())));
 				
-				adviceBody.addBlock(modifiedBody);
-				if (advice.returnType().getType().signature().name().equals("void"))
-					adviceBody.addStatement(new ReturnStatement(new NullLiteral()));
-			}
-			
-			
+				if (advice.type() == AdviceType.AFTER) {
+					proceedInvocation.addArgument(new NamedTargetExpression("_arguments"));
+					
+					LocalVariableDeclarator returnVal = new LocalVariableDeclarator(new BasicTypeReference("T"));
+					VariableDeclaration returnValDecl = new VariableDeclaration("_retval");
+					returnValDecl.setInitialization(proceedInvocation);
+					returnVal.add(returnValDecl);
+				
+					adviceBody.addStatement(returnVal);
+					adviceBody.addBlock(((Block) advice.body()).clone()); 
+					adviceBody.addStatement(new ReturnStatement(new NamedTargetExpression("_retval")));
+				}
+				else if (advice.type() == AdviceType.BEFORE) {
+					proceedInvocation.addArgument(new NamedTargetExpression("_arguments"));
+					
+					adviceBody.addBlock(((Block) advice.body()).clone()); 
+					adviceBody.addStatement(new ReturnStatement(proceedInvocation));
+				}
+				else if (advice.type() == AdviceType.AROUND) {		
+					// Replace each proceed call to the method call
+					List<ProceedCall> proceedCalls = advice.descendants(ProceedCall.class);
+					
+					if (!proceedCalls.isEmpty()) {
+					
+						for (ProceedCall pc : proceedCalls) {
+							RegularMethodInvocation proceedInvoc = (RegularMethodInvocation) proceedInvocation.clone();
+							
+							// Create the correct parameters for the proceed call
+							ArrayCreationExpression actualArgumentsArray = new ArrayCreationExpression(new ArrayTypeReference(new BasicJavaTypeReference("Object")));
+							ArrayInitializer actualArgumentsInitializer = new ArrayInitializer();					
 						
-			// Set the method body
-			adviceMethod.setImplementation(new RegularImplementation(adviceBody));
-			
-			// Add the method
-			aspectClass.add(adviceMethod);
+							for (Expression e : pc.getActualParameters())
+								actualArgumentsInitializer.addInitializer(e);
+							
+							actualArgumentsArray.setInitializer(actualArgumentsInitializer);
+							
+							proceedInvoc.addArgument(actualArgumentsArray);
+							
+							pc.parentLink().getOtherRelation().replace(pc.parentLink(), proceedInvoc.parentLink());
+						}
+					}
+					
+					Block modifiedBody = ((Block) advice.body()).clone();
+					
+					adviceBody.addBlock(modifiedBody);
+					if (advice.returnType().getType().signature().name().equals("void"))
+						adviceBody.addStatement(new ReturnStatement(new NullLiteral()));
+				}
+				
+				
+	
+							
+				// Set the method body
+				adviceMethod.setImplementation(new RegularImplementation(adviceBody));
+				
+				// Add the method
+				aspectClass.add(adviceMethod);
+			}
 		}
 
 		aspect.disconnect();
@@ -250,17 +307,21 @@ public class JavaWeaver {
 		pHeader.addFormalParameter(object);
 		pHeader.addFormalParameter(methodParam);
 		pHeader.addFormalParameter(methodArguments);
+
 		
 		pHeader.addTypeParameter(new FormalTypeParameter(new SimpleNameSignature("T")));
 		
 		proceedMethod.addModifier(new Private());
 		proceedMethod.addModifier(new Static());
+
+		//proceedMethod.getExceptionClause().add(new TypeExceptionDeclaration(new BasicJavaTypeReference("java.lang.reflect.InvocationTargetException")));
+		//proceedMethod.getExceptionClause().add(new TypeExceptionDeclaration(new BasicJavaTypeReference("Throwable")));
 		
 		/*
 		 * 	Create method body
 		 */
 		Block proceedMethodBody = new Block();
-		
+
 		// Class invocationClass;
 		LocalVariableDeclarator invocationClass = new LocalVariableDeclarator(new BasicJavaTypeReference("Class"));
 		JavaVariableDeclaration invocationClassDecl = new JavaVariableDeclaration("invocationClass");
@@ -383,21 +444,37 @@ public class JavaWeaver {
 
 		TryStatement innerTryCatch = new TryStatement(innerBody);
 		
-		Block catchAllBody = new Block();
-		catchAllBody.addStatement(new EmptyStatement());
-		CatchClause catchAll = new CatchClause(new FormalParameter("ex", new BasicTypeReference("Throwable")), catchAllBody);
+		// All catch clauses required for reflection
+		Block emptyCatchBody = new Block();
+		emptyCatchBody.addStatement(new EmptyStatement());
 		
-		innerTryCatch.addCatchClause(catchAll);
+		Block rethrowBody = new Block();
+		ThrowStatement rethrow = new ThrowStatement(new RegularMethodInvocation("getCause", new NamedTarget("invo")));
+		rethrowBody.addStatement(rethrow);
+		
+		CatchClause catchIllegalArg = new CatchClause(new FormalParameter("iarg", new BasicTypeReference("IllegalArgumentException")), emptyCatchBody.clone());
+		CatchClause catchSecurity = new CatchClause(new FormalParameter("se", new BasicTypeReference("SecurityException")), emptyCatchBody.clone());
+		CatchClause catchIllegalAcc = new CatchClause(new FormalParameter("iac", new BasicTypeReference("IllegalAccessException")), emptyCatchBody.clone());
+		CatchClause catchNoSuchMethod = new CatchClause(new FormalParameter("nsmInner", new BasicTypeReference("NoSuchMethodException")), emptyCatchBody.clone());
+		CatchClause catchInvocationT = new CatchClause(new FormalParameter("invo", new BasicTypeReference("java.lang.reflect.InvocationTargetException")), emptyCatchBody.clone());
+		
+		innerTryCatch.addCatchClause(catchIllegalArg);
+		innerTryCatch.addCatchClause(catchSecurity);
+		innerTryCatch.addCatchClause(catchIllegalAcc);
+		innerTryCatch.addCatchClause(catchInvocationT);
+		innerTryCatch.addCatchClause(catchNoSuchMethod);
+		
 		
 		nsmBody.addStatement(innerTryCatch);
 		
+		 // catch (NoSuchMethodException nsm) {
 		tryCatch.addCatchClause(new CatchClause(new FormalParameter("nsm", new BasicTypeReference("NoSuchMethodException")), nsmBody));
 		
-		// catch (Throwable ex)
-		Block catchBody = new Block();
-		catchBody.addStatement(new EmptyStatement());
-		
-		tryCatch.addCatchClause(catchAll.clone());
+		// All catch clauses required for reflection
+		tryCatch.addCatchClause(catchIllegalArg.clone());
+		tryCatch.addCatchClause(catchSecurity.clone());
+		tryCatch.addCatchClause(catchIllegalAcc.clone());
+		tryCatch.addCatchClause(catchInvocationT.clone());
 		
 		// Add a -  throw new Error(); - after the try {} catch, 
 		// since the try-block should return anyway. If it doesn't, then an error occurred anyway
@@ -424,40 +501,18 @@ public class JavaWeaver {
 			advices.addAll(cu.descendants(Advice.class));
 		}
 		
-		// For each advice, see if we have to weave this advice
+		// Weave all advices
 		for (Advice a : advices) {
-			final PointcutExpression p = a.pointcut().expression();
-		
-			final Map<MethodInvocation, MatchResult> resultMap = new HashMap<MethodInvocation, MatchResult>();
-		
-			List<MethodInvocation> refs = source.descendants(MethodInvocation.class,
-			new UnsafePredicate<MethodInvocation, LookupException>() {
-
-				@Override
-				public boolean eval(final MethodInvocation cr) throws LookupException {
-					try {
-						MatchResult matchResult = p.matches(cr);
-						if (matchResult.isMatch())
-								resultMap.put(cr, matchResult);
-						
-						return matchResult.isMatch();
-								
-					} catch (LookupException e) {
-						e.printStackTrace(); 
-						
-						return false;
-					}
-				}
-
-			});
-							
-			// We found a match! Weave !
-			for (MethodInvocation cr : refs) {					
+			// Fetch all joinpoints for this advice
+			List<MatchResult<CrossReferencePointcutExpression, MethodInvocation>> joinpoints = a.pointcut().joinpoints(source);
+			
+			// Weave those joinpoints
+			for (MatchResult<CrossReferencePointcutExpression, MethodInvocation> matchResult : joinpoints) {	
 				// Create a call to the advice method
-				RegularMethodInvocation adviceInvocation = new RegularMethodInvocation("advice_" + a.name(), new NamedTarget(a.aspect().name()));
+				RegularMethodInvocation adviceInvocation = new RegularMethodInvocation("advice_" + a.name() + "_" + getName(matchResult.getJoinpoint().getElement().signature()), new NamedTarget(a.aspect().name()));
 				Statement call = new StatementExpression(adviceInvocation);
 				
-				InvocationTarget target = cr.getTarget();
+				InvocationTarget target = matchResult.getJoinpoint().getTarget();
 				if (target == null)
 					target = new ThisLiteral();
 				else {
@@ -467,10 +522,10 @@ public class JavaWeaver {
 						target = target.clone();
 					}
 				}
-				Object o = MethodInvocation.class;
+
 				adviceInvocation.addArgument(new VariableReference("object", target));
-				adviceInvocation.addArgument(new RegularLiteral(new BasicTypeReference("String"), "\"" + ((SimpleNameMethodInvocation) cr).name()+ "\""));
-				List<Expression> methodParameters = ((MethodInvocation) cr).getActualParameters();
+				adviceInvocation.addArgument(new RegularLiteral(new BasicTypeReference("String"), "\"" + ((SimpleNameMethodInvocation)matchResult.getJoinpoint()).name()+ "\""));
+				List<Expression> methodParameters = matchResult.getJoinpoint().getActualParameters();
 				ArrayCreationExpression parameterArray = new ArrayCreationExpression(new ArrayTypeReference(new BasicJavaTypeReference("Object")));
 				ArrayInitializer parameterInitializer = new ArrayInitializer();					
 			
@@ -484,11 +539,10 @@ public class JavaWeaver {
 				ArrayCreationExpression indexArray = new ArrayCreationExpression(new ArrayTypeReference(new BasicJavaTypeReference("int")));
 				ArrayInitializer indexInitializer = new ArrayInitializer();
 				
-				MatchResult matchResult = resultMap.get(cr);
-				Pointcut pc = matchResult.getElement().pointcut();
+				Pointcut pc = a.pointcut();
 				for (FormalParameter param : (List<FormalParameter>) pc.header().formalParameters()) {
 					// Find the index of the parameter with the same name as 'param' in the matched pointcut ref
-					int index = matchResult.getElement().indexOfParameter(param);
+					int index = matchResult.getExpression().indexOfParameter(param);
 					
 					indexInitializer.addInitializer(new RegularLiteral(new BasicJavaTypeReference("int"), Integer.toString(index)));
 				}
@@ -499,15 +553,14 @@ public class JavaWeaver {
 				
 				
 				// Set the generic parameter
-				if (!((MethodInvocation) cr).getType().signature().name().equals("void"))
-					adviceInvocation.addArgument(new BasicTypeArgument(new BasicTypeReference(((MethodInvocation) cr).getType().getFullyQualifiedName())));
+				if (!matchResult.getJoinpoint().getType().signature().name().equals("void"))
+					adviceInvocation.addArgument(new BasicTypeArgument(new BasicTypeReference(matchResult.getJoinpoint().getType().getFullyQualifiedName())));
 				
 				// Weave
-				cr.parentLink().getOtherRelation().replace(cr.parentLink(), adviceInvocation.parentLink());
-			}	
+				matchResult.getJoinpoint().parentLink().getOtherRelation().replace(matchResult.getJoinpoint().parentLink(), adviceInvocation.parentLink());
+			}
 		}
 		
 		return source;
-	}
-	
+	}	
 }
