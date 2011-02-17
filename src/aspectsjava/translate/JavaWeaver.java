@@ -2,11 +2,11 @@ package aspectsjava.translate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.TreeSet;
 
 import jnome.core.expression.ArrayAccessExpression;
 import jnome.core.expression.ArrayCreationExpression;
@@ -27,7 +27,6 @@ import chameleon.aspects.pointcut.Pointcut;
 import chameleon.aspects.pointcut.expression.CrossReferencePointcutExpression;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.declaration.DeclarationWithParametersHeader;
-import chameleon.core.declaration.Signature;
 import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameSignature;
 import chameleon.core.expression.Expression;
@@ -39,6 +38,8 @@ import chameleon.core.expression.VariableReference;
 import chameleon.core.lookup.LookupException;
 import chameleon.core.method.Method;
 import chameleon.core.method.RegularImplementation;
+import chameleon.core.method.exception.ExceptionDeclaration;
+import chameleon.core.method.exception.TypeExceptionDeclaration;
 import chameleon.core.namespacepart.NamespacePart;
 import chameleon.core.statement.Block;
 import chameleon.core.statement.Statement;
@@ -66,6 +67,7 @@ import chameleon.support.modifier.Public;
 import chameleon.support.modifier.Static;
 import chameleon.support.statement.CatchClause;
 import chameleon.support.statement.EmptyStatement;
+import chameleon.support.statement.FinallyClause;
 import chameleon.support.statement.ForStatement;
 import chameleon.support.statement.IfThenElseStatement;
 import chameleon.support.statement.ReturnStatement;
@@ -82,7 +84,7 @@ public class JavaWeaver {
 
 	}
 	
-	private Map<Signature, String> methodNames = new HashMap<Signature, String>();
+	private Map<Method, String> methodNames = new HashMap<Method, String>();
 	
 	
 	public CompilationUnit weave(CompilationUnit source, List<CompilationUnit> allProjectCompilationUnits) throws LookupException {
@@ -92,33 +94,33 @@ public class JavaWeaver {
 			return weaveRegularType(source, allProjectCompilationUnits);
 	}
 	
-	private String getName(Signature signature) {
-		String name = getExisting(signature);
+	private String getName(Method method) {
+		String name = getExisting(method);
 		
 		if (name == null) {
 			do {
 				name = getRandomName();
 			} while (methodNames.values().contains(name));
 			
-			methodNames.put(signature.clone(), name);
+			methodNames.put(method.clone(), name);
 		}
 		
 		return name;
 	}
 	
-	private String getExisting(Signature signature) {
-		Signature signatureToGet = signature;
-		for (Signature s : methodNames.keySet()) {
+	private String getExisting(Method method) {
+		Method methodToGet = method;
+		for (Method m : methodNames.keySet()) {
 			try {
-				if (signature.sameAs(s))
-					signatureToGet = s;
+				if (method.signature().sameAs(m.signature()))
+					methodToGet = m;
 			} catch (LookupException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 				
-		return methodNames.get(signatureToGet);
+		return methodNames.get(methodToGet);
 	}
 	
 	private Random r = new Random();
@@ -143,7 +145,7 @@ public class JavaWeaver {
 		JavaFactory factory = new JavaFactory();
 			
 		for (Advice advice : (List<Advice>) aspect.advices()) {
-			Set<Method> methods = new TreeSet<Method>();
+			Set<Method> methods = new HashSet<Method>();
 			
 			for (CompilationUnit cu : allProjectCompilationUnits)
 				for (MatchResult<CrossReferencePointcutExpression, MethodInvocation> matchResult : (List<MatchResult<CrossReferencePointcutExpression, MethodInvocation>>) advice.pointcut().joinpoints(cu))
@@ -151,7 +153,7 @@ public class JavaWeaver {
 						methods.add(matchResult.getJoinpoint().getElement());
 			
 			for (Method m : methods) {
-				DeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader("advice_" + advice.name() + "_" + getName(m.signature()));
+				DeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader("advice_" + advice.name() + "_" + getName(m));
 				
 				TypeReference returnType;
 				
@@ -167,7 +169,9 @@ public class JavaWeaver {
 				
 				header.addTypeParameter(new FormalTypeParameter(new SimpleNameSignature("T")));
 	
-				
+				// Copy the exceptions
+				adviceMethod.setExceptionClause(m.getExceptionClause().clone());
+		
 				/*
 				 *	Add all the parameters to allow the reflective invocation 
 				 */
@@ -230,7 +234,7 @@ public class JavaWeaver {
 					returnVal.add(returnValDecl);
 				
 					adviceBody.addStatement(returnVal);
-					adviceBody.addBlock(((Block) advice.body()).clone()); 
+					// Don't add the advice here, we add it later in a finally statement 
 					adviceBody.addStatement(new ReturnStatement(new NamedTargetExpression("_retval")));
 				}
 				else if (advice.type() == AdviceType.BEFORE) {
@@ -270,11 +274,48 @@ public class JavaWeaver {
 						adviceBody.addStatement(new ReturnStatement(new NullLiteral()));
 				}
 				
+				// Wrap everything in a try-catch block
+				Block emptyCatchBody = new Block();
+				emptyCatchBody.addStatement(new EmptyStatement());
 				
-	
-							
+				// Re-throw unchecked exceptions (subclasses of RuntimeException )
+				Block rethrowBody = new Block();
+				ThrowStatement rethrow = new ThrowStatement(new NamedTargetExpression("unchecked"));
+				rethrowBody.addStatement(rethrow);
+				
+				TryStatement exceptionHandler = new TryStatement(adviceBody);
+				exceptionHandler.addCatchClause(new CatchClause(new FormalParameter("unchecked", new BasicTypeReference("RuntimeException")), rethrowBody.clone()));
+				
+				// Add a rethrow for each checked exception
+				int exceptionIndex = 0;
+				for (ExceptionDeclaration exception : m.getExceptionClause().exceptionDeclarations()) {
+					if (exception instanceof TypeExceptionDeclaration) {
+						rethrowBody = new Block();
+						rethrow = new ThrowStatement(new NamedTargetExpression("ex" + exceptionIndex));
+						rethrowBody.addStatement(rethrow);
+					
+						exceptionHandler.addCatchClause(new CatchClause(new FormalParameter("ex" + exceptionIndex++, ((TypeExceptionDeclaration) exception).getTypeReference().clone()), rethrowBody));
+					}
+				}
+				
+				// Add a catch all. This isn't actually necessary since we already handled all cases, but since the generic proceed method throws a throwable we need it.
+				exceptionHandler.addCatchClause(new CatchClause(new FormalParameter("thrwbl", new BasicTypeReference("Throwable")), emptyCatchBody));
+				
+				// Add a finally clause if we need to
+				if (advice.type() == AdviceType.AFTER) {
+					exceptionHandler.setFinallyClause(new FinallyClause(((Block) advice.body()).clone()));
+				}
+				
+				Block finalBody = new Block();
+				finalBody.addStatement(exceptionHandler);
+						
+				// Add a -  throw new Error(); - after the try {} catch, 
+				// since the try-block should return anyway. If it doesn't, then an error occurred anyway
+				ThrowStatement throwError = new ThrowStatement(new ConstructorInvocation(new BasicJavaTypeReference("Error"), null));
+				finalBody.addStatement(throwError);
+				
 				// Set the method body
-				adviceMethod.setImplementation(new RegularImplementation(adviceBody));
+				adviceMethod.setImplementation(new RegularImplementation(finalBody));
 				
 				// Add the method
 				aspectClass.add(adviceMethod);
@@ -315,7 +356,7 @@ public class JavaWeaver {
 		proceedMethod.addModifier(new Static());
 
 		//proceedMethod.getExceptionClause().add(new TypeExceptionDeclaration(new BasicJavaTypeReference("java.lang.reflect.InvocationTargetException")));
-		//proceedMethod.getExceptionClause().add(new TypeExceptionDeclaration(new BasicJavaTypeReference("Throwable")));
+		proceedMethod.getExceptionClause().add(new TypeExceptionDeclaration(new BasicJavaTypeReference("Throwable")));
 		
 		/*
 		 * 	Create method body
@@ -456,7 +497,7 @@ public class JavaWeaver {
 		CatchClause catchSecurity = new CatchClause(new FormalParameter("se", new BasicTypeReference("SecurityException")), emptyCatchBody.clone());
 		CatchClause catchIllegalAcc = new CatchClause(new FormalParameter("iac", new BasicTypeReference("IllegalAccessException")), emptyCatchBody.clone());
 		CatchClause catchNoSuchMethod = new CatchClause(new FormalParameter("nsmInner", new BasicTypeReference("NoSuchMethodException")), emptyCatchBody.clone());
-		CatchClause catchInvocationT = new CatchClause(new FormalParameter("invo", new BasicTypeReference("java.lang.reflect.InvocationTargetException")), emptyCatchBody.clone());
+		CatchClause catchInvocationT = new CatchClause(new FormalParameter("invo", new BasicTypeReference("java.lang.reflect.InvocationTargetException")), rethrowBody.clone());
 		
 		innerTryCatch.addCatchClause(catchIllegalArg);
 		innerTryCatch.addCatchClause(catchSecurity);
@@ -509,7 +550,7 @@ public class JavaWeaver {
 			// Weave those joinpoints
 			for (MatchResult<CrossReferencePointcutExpression, MethodInvocation> matchResult : joinpoints) {	
 				// Create a call to the advice method
-				RegularMethodInvocation adviceInvocation = new RegularMethodInvocation("advice_" + a.name() + "_" + getName(matchResult.getJoinpoint().getElement().signature()), new NamedTarget(a.aspect().name()));
+				RegularMethodInvocation adviceInvocation = new RegularMethodInvocation("advice_" + a.name() + "_" + getName(matchResult.getJoinpoint().getElement()), new NamedTarget(a.aspect().name()));
 				Statement call = new StatementExpression(adviceInvocation);
 				
 				InvocationTarget target = matchResult.getJoinpoint().getTarget();

@@ -339,7 +339,7 @@ aspect returns [Aspect element]
 	}
 	;
 
-pointcut returns [CrossReferencePointcut element]
+pointcut returns [MethodInvocationPointcut element]
 @after{setLocation(retval.element, decl.start, decl.stop);}
 	: pct='pointcut' decl=pointcutDecl pars=formalParameters ':' expr=pointcutExpression ';'
 	
@@ -347,7 +347,7 @@ pointcut returns [CrossReferencePointcut element]
 		SimpleNameDeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader(decl.element);
 		header.addFormalParameters(pars.element);
 		setLocation(header, decl.start, pars.stop);
-		retval.element = new CrossReferencePointcut(header, expr.element);
+		retval.element = new MethodInvocationPointcut(header, expr.element);
 		setKeyword(retval.element, pct);
 	}
 	;
