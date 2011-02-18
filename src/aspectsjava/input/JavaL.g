@@ -72,7 +72,7 @@ Identifier
     ;
 	
 IdentifierWithWC 
-    :   Letter (Letter|JavaIDDigit|'**')*
+    :    (Letter|'**') (Letter|JavaIDDigit|'**')* 
     ;
 
 /**I found this char range in JavaCC's grammar, but Letter and Digit overlap.

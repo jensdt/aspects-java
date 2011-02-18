@@ -372,7 +372,7 @@ pointcutExpressionOr returns [PointcutExpression element]
 pointcutAtom returns [PointcutExpression element]
 @after{setLocation(retval.element, retval.start, retval.stop);}
 	: cl='call' '(' metref=methodReference ')' {retval.element = new CrossReferencePointcutExpression(metref.element); setKeyword(retval.element, cl);}
-//	| args='getargs' '(' params=argParams ')' {retval.element = new ArgsPointcutExpression(params.element); setKeyword(retval.element, args); }
+	| clA='callAnnotated' '(' annot=Identifier ')' {AnnotatedMethodInvocationExpression result = new AnnotatedMethodInvocationExpression(); result.setReference(new AnnotationReference($annot.text)); retval.element = result; setKeyword(retval.element, clA);}
 	| '!' expr1=pointcutAtom {retval.element = new PointcutExpressionNot(expr1.element);}
 	| '(' expr2=pointcutExpression ')' {retval.element = expr2.element;}
 	;
@@ -436,6 +436,8 @@ adviceReturnStatement returns [Statement element]
 adviceType returns [AdviceType element]
 	: 'before_' { retval.element = AdviceType.BEFORE; }
 	| 'after_' {retval.element = AdviceType.AFTER; }
+	| 'after-returning' {retval.element = AdviceType.AFTER_RETURNING; }
+	| 'after-throwing' {retval.element = AdviceType.AFTER_THROWING; }
 	| 'around_' {retval.element = AdviceType.AROUND; }
 	;
         

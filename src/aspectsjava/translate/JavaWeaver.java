@@ -225,7 +225,7 @@ public class JavaWeaver {
 				proceedInvocation.addArgument(new NamedTargetExpression("_methodName"));
 				proceedInvocation.addArgument((new BasicTypeArgument(returnType.clone())));
 				
-				if (advice.type() == AdviceType.AFTER) {
+				if (advice.type() == AdviceType.AFTER || advice.type() == AdviceType.AFTER_RETURNING || advice.type() == AdviceType.AFTER_THROWING) {
 					proceedInvocation.addArgument(new NamedTargetExpression("_arguments"));
 					
 					LocalVariableDeclarator returnVal = new LocalVariableDeclarator(new BasicTypeReference("T"));
@@ -234,7 +234,10 @@ public class JavaWeaver {
 					returnVal.add(returnValDecl);
 				
 					adviceBody.addStatement(returnVal);
-					// Don't add the advice here, we add it later in a finally statement 
+					
+					if (advice.type() == AdviceType.AFTER_RETURNING)
+						adviceBody.addBlock(((Block) advice.body()).clone());
+					
 					adviceBody.addStatement(new ReturnStatement(new NamedTargetExpression("_retval")));
 				}
 				else if (advice.type() == AdviceType.BEFORE) {
@@ -281,24 +284,30 @@ public class JavaWeaver {
 				// Re-throw unchecked exceptions (subclasses of RuntimeException )
 				Block rethrowBody = new Block();
 				ThrowStatement rethrow = new ThrowStatement(new NamedTargetExpression("unchecked"));
+				if (advice.type() == AdviceType.AFTER_THROWING)
+					rethrowBody.addBlock(((Block) advice.body()).clone());
 				rethrowBody.addStatement(rethrow);
 				
 				TryStatement exceptionHandler = new TryStatement(adviceBody);
 				exceptionHandler.addCatchClause(new CatchClause(new FormalParameter("unchecked", new BasicTypeReference("RuntimeException")), rethrowBody.clone()));
-				
+
 				// Add a rethrow for each checked exception
 				int exceptionIndex = 0;
 				for (ExceptionDeclaration exception : m.getExceptionClause().exceptionDeclarations()) {
 					if (exception instanceof TypeExceptionDeclaration) {
 						rethrowBody = new Block();
 						rethrow = new ThrowStatement(new NamedTargetExpression("ex" + exceptionIndex));
+						
+						if (advice.type() == AdviceType.AFTER_THROWING)
+							rethrowBody.addBlock(((Block) advice.body()).clone());
+						
 						rethrowBody.addStatement(rethrow);
-					
+						
 						exceptionHandler.addCatchClause(new CatchClause(new FormalParameter("ex" + exceptionIndex++, ((TypeExceptionDeclaration) exception).getTypeReference().clone()), rethrowBody));
 					}
 				}
 				
-				// Add a catch all. This isn't actually necessary since we already handled all cases, but since the generic proceed method throws a throwable we need it.
+				// Add a catch all. This isn't actually necessary since we already handled all cases, but since the generic proceed method throws a throwable we need it to prevent compile errors
 				exceptionHandler.addCatchClause(new CatchClause(new FormalParameter("thrwbl", new BasicTypeReference("Throwable")), emptyCatchBody));
 				
 				// Add a finally clause if we need to
