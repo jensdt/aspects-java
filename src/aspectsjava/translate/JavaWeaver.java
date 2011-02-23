@@ -22,9 +22,9 @@ import aspectsjava.model.expression.ProceedCall;
 import chameleon.aspects.Aspect;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.AdviceType;
-import chameleon.aspects.pointcut.MatchResult;
 import chameleon.aspects.pointcut.Pointcut;
-import chameleon.aspects.pointcut.expression.CrossReferencePointcutExpression;
+import chameleon.aspects.pointcut.expression.MatchResult;
+import chameleon.aspects.pointcut.expression.methodinvocation.SignatureMethodInvocationPointcutExpression;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.declaration.DeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
@@ -148,7 +148,7 @@ public class JavaWeaver {
 			Set<Method> methods = new HashSet<Method>();
 			
 			for (CompilationUnit cu : allProjectCompilationUnits)
-				for (MatchResult<CrossReferencePointcutExpression, MethodInvocation> matchResult : (List<MatchResult<CrossReferencePointcutExpression, MethodInvocation>>) advice.pointcut().joinpoints(cu))
+				for (MatchResult<SignatureMethodInvocationPointcutExpression, MethodInvocation> matchResult : (List<MatchResult<SignatureMethodInvocationPointcutExpression, MethodInvocation>>) advice.pointcut().joinpoints(cu))
 					if (matchResult.isMatch())
 						methods.add(matchResult.getJoinpoint().getElement());
 			
@@ -554,10 +554,10 @@ public class JavaWeaver {
 		// Weave all advices
 		for (Advice a : advices) {
 			// Fetch all joinpoints for this advice
-			List<MatchResult<CrossReferencePointcutExpression, MethodInvocation>> joinpoints = a.pointcut().joinpoints(source);
+			List<MatchResult<SignatureMethodInvocationPointcutExpression, MethodInvocation>> joinpoints = a.pointcut().joinpoints(source);
 			
 			// Weave those joinpoints
-			for (MatchResult<CrossReferencePointcutExpression, MethodInvocation> matchResult : joinpoints) {	
+			for (MatchResult<SignatureMethodInvocationPointcutExpression, MethodInvocation> matchResult : joinpoints) {	
 				// Create a call to the advice method
 				RegularMethodInvocation adviceInvocation = new RegularMethodInvocation("advice_" + a.name() + "_" + getName(matchResult.getJoinpoint().getElement()), new NamedTarget(a.aspect().name()));
 				Statement call = new StatementExpression(adviceInvocation);

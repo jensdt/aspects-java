@@ -16,6 +16,8 @@ import chameleon.aspects.*;
 import chameleon.aspects.advice.*;
 import chameleon.aspects.pointcut.*;
 import chameleon.aspects.pointcut.expression.*;
+import chameleon.aspects.pointcut.expression.generic.*;
+import chameleon.aspects.pointcut.expression.methodinvocation.*;
 
 import chameleon.exception.ModelException;
 import chameleon.exception.ChameleonProgrammerException;
@@ -339,7 +341,7 @@ aspect returns [Aspect element]
 	}
 	;
 
-pointcut returns [MethodInvocationPointcut element]
+pointcut returns [Pointcut element]
 @after{setLocation(retval.element, decl.start, decl.stop);}
 	: pct='pointcut' decl=pointcutDecl pars=formalParameters ':' expr=pointcutExpression ';'
 	
@@ -347,7 +349,7 @@ pointcut returns [MethodInvocationPointcut element]
 		SimpleNameDeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader(decl.element);
 		header.addFormalParameters(pars.element);
 		setLocation(header, decl.start, pars.stop);
-		retval.element = new MethodInvocationPointcut(header, expr.element);
+		retval.element = new Pointcut(header, expr.element);
 		setKeyword(retval.element, pct);
 	}
 	;
@@ -371,7 +373,7 @@ pointcutExpressionOr returns [PointcutExpression element]
 	
 pointcutAtom returns [PointcutExpression element]
 @after{setLocation(retval.element, retval.start, retval.stop);}
-	: cl='call' '(' metref=methodReference ')' {retval.element = new CrossReferencePointcutExpression(metref.element); setKeyword(retval.element, cl);}
+	: cl='call' '(' metref=methodReference ')' {retval.element = new SignatureMethodInvocationPointcutExpression(metref.element); setKeyword(retval.element, cl);}
 	| clA='callAnnotated' '(' annot=Identifier ')' {AnnotatedMethodInvocationExpression result = new AnnotatedMethodInvocationExpression(); result.setReference(new AnnotationReference($annot.text)); retval.element = result; setKeyword(retval.element, clA);}
 	| '!' expr1=pointcutAtom {retval.element = new PointcutExpressionNot(expr1.element);}
 	| '(' expr2=pointcutExpression ')' {retval.element = expr2.element;}
