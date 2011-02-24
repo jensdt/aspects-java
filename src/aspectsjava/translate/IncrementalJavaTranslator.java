@@ -9,6 +9,7 @@ import java.util.Set;
 
 import jnome.core.language.Java;
 import aspectsjava.model.language.AspectsJava;
+import aspectsjava.translate.weaver.JavaWeaver;
 import chameleon.aspects.advice.Advice;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.language.Language;

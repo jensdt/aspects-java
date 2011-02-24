@@ -1,8 +1,9 @@
-package aspectsjava.translate;
+package aspectsjava.translate.weaver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -11,30 +12,26 @@ import java.util.Set;
 import jnome.core.expression.ArrayAccessExpression;
 import jnome.core.expression.ArrayCreationExpression;
 import jnome.core.expression.ArrayInitializer;
-import jnome.core.expression.ClassLiteral;
 import jnome.core.expression.invocation.ConstructorInvocation;
 import jnome.core.type.ArrayTypeReference;
 import jnome.core.type.BasicJavaTypeReference;
-import jnome.core.type.RegularJavaType;
 import jnome.core.variable.JavaVariableDeclaration;
 import jnome.input.JavaFactory;
 import aspectsjava.model.expression.ProceedCall;
 import chameleon.aspects.Aspect;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.AdviceType;
-import chameleon.aspects.pointcut.Pointcut;
 import chameleon.aspects.pointcut.expression.MatchResult;
+import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
 import chameleon.aspects.pointcut.expression.methodinvocation.SignatureMethodInvocationPointcutExpression;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.declaration.DeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameSignature;
 import chameleon.core.expression.Expression;
-import chameleon.core.expression.InvocationTarget;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.NamedTarget;
 import chameleon.core.expression.NamedTargetExpression;
-import chameleon.core.expression.VariableReference;
 import chameleon.core.lookup.LookupException;
 import chameleon.core.method.Method;
 import chameleon.core.method.RegularImplementation;
@@ -42,9 +39,9 @@ import chameleon.core.method.exception.ExceptionDeclaration;
 import chameleon.core.method.exception.TypeExceptionDeclaration;
 import chameleon.core.namespacepart.NamespacePart;
 import chameleon.core.statement.Block;
-import chameleon.core.statement.Statement;
 import chameleon.core.variable.FormalParameter;
 import chameleon.core.variable.VariableDeclaration;
+import chameleon.oo.language.ObjectOrientedLanguage;
 import chameleon.oo.type.BasicTypeReference;
 import chameleon.oo.type.RegularType;
 import chameleon.oo.type.TypeReference;
@@ -56,8 +53,6 @@ import chameleon.support.expression.FilledArrayIndex;
 import chameleon.support.expression.InstanceofExpression;
 import chameleon.support.expression.NullLiteral;
 import chameleon.support.expression.RegularLiteral;
-import chameleon.support.expression.ThisLiteral;
-import chameleon.support.member.simplename.SimpleNameMethodInvocation;
 import chameleon.support.member.simplename.method.NormalMethod;
 import chameleon.support.member.simplename.method.RegularMethodInvocation;
 import chameleon.support.member.simplename.operator.infix.InfixOperatorInvocation;
@@ -84,53 +79,13 @@ public class JavaWeaver {
 
 	}
 	
-	private Map<Method, String> methodNames = new HashMap<Method, String>();
-	
+	MethodInvocationWeaver weaver = new MethodInvocationWeaver();
 	
 	public CompilationUnit weave(CompilationUnit source, List<CompilationUnit> allProjectCompilationUnits) throws LookupException {
 		if (!source.descendants(Advice.class).isEmpty())
 			return translateAdvice(source, allProjectCompilationUnits);
 		else
 			return weaveRegularType(source, allProjectCompilationUnits);
-	}
-	
-	private String getName(Method method) {
-		String name = getExisting(method);
-		
-		if (name == null) {
-			do {
-				name = getRandomName();
-			} while (methodNames.values().contains(name));
-			
-			methodNames.put(method.clone(), name);
-		}
-		
-		return name;
-	}
-	
-	private String getExisting(Method method) {
-		Method methodToGet = method;
-		for (Method m : methodNames.keySet()) {
-			try {
-				if (method.signature().sameAs(m.signature()))
-					methodToGet = m;
-			} catch (LookupException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-				
-		return methodNames.get(methodToGet);
-	}
-	
-	private Random r = new Random();
-	private String alphabet = "abcdefghijklmopqrstuvwxyz";
-	private String getRandomName() {
-		StringBuilder name = new StringBuilder();
-		for (int i = 0; i < 8; i++)
-			name.append(alphabet.charAt(r.nextInt(alphabet.length())));
-		
-		return name.toString();
 	}
 	
 	private CompilationUnit translateAdvice(CompilationUnit source, List<CompilationUnit> allProjectCompilationUnits) throws LookupException {	
@@ -153,7 +108,7 @@ public class JavaWeaver {
 						methods.add(matchResult.getJoinpoint().getElement());
 			
 			for (Method m : methods) {
-				DeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader("advice_" + advice.name() + "_" + getName(m));
+				DeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader("advice_" + advice.name() + "_" + weaver.getName(m));
 				
 				TypeReference returnType;
 				
@@ -175,21 +130,28 @@ public class JavaWeaver {
 				/*
 				 *	Add all the parameters to allow the reflective invocation 
 				 */
-				FormalParameter object = new FormalParameter("_object", new BasicTypeReference("Object"));
+				final String objectParamName = "_$object";
+				final String methodNameParamName = "_$methodName";
+				final String argumentNameParamName = "_$arguments";
+				final String argumentIndexParamName = "_$argumentIndex";
+				
+				FormalParameter object = new FormalParameter(objectParamName, new BasicTypeReference("Object"));
 				header.addFormalParameter(object);
 				
-				FormalParameter methodName = new FormalParameter("_methodName", new BasicTypeReference("String"));
+				FormalParameter methodName = new FormalParameter(methodNameParamName, new BasicTypeReference("String"));
 				header.addFormalParameter(methodName);
 				
-				FormalParameter methodArguments = new FormalParameter("_arguments", new ArrayTypeReference(new BasicJavaTypeReference("Object")));
+				FormalParameter methodArguments = new FormalParameter(argumentNameParamName, new ArrayTypeReference(new BasicJavaTypeReference("Object")));
 				header.addFormalParameter(methodArguments);
 				
-				FormalParameter methodArgumentsIndex = new FormalParameter("_$argumentIndex", new ArrayTypeReference(new BasicJavaTypeReference("int")));
+				
+				FormalParameter methodArgumentsIndex = new FormalParameter(argumentIndexParamName, new ArrayTypeReference(new BasicJavaTypeReference("int")));
 				header.addFormalParameter(methodArgumentsIndex);
 				
 				/*
 				 * 	Start the method block
 				 */
+				Block finalBody = new Block();
 				Block adviceBody = new Block();
 				
 				/*
@@ -202,10 +164,10 @@ public class JavaWeaver {
 					VariableDeclaration parameterInjectorDecl = new VariableDeclaration(fp.getName());
 					
 					// Add the indirection to the correct parameter
-					ArrayAccessExpression argumentsIndexAccess = new ArrayAccessExpression(new NamedTargetExpression("_$argumentIndex"));
+					ArrayAccessExpression argumentsIndexAccess = new ArrayAccessExpression(new NamedTargetExpression(argumentIndexParamName));
 					argumentsIndexAccess.addIndex(new FilledArrayIndex(new RegularLiteral(new BasicJavaTypeReference("int"), Integer.toString(index))));
 	
-					ArrayAccessExpression argumentsAccess = new ArrayAccessExpression(new NamedTargetExpression("_arguments"));
+					ArrayAccessExpression argumentsAccess = new ArrayAccessExpression(new NamedTargetExpression(argumentNameParamName));
 					argumentsAccess.addIndex(new FilledArrayIndex(argumentsIndexAccess));
 	
 					// Add the cast, since the arguments is just an Object array
@@ -214,22 +176,24 @@ public class JavaWeaver {
 					parameterInjectorDecl.setInitialization(cast);
 					parameterInjector.add(parameterInjectorDecl);
 					
-					adviceBody.addStatement(parameterInjector);
+					finalBody.addStatement(parameterInjector);
 				}
 				
 				/*
 				 *	Create the proceed call
 				 */
 				RegularMethodInvocation proceedInvocation = new RegularMethodInvocation("proceed", new NamedTarget(aspect.name()));
-				proceedInvocation.addArgument(new NamedTargetExpression("_object"));
-				proceedInvocation.addArgument(new NamedTargetExpression("_methodName"));
+				proceedInvocation.addArgument(new NamedTargetExpression(objectParamName));
+				proceedInvocation.addArgument(new NamedTargetExpression(methodNameParamName));
 				proceedInvocation.addArgument((new BasicTypeArgument(returnType.clone())));
 				
+				final String retvalName = "_$retval";
 				if (advice.type() == AdviceType.AFTER || advice.type() == AdviceType.AFTER_RETURNING || advice.type() == AdviceType.AFTER_THROWING) {
-					proceedInvocation.addArgument(new NamedTargetExpression("_arguments"));
+					proceedInvocation.addArgument(new NamedTargetExpression(argumentNameParamName));
 					
 					LocalVariableDeclarator returnVal = new LocalVariableDeclarator(new BasicTypeReference("T"));
-					VariableDeclaration returnValDecl = new VariableDeclaration("_retval");
+					
+					VariableDeclaration returnValDecl = new VariableDeclaration(retvalName);
 					returnValDecl.setInitialization(proceedInvocation);
 					returnVal.add(returnValDecl);
 				
@@ -238,10 +202,10 @@ public class JavaWeaver {
 					if (advice.type() == AdviceType.AFTER_RETURNING)
 						adviceBody.addBlock(((Block) advice.body()).clone());
 					
-					adviceBody.addStatement(new ReturnStatement(new NamedTargetExpression("_retval")));
+					adviceBody.addStatement(new ReturnStatement(new NamedTargetExpression(retvalName)));
 				}
 				else if (advice.type() == AdviceType.BEFORE) {
-					proceedInvocation.addArgument(new NamedTargetExpression("_arguments"));
+					proceedInvocation.addArgument(new NamedTargetExpression(argumentNameParamName));
 					
 					adviceBody.addBlock(((Block) advice.body()).clone()); 
 					adviceBody.addStatement(new ReturnStatement(proceedInvocation));
@@ -293,18 +257,38 @@ public class JavaWeaver {
 
 				// Add a rethrow for each checked exception
 				int exceptionIndex = 0;
+				List<TypeExceptionDeclaration> checkedTypeExceptions = new ArrayList<TypeExceptionDeclaration>();
+				
+				// Copy all checked exceptions
 				for (ExceptionDeclaration exception : m.getExceptionClause().exceptionDeclarations()) {
-					if (exception instanceof TypeExceptionDeclaration) {
-						rethrowBody = new Block();
-						rethrow = new ThrowStatement(new NamedTargetExpression("ex" + exceptionIndex));
-						
-						if (advice.type() == AdviceType.AFTER_THROWING)
-							rethrowBody.addBlock(((Block) advice.body()).clone());
-						
-						rethrowBody.addStatement(rethrow);
-						
-						exceptionHandler.addCatchClause(new CatchClause(new FormalParameter("ex" + exceptionIndex++, ((TypeExceptionDeclaration) exception).getTypeReference().clone()), rethrowBody));
+					System.out.println(source.language(ObjectOrientedLanguage.class).isException(((TypeExceptionDeclaration) exception).getType()));
+					if (exception instanceof TypeExceptionDeclaration && true) // source.language(ObjectOrientedLanguage.class).isCheckedException(((TypeExceptionDeclaration) exception).getType()))
+						checkedTypeExceptions.add((TypeExceptionDeclaration) exception);
+				}
+				
+				// Now remove checked exceptions that are a subtype of another declared exception
+				Iterator<TypeExceptionDeclaration> exceptionIterator = checkedTypeExceptions.iterator();
+				
+				while (exceptionIterator.hasNext()) {
+					TypeExceptionDeclaration currentException = exceptionIterator.next();
+					for (TypeExceptionDeclaration other : checkedTypeExceptions) {
+						if (currentException != other && currentException.getType().assignableTo(other.getType())) {
+							exceptionIterator.remove();
+							break;
+						}
 					}
+				}
+				
+				for (TypeExceptionDeclaration exception : checkedTypeExceptions) {
+					rethrowBody = new Block();
+					rethrow = new ThrowStatement(new NamedTargetExpression("ex" + exceptionIndex));
+					
+					if (advice.type() == AdviceType.AFTER_THROWING)
+						rethrowBody.addBlock(((Block) advice.body()).clone());
+					
+					rethrowBody.addStatement(rethrow);
+					
+					exceptionHandler.addCatchClause(new CatchClause(new FormalParameter("ex" + exceptionIndex++, exception.getTypeReference().clone()), rethrowBody));
 				}
 				
 				// Add a catch all. This isn't actually necessary since we already handled all cases, but since the generic proceed method throws a throwable we need it to prevent compile errors
@@ -315,7 +299,7 @@ public class JavaWeaver {
 					exceptionHandler.setFinallyClause(new FinallyClause(((Block) advice.body()).clone()));
 				}
 				
-				Block finalBody = new Block();
+				
 				finalBody.addStatement(exceptionHandler);
 						
 				// Add a -  throw new Error(); - after the try {} catch, 
@@ -551,64 +535,13 @@ public class JavaWeaver {
 			advices.addAll(cu.descendants(Advice.class));
 		}
 		
+		
 		// Weave all advices
 		for (Advice a : advices) {
 			// Fetch all joinpoints for this advice
-			List<MatchResult<SignatureMethodInvocationPointcutExpression, MethodInvocation>> joinpoints = a.pointcut().joinpoints(source);
+			List<MatchResult<? extends PointcutExpression, MethodInvocation>> joinpoints = a.pointcut().joinpoints(source);
 			
-			// Weave those joinpoints
-			for (MatchResult<SignatureMethodInvocationPointcutExpression, MethodInvocation> matchResult : joinpoints) {	
-				// Create a call to the advice method
-				RegularMethodInvocation adviceInvocation = new RegularMethodInvocation("advice_" + a.name() + "_" + getName(matchResult.getJoinpoint().getElement()), new NamedTarget(a.aspect().name()));
-				Statement call = new StatementExpression(adviceInvocation);
-				
-				InvocationTarget target = matchResult.getJoinpoint().getTarget();
-				if (target == null)
-					target = new ThisLiteral();
-				else {
-					if (target instanceof NamedTarget && ((NamedTarget) target).getElement() instanceof RegularJavaType) {
-						target = new ClassLiteral(new BasicTypeReference(((RegularJavaType) ((NamedTarget) target).getElement()).getType().getFullyQualifiedName()));
-					} else {
-						target = target.clone();
-					}
-				}
-
-				adviceInvocation.addArgument(new VariableReference("object", target));
-				adviceInvocation.addArgument(new RegularLiteral(new BasicTypeReference("String"), "\"" + ((SimpleNameMethodInvocation)matchResult.getJoinpoint()).name()+ "\""));
-				List<Expression> methodParameters = matchResult.getJoinpoint().getActualParameters();
-				ArrayCreationExpression parameterArray = new ArrayCreationExpression(new ArrayTypeReference(new BasicJavaTypeReference("Object")));
-				ArrayInitializer parameterInitializer = new ArrayInitializer();					
-			
-				for (Expression e : methodParameters)
-					parameterInitializer.addInitializer(e.clone());
-				
-				parameterArray.setInitializer(parameterInitializer);
-				
-				adviceInvocation.addArgument(parameterArray);
-				
-				ArrayCreationExpression indexArray = new ArrayCreationExpression(new ArrayTypeReference(new BasicJavaTypeReference("int")));
-				ArrayInitializer indexInitializer = new ArrayInitializer();
-				
-				Pointcut pc = a.pointcut();
-				for (FormalParameter param : (List<FormalParameter>) pc.header().formalParameters()) {
-					// Find the index of the parameter with the same name as 'param' in the matched pointcut ref
-					int index = matchResult.getExpression().indexOfParameter(param);
-					
-					indexInitializer.addInitializer(new RegularLiteral(new BasicJavaTypeReference("int"), Integer.toString(index)));
-				}
-				
-				indexArray.setInitializer(indexInitializer);
-				adviceInvocation.addArgument(indexArray);
-
-				
-				
-				// Set the generic parameter
-				if (!matchResult.getJoinpoint().getType().signature().name().equals("void"))
-					adviceInvocation.addArgument(new BasicTypeArgument(new BasicTypeReference(matchResult.getJoinpoint().getType().getFullyQualifiedName())));
-				
-				// Weave
-				matchResult.getJoinpoint().parentLink().getOtherRelation().replace(matchResult.getJoinpoint().parentLink(), adviceInvocation.parentLink());
-			}
+			weaver.weave(source, a, joinpoints);
 		}
 		
 		return source;
