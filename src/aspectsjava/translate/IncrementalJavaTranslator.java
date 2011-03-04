@@ -1,6 +1,7 @@
 package aspectsjava.translate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Set;
 import jnome.core.language.Java;
 import aspectsjava.model.language.AspectsJava;
 import aspectsjava.translate.weaver.JavaWeaver;
+import chameleon.aspects.Aspect;
 import chameleon.aspects.advice.Advice;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.language.Language;
@@ -79,24 +81,44 @@ public class IncrementalJavaTranslator {
 		}
 		
 		List<CompilationUnit> result = new ArrayList<CompilationUnit>();
-		result.add(buildSingle(source, allProjectCompilationUnits));
+		result.add(buildSingle(source, Collections.<CompilationUnit>emptyList(), allProjectCompilationUnits));
 
 		return result;
 	}
 	
-	private CompilationUnit buildSingle(CompilationUnit source, List<CompilationUnit> allProjectCompilationUnits) throws LookupException {
-		CompilationUnit cloned = implementationCompilationUnit(source);
-		CompilationUnit transformed = _translator.weave(cloned, allProjectCompilationUnits);
+	private CompilationUnit buildSingle(CompilationUnit compilationUnit, List<CompilationUnit> aspectCompilationUnits, List<CompilationUnit> otherCompilationUnits) throws LookupException {
+		CompilationUnit transformed = _translator.weave(compilationUnit, aspectCompilationUnits, otherCompilationUnits);
 				
 		return transformed;
 	}
 	
 	private List<CompilationUnit> completeRebuild(List<CompilationUnit> allProjectCompilationUnits) throws LookupException {
+		System.out.println("-- Complete rebuild");
+		_translator.reset();
 		List<CompilationUnit> result = new ArrayList<CompilationUnit>();
 		
+		List<CompilationUnit> aspects = new ArrayList<CompilationUnit>();
+		List<CompilationUnit> other = new ArrayList<CompilationUnit>();
+		
+		// First rebuild aspects
 		for (CompilationUnit cu : allProjectCompilationUnits) {
-			result.add(buildSingle(cu, allProjectCompilationUnits));
+			CompilationUnit clone = implementationCompilationUnit(cu);
+			
+			if (!clone.descendants(Aspect.class).isEmpty())
+				aspects.add(clone);
+			else
+				other.add(clone);
 		}
+				
+		for (CompilationUnit cu : other) {
+			result.add(buildSingle(cu, aspects, other));
+		}
+		
+		for (CompilationUnit cu : aspects) {
+			result.add(buildSingle(cu, aspects, other));
+		}
+		
+		System.out.println("Rebuilt " + result.size() + " compilationUnit(s)");
 		
 		return result;
 	}
