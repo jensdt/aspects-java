@@ -3,19 +3,18 @@ package aspectsjava.translate.weaver;
 import java.util.ArrayList;
 import java.util.List;
 
-import aspectsjava.translate.weaver.elementweaver.methodinvocation.JavaMethodInvocationWeaver;
-import aspectsjava.translate.weaver.provider.advicetranslation.AdviceTransformProvider;
-import aspectsjava.translate.weaver.provider.advicetranslation.TranslationChain;
+import aspectsjava.translate.weaver.elementweaver.catchclause.CatchClauseWeaver;
+import aspectsjava.translate.weaver.elementweaver.methodinvocation.MethodInvocationWeaver;
 import chameleon.aspects.Aspect;
 import chameleon.aspects.advice.Advice;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.lookup.LookupException;
-import chameleon.oo.type.RegularType;
 
 public class JavaWeaver {
 
 	public JavaWeaver() {
-		weaverChain.add(new JavaMethodInvocationWeaver());
+		weaverChain.add(new MethodInvocationWeaver());
+		weaverChain.add(new CatchClauseWeaver());
 	}
 	
 	WeaverChain weaverChain = new WeaverChain();

@@ -14,10 +14,13 @@ import aspectsjava.model.expression.*;
 
 import chameleon.aspects.*;
 import chameleon.aspects.advice.*;
+import chameleon.aspects.advice.types.*;
+import chameleon.aspects.advice.types.methodInvocation.*;
 import chameleon.aspects.pointcut.*;
 import chameleon.aspects.pointcut.expression.*;
 import chameleon.aspects.pointcut.expression.generic.*;
 import chameleon.aspects.pointcut.expression.methodinvocation.*;
+import chameleon.aspects.pointcut.expression.catchclause.*;
 
 import chameleon.exception.ModelException;
 import chameleon.exception.ChameleonProgrammerException;
@@ -375,6 +378,7 @@ pointcutAtom returns [PointcutExpression element]
 @after{setLocation(retval.element, retval.start, retval.stop);}
 	: cl='call' '(' metref=methodReference ')' {retval.element = new SignatureMethodInvocationPointcutExpression(metref.element); setKeyword(retval.element, cl);}
 	| clA='callAnnotated' '(' annot=Identifier ')' {AnnotatedMethodInvocationExpression result = new AnnotatedMethodInvocationExpression(); result.setReference(new AnnotationReference($annot.text)); retval.element = result; setKeyword(retval.element, clA);}
+	| emptyCatch='emptyCatch' {retval.element = new EmptyCatchClausePointcutExpression(); setKeyword(retval.element, emptyCatch); }
 	| '!' expr1=pointcutAtom {retval.element = new PointcutExpressionNot(expr1.element);}
 	| '(' expr2=pointcutExpression ')' {retval.element = expr2.element;}
 	;
@@ -435,12 +439,13 @@ adviceReturnStatement returns [Statement element]
     ;
     
 
-adviceType returns [AdviceType element]
-	: 'before_' { retval.element = AdviceType.BEFORE; }
-	| 'after_' {retval.element = AdviceType.AFTER; }
-	| 'after-returning' {retval.element = AdviceType.AFTER_RETURNING; }
-	| 'after-throwing' {retval.element = AdviceType.AFTER_THROWING; }
-	| 'around_' {retval.element = AdviceType.AROUND; }
+adviceType returns [AdviceTypeEnum element]
+	: 'before_' { retval.element = AdviceTypeEnum.BEFORE; }
+	| 'after_' {retval.element = AdviceTypeEnum.AFTER; }
+	| 'after-returning' {retval.element = AdviceTypeEnum.AFTER_RETURNING; }
+	| 'after-throwing' {retval.element = AdviceTypeEnum.AFTER_THROWING; }
+	| 'around_' {retval.element = AdviceTypeEnum.AROUND; }
+	| 'inside_' {retval.element = AdviceTypeEnum.INSIDE; }
 	;
         
 methodReference returns [MethodReference element]
