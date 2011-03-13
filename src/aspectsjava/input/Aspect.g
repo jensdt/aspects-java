@@ -10,17 +10,19 @@ import JavaP,JavaL;
 @header {
 package aspectsjava.input;
 
-import aspectsjava.model.expression.*;
+
 
 import chameleon.aspects.*;
 import chameleon.aspects.advice.*;
 import chameleon.aspects.advice.types.*;
-import chameleon.aspects.advice.types.methodInvocation.*;
+
 import chameleon.aspects.pointcut.*;
 import chameleon.aspects.pointcut.expression.*;
 import chameleon.aspects.pointcut.expression.generic.*;
 import chameleon.aspects.pointcut.expression.methodinvocation.*;
 import chameleon.aspects.pointcut.expression.catchclause.*;
+import chameleon.aspects.pointcut.expression.fieldAccess.*;
+import chameleon.aspects.pointcut.expression.runtime.*;
 
 import chameleon.exception.ModelException;
 import chameleon.exception.ChameleonProgrammerException;
@@ -379,8 +381,20 @@ pointcutAtom returns [PointcutExpression element]
 	: cl='call' '(' metref=methodReference ')' {retval.element = new SignatureMethodInvocationPointcutExpression(metref.element); setKeyword(retval.element, cl);}
 	| clA='callAnnotated' '(' annot=Identifier ')' {AnnotatedMethodInvocationExpression result = new AnnotatedMethodInvocationExpression(); result.setReference(new AnnotationReference($annot.text)); retval.element = result; setKeyword(retval.element, clA);}
 	| emptyCatch='emptyCatch' {retval.element = new EmptyCatchClausePointcutExpression(); setKeyword(retval.element, emptyCatch); }
+	| fieldRead='fieldRead' '(' fieldref=fieldReference ')' {retval.element = new FieldReadPointcutExpression(fieldref.element); setKeyword(retval.element, fieldRead); }
+	// Runtime checks
+	| getargs='arguments' t=typesOrParameters {ArgsPointcutExpression expr = new ArgsPointcutExpression(); expr.addAll(t.element); retval.element = expr; setKeyword(retval.element, getargs); }
+	| thisType='thisType' '(' exp=expression ')' {ThisTypePointcutExpression expr = new ThisTypePointcutExpression((NamedTargetExpression) exp.element); retval.element = expr; setKeyword(retval.element, thisType); }
+	| targetType='targetType' '(' exp=expression ')' {TargetTypePointcutExpression expr = new TargetTypePointcutExpression((NamedTargetExpression) exp.element); retval.element = expr; setKeyword(retval.element, targetType); }
+	| if='if' '(' exp=expression ')' {IfPointcutExpression expr = new IfPointcutExpression(exp.element); retval.element = expr; setKeyword(retval.element, if);}
 	| '!' expr1=pointcutAtom {retval.element = new PointcutExpressionNot(expr1.element);}
 	| '(' expr2=pointcutExpression ')' {retval.element = expr2.element;}
+	;
+	
+
+fieldReference returns [FieldReference element]
+@init{String fullName = "";}
+	: (initName=Identifier {fullName = $initName.text;} ('.' appendName=Identifier {fullName += "." + $appendName.text; })*) {retval.element = new FieldReference(fullName);}
 	;
 	
 	
@@ -449,10 +463,15 @@ adviceType returns [AdviceTypeEnum element]
 	;
         
 methodReference returns [MethodReference element]
+@init{JavaTypeReference type = null; String typeWithWC = null;}
 @after{setLocation(retval.element, retval.start, retval.stop);}
-	: t=(IdentifierWithWC|Identifier|'void') name=fqn {retval.element = new MethodReference($t.text, name.element);}
+	: (t=typeOrVoid {type = t.element; }|twc=IdentifierWithWC {typeWithWC = $twc.text;}) name=fqn {retval.element = new MethodReference(name.element, type, typeWithWC);}
 	;
 	
+typeOrVoid returns [JavaTypeReference element]
+	: t=type {retval.element=t.element;}
+	| v=voidType {retval.element=v.element;}
+	;
         
 fqn returns [QualifiedMethodHeader element]
 @init{CompositeQualifiedName prefixes = new CompositeQualifiedName();}
@@ -461,12 +480,25 @@ fqn returns [QualifiedMethodHeader element]
 	;
         
 
-simpleMethodHeader returns [SimpleNameDeclarationWithParametersHeader element]
+simpleMethodHeader returns [SimpleNameDeclarationWithParameterTypesHeader element]
 @after{setLocation(retval.element, retval.start, retval.stop);}
-        :	name=(IdentifierWithWC|Identifier) pars=formalParameters {retval.element = new SimpleNameDeclarationWithParametersHeader($name.text); retval.element.addFormalParameters(pars.element); } 
+        :	name=(IdentifierWithWC|Identifier) pars=formalParameterTypes {retval.element = new SimpleNameDeclarationWithParameterTypesHeader($name.text); retval.element.addAll(pars.element); } 
         ;
         
-        /*
+typesOrParameters returns [List<NamedTargetExpression> element]
+@init{retval.element = new ArrayList<NamedTargetExpression>();}
+    :   '(' (pars=typesOrParameterDecls {retval.element=pars.element;})? ')'
+    ;
+
+typesOrParameterDecls returns [List<NamedTargetExpression> element]
+    :	exp=expression (',' decls=typesOrParameterDecls {retval.element=decls.element; })? 
+    	{if(retval.element == null) {
+	 	retval.element=new ArrayList<NamedTargetExpression>();
+         } 
+         retval.element.add(0, (NamedTargetExpression) exp.element);
+         }
+    ;
+        
 formalParameterTypes returns [List<TypeReference> element]
 @init{retval.element = new ArrayList<TypeReference>();}
     :   '(' (pars=formalParameterTypeDecls {retval.element=pars.element;})? ')'
@@ -479,7 +511,7 @@ formalParameterTypeDecls returns [List<TypeReference> element]
          retval.element.add(0, t.element);
          }
     ;
-    */
+    
 
 expression returns [Expression element]
     :   ex=conditionalExpression {retval.element=ex.element;} (op=assignmentOperator exx=expression 

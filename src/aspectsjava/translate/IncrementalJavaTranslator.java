@@ -10,7 +10,7 @@ import java.util.Set;
 
 import jnome.core.language.Java;
 import aspectsjava.model.language.AspectsJava;
-import aspectsjava.translate.weaver.JavaWeaver;
+import aspectsjava.translate.weaver.WeaveTransformer;
 import chameleon.aspects.Aspect;
 import chameleon.aspects.advice.Advice;
 import chameleon.core.compilationunit.CompilationUnit;
@@ -24,7 +24,7 @@ public class IncrementalJavaTranslator {
 	public IncrementalJavaTranslator(AspectsJava source, Java target) {
 		_sourceLanguage = source;
 		_targetLanguage = target;
-		_translator = new JavaWeaver();
+		_translator = new WeaveTransformer();
 	}
 	
 	private boolean _initialized=false;
@@ -55,9 +55,9 @@ public class IncrementalJavaTranslator {
 	
 	private Language _targetLanguage;
 	
-	private JavaWeaver _translator;
+	private WeaveTransformer _translator;
 	
-	public JavaWeaver basicTranslator() {
+	public WeaveTransformer basicTranslator() {
 		return _translator;
 	}
 	

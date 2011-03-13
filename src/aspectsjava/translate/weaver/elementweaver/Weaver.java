@@ -2,13 +2,15 @@ package aspectsjava.translate.weaver.elementweaver;
 
 import java.util.List;
 
-import aspectsjava.translate.weaver.provider.weaving.WeavingProvider;
+import aspectsjava.translate.weaver.TranslationExecutor;
+import aspectsjava.translate.weaver.weavingprovider.WeavingProvider;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.AdviceTypeEnum;
-import chameleon.aspects.advice.types.translation.AdviceTranslationProvider;
+import chameleon.aspects.advice.types.translation.AdviceTransformationProvider;
 import chameleon.aspects.advice.types.weaving.AdviceWeaveResultProvider;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.runtime.RuntimePointcutExpression;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.element.Element;
 import chameleon.core.lookup.LookupException;
@@ -23,7 +25,7 @@ import chameleon.core.lookup.LookupException;
  * 				Here we have the same result for all different types. The join point (a method invocation) is simply transformed into a
  * 				different method invocation.
  * 
- * 		-	Second, it declares the <em>AdviceTranslationProvider</em>. This provides an opportunity to transform advice code, if this is necessary.
+ * 		-	Second, it declares the <em>AdviceTransformationProvider</em>. This provides an opportunity to transform advice code, if this is necessary.
  *			Again, this can differ by the advice type.
  *
  *				Example 1: MethodInvocations
@@ -36,6 +38,7 @@ import chameleon.core.lookup.LookupException;
  *				Remember, the join point is a method invocation and so is the result of the weaver. We simply swap these to correctly implement
  *				the weaving.
  * 
+ * 	All weavers are used together in a chain of responsibility.
  * 
  * @author Jens
  *
@@ -63,7 +66,7 @@ public interface Weaver<T extends Element, U> {
 	 * 			The join point this advice was matched on
 	 * 	@return The object responsible for transformation
 	 */
-	public AdviceTranslationProvider getTranslationStrategy(Advice advice, MatchResult<? extends PointcutExpression, ? extends Element> joinpoint);
+	public AdviceTransformationProvider getTransformationStrategy(Advice advice, MatchResult<? extends PointcutExpression, ? extends Element> joinpoint);
 	
 	/**
 	 * 	Get the object responsible for tying the weave result and original join point together
@@ -81,7 +84,7 @@ public interface Weaver<T extends Element, U> {
 	 * 			The type of advice
 	 * 	@return	True if this weaver supports the join point and advice type, false otherwise
 	 */
-	public boolean supports(MatchResult<? extends PointcutExpression, T> joinpoint, AdviceTypeEnum adviceType);
+	public boolean supports(MatchResult<? extends PointcutExpression, T> joinpoint, AdviceTypeEnum adviceType) throws LookupException;
 	
 	/**
 	 * 	Get a list of all supported types by this weaver
@@ -93,15 +96,13 @@ public interface Weaver<T extends Element, U> {
 	/**
 	 * 	Perform the actual weaving
 	 * 
-	 * 	@param 	compilationUnit
-	 * 			The compilation unit to weave
 	 * 	@param 	advice
 	 * 			The advice to weave
 	 * 	@param 	joinpoints
 	 * 			The join points belonging to that advice
 	 * 	@throws LookupException
 	 */
-	public void weave(CompilationUnit compilationUnit, Advice advice, MatchResult<? extends PointcutExpression, T> joinpoints) throws LookupException;
+	public void weave(Advice advice, MatchResult<? extends PointcutExpression, T> joinpoints) throws LookupException;
 	
 	/**
 	 * 	Get a list of supported advice types
@@ -110,6 +111,51 @@ public interface Weaver<T extends Element, U> {
 	 */
 	public List<AdviceTypeEnum> supportedAdviceTypes();
 	
+	/**
+	 * 	The start of the weaving process - each weaver is called until one can handle it. No further weavers are called once handled
+	 * 
+	 * 	@param 	compilationUnit
+	 * 			The	compilation unit to weave 
+	 * 	@param 	advice
+	 * 			The advice to weave
+	 * 	@param 	joinpoint
+	 * 			The join points belonging to that advice
+	 * 	@param	adviceTransformation
+	 * 			The chain that defines advice transformation 
+	 * 	@throws LookupException
+	 */
+	public void start(Advice advice, MatchResult<? extends PointcutExpression, T> joinpoint, TranslationExecutor adviceTransformation) throws LookupException;
 	
+	/**
+	 * 	Handle the given compilation unit, advice and join point. Used for the Chain Of Responsibility - return true if this weaver can weave
+	 * 	the given parameters and perform the actual weaving, return false if it can't.
+	 * 	
+	 * 	@param 	compilationUnit
+	 * 			The compilation unit to weave
+	 * 	@param 	advice
+	 * 			The advice to weave
+	 * 	@param 	joinpoint
+	 * 			The join points belonging to that advice
+	 * 	@param	adviceTransformation
+	 * 			The chain that defines advice transformation 
+	 * @return	True if this weaver can weave the given parameters, false if not
+	 * 
+	 * @throws 	LookupException
+	 */
+	public boolean handle(Advice advice, MatchResult<? extends PointcutExpression, T> joinpoint, TranslationExecutor adviceTransformation) throws LookupException;
 
+	/**
+	 * 	Get the next weaver in the chain
+	 * 
+	 * 	@return	The next weaver in the chain (possibly null)
+	 */
+	public Weaver next();
+	
+	/**
+	 * 	Set the next weaver in the chain to the given parameter
+	 * 
+	 * 	@param 	next
+	 * 			The next weaver in the chain
+	 */
+	public void setNext(Weaver next);
 }
