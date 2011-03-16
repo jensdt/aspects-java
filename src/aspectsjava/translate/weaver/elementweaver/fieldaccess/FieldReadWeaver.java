@@ -19,12 +19,11 @@ public class FieldReadWeaver extends FieldWeaver {
 	public boolean supports(MatchResult<? extends PointcutExpression, NamedTargetExpression> result, AdviceTypeEnum advice) throws LookupException {
 		if (!super.supports(result, advice))
 			return false;
-		System.out.println("support!");
+
 		// Only reads		
 		if (result.getJoinpoint().parent() instanceof AssignmentExpression)
 			return false;
 		
-		System.out.println("support!!");
 		return true;
 	}
 
