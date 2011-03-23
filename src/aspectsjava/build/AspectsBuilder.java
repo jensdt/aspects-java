@@ -35,7 +35,7 @@ public class AspectsBuilder extends PluginImpl implements Builder {
 		}
 		
 		super.setLanguage(lang, pluginInterface);
-		Java target = new Java();
+		AspectsJava target = new AspectsJava();
 		target.setPlugin(Syntax.class, new JavaCodeWriter());
 		_translator = new IncrementalJavaTranslator((AspectsJava) lang, target);
 	}

@@ -4,17 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.rejuse.property.PropertySet;
+
 import aspectsjava.translate.weaver.elementweaver.AbstractElementWeaver;
 import aspectsjava.translate.weaver.weavingprovider.ElementReplaceProvider;
 import aspectsjava.translate.weaver.weavingprovider.WeavingProvider;
 import chameleon.aspects.advice.Advice;
-import chameleon.aspects.advice.AdviceTypeEnum;
 import chameleon.aspects.advice.types.translation.AdviceTransformationProvider;
-import chameleon.aspects.advice.types.translation.methodInvocation.AfterReflectiveMethodInvocation;
-import chameleon.aspects.advice.types.translation.methodInvocation.AfterReturningReflectiveMethodInvocation;
-import chameleon.aspects.advice.types.translation.methodInvocation.AfterThrowingReflectingMethodInvocation;
-import chameleon.aspects.advice.types.translation.methodInvocation.AroundReflectiveMethodInvocation;
-import chameleon.aspects.advice.types.translation.methodInvocation.BeforeReflectiveMethodInvocation;
+import chameleon.aspects.advice.types.translation.reflection.methodInvocation.AfterReflectiveMethodInvocation;
+import chameleon.aspects.advice.types.translation.reflection.methodInvocation.AfterReturningReflectiveMethodInvocation;
+import chameleon.aspects.advice.types.translation.reflection.methodInvocation.AfterThrowingReflectiveMethodInvocation;
+import chameleon.aspects.advice.types.translation.reflection.methodInvocation.AroundReflectiveMethodInvocation;
+import chameleon.aspects.advice.types.translation.reflection.methodInvocation.BeforeReflectiveMethodInvocation;
 import chameleon.aspects.advice.types.weaving.AdviceWeaveResultProvider;
 import chameleon.aspects.advice.types.weaving.methodInvocation.DefaultReflectiveMethodInvocation;
 import chameleon.aspects.pointcut.expression.MatchResult;
@@ -40,16 +41,16 @@ public class MethodInvocationWeaver extends AbstractElementWeaver<MethodInvocati
 	 *  {@inheritDoc}
 	 */
 	@Override
-	public List<AdviceTypeEnum> supportedAdviceTypes() {
-		List<AdviceTypeEnum> supported = new ArrayList<AdviceTypeEnum>();
+	public List<PropertySet> supportedAdviceProperties(Advice advice) {
+		List<PropertySet> supportedProperties = new ArrayList<PropertySet>();
 		
-		supported.add(AdviceTypeEnum.AFTER);
-		supported.add(AdviceTypeEnum.AFTER_RETURNING);
-		supported.add(AdviceTypeEnum.AFTER_THROWING);
-		supported.add(AdviceTypeEnum.BEFORE);
-		supported.add(AdviceTypeEnum.AROUND);
+		supportedProperties.add(getAround(advice));		
+		supportedProperties.add(getBefore(advice));
+		supportedProperties.add(getAfter(advice));
+		supportedProperties.add(getAfterThrowing(advice));
+		supportedProperties.add(getAfterReturning(advice));
 		
-		return supported;
+		return supportedProperties;
 	}
 		
 	private ElementReplaceProvider<MethodInvocation, MethodInvocation> strategy = new ElementReplaceProvider<MethodInvocation, MethodInvocation>();
@@ -58,7 +59,7 @@ public class MethodInvocationWeaver extends AbstractElementWeaver<MethodInvocati
 	 *  {@inheritDoc}
 	 */
 	@Override
-	public WeavingProvider<MethodInvocation, MethodInvocation> getWeavingProvider() {
+	public WeavingProvider<MethodInvocation, MethodInvocation> getWeavingProvider(Advice advice) {
 		return strategy;
 	}
 	
@@ -76,21 +77,28 @@ public class MethodInvocationWeaver extends AbstractElementWeaver<MethodInvocati
 	 *  {@inheritDoc}
 	 */
 	@Override
-	public AdviceTransformationProvider getTransformationStrategy(Advice advice, MatchResult joinpoint) {		
-		switch (advice.type()) {
-			case AFTER:
-				return new AfterReflectiveMethodInvocation(joinpoint);
-			case AFTER_RETURNING:		
-				return new AfterReturningReflectiveMethodInvocation(joinpoint);
-			case AFTER_THROWING:
-				return new AfterThrowingReflectingMethodInvocation(joinpoint);
-			case AROUND:
-				return new AroundReflectiveMethodInvocation(joinpoint);
-			case BEFORE:		
-				return new BeforeReflectiveMethodInvocation(joinpoint);
-			default:
-					// Note: normally, this can't occur since the weaver checks the supported types
-					throw new RuntimeException("Unsupported advice type: " + advice.type());
-		}
+	public AdviceTransformationProvider getTransformationStrategy(Advice advice, MatchResult joinpoint) {	
+		PropertySet around = getAround(advice);		
+		PropertySet before = getBefore(advice);
+		PropertySet after = getAfter(advice);
+		PropertySet afterReturning = getAfterReturning(advice);
+		PropertySet afterThrowing = getAfterThrowing(advice);
+		
+		if (around.containsAll(advice.properties().properties()))
+			return new AroundReflectiveMethodInvocation(joinpoint);
+		
+		if (before.containsAll(advice.properties().properties()))
+			return new BeforeReflectiveMethodInvocation(joinpoint);
+		
+		if (after.containsAll(advice.properties().properties()))
+			return new AfterReflectiveMethodInvocation(joinpoint);
+		
+		if (afterThrowing.containsAll(advice.properties().properties()))
+			return new AfterThrowingReflectiveMethodInvocation(joinpoint);
+			
+		if (afterReturning.containsAll(advice.properties().properties()))
+			return new AfterReturningReflectiveMethodInvocation(joinpoint);
+			
+		throw new RuntimeException();
 	}
 }

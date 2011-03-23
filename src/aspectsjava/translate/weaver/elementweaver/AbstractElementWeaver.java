@@ -1,11 +1,14 @@
 package aspectsjava.translate.weaver.elementweaver;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.rejuse.property.PropertySet;
+
 import aspectsjava.translate.weaver.TranslationExecutor;
 import chameleon.aspects.advice.Advice;
-import chameleon.aspects.advice.AdviceTypeEnum;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
-import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.element.Element;
 import chameleon.core.lookup.LookupException;
 
@@ -16,7 +19,7 @@ import chameleon.core.lookup.LookupException;
  *
  */
 public abstract class AbstractElementWeaver<T extends Element, U> implements Weaver<T, U> {
-	
+		
 	/**
 	 * 	The next weaver in the chain
 	 */
@@ -58,7 +61,7 @@ public abstract class AbstractElementWeaver<T extends Element, U> implements Wea
 	 */
 	@Override
 	public boolean handle(Advice advice, MatchResult<? extends PointcutExpression, T> joinpoint, TranslationExecutor adviceTransformation) throws LookupException {
-		if (!supports(joinpoint, advice.type()))
+		if (!supports(advice, joinpoint))
 			return false;
 		
 		weave(advice, joinpoint);
@@ -72,10 +75,20 @@ public abstract class AbstractElementWeaver<T extends Element, U> implements Wea
 	 * 	True if the type of the join point is a sub type of a supported type, false otherwise
 	 */
 	@Override
-	public boolean supports(MatchResult<? extends PointcutExpression, T> result, AdviceTypeEnum advice) throws LookupException {
-		if (!supportedAdviceTypes().contains(advice))
-			return false;
+	public boolean supports(Advice advice, MatchResult<? extends PointcutExpression, T> result) throws LookupException {
+		boolean supports = false;
 		
+		// Get all supported property sets for the advice
+		List<PropertySet> supportedProperties = supportedAdviceProperties(advice);
+		// Now, for each property set, ALL properties of the given advice must be in the supported set
+		Iterator<PropertySet> propertySetIterator = supportedProperties.iterator();
+		while (!supports && propertySetIterator.hasNext()) {
+			supports = propertySetIterator.next().containsAll(advice.properties().properties());
+		}
+		
+		if (!supports)
+			return false;
+			
 		Class<? extends Element> c = result.getJoinpoint().getClass();
 		
 		for (Class<T> supported : supportedTypes()) {
@@ -91,6 +104,34 @@ public abstract class AbstractElementWeaver<T extends Element, U> implements Wea
 	 */
 	@Override
 	public void weave(Advice advice, MatchResult<? extends PointcutExpression, T> matchResult) throws LookupException {
-		getWeavingProvider().execute(matchResult.getJoinpoint(), getWeaveResultProvider(advice).getWeaveResult(advice, matchResult));
+		getWeavingProvider(advice).execute(matchResult, getWeaveResultProvider(advice).getWeaveResult(advice, matchResult), advice);
+	}
+	
+	protected PropertySet getAround(Advice advice) {
+		return new PropertySet().with(advice.language().property("advicetype.around"));		
+	}
+	
+	protected PropertySet getBefore(Advice advice) {
+		return new PropertySet().with(advice.language().property("advicetype.before"));
+	}
+	
+	protected PropertySet getAfter(Advice advice) {
+		return new PropertySet().with(advice.language().property("advicetype.after"));
+	}
+	
+	protected PropertySet getAfterReturning(Advice advice) {
+		PropertySet afterReturning = new PropertySet();
+		afterReturning.add(advice.language().property("advicetype.after"));
+		afterReturning.add(advice.language().property("advicetype.returning"));
+	
+		return afterReturning;
+	}
+	
+	protected PropertySet getAfterThrowing(Advice advice) {
+		PropertySet afterThrowing = new PropertySet();
+		afterThrowing.add(advice.language().property("advicetype.after"));
+		afterThrowing.add(advice.language().property("advicetype.throwing"));
+		
+		return afterThrowing;
 	}
 }

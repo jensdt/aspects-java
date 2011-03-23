@@ -2,6 +2,8 @@ package aspectsjava.translate.weaver.elementweaver;
 
 import java.util.List;
 
+import org.rejuse.property.PropertySet;
+
 import aspectsjava.translate.weaver.TranslationExecutor;
 import aspectsjava.translate.weaver.weavingprovider.WeavingProvider;
 import chameleon.aspects.advice.Advice;
@@ -10,8 +12,6 @@ import chameleon.aspects.advice.types.translation.AdviceTransformationProvider;
 import chameleon.aspects.advice.types.weaving.AdviceWeaveResultProvider;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.RuntimePointcutExpression;
-import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.element.Element;
 import chameleon.core.lookup.LookupException;
 
@@ -71,20 +71,23 @@ public interface Weaver<T extends Element, U> {
 	/**
 	 * 	Get the object responsible for tying the weave result and original join point together
 	 * 
+	 * 	@param  Advice
+	 * 			The advice to weave
+	 * 
 	 * 	@return	The object responsible
 	 */
-	public WeavingProvider<T, U> getWeavingProvider();
+	public WeavingProvider<T, U> getWeavingProvider(Advice advice);
 	
 	/**
-	 * 	Check if this weaver supports the given join point and advice type
+	 * 	Check if this weaver supports the given join point and advice
 	 * 
 	 * 	@param 	joinpoint
 	 * 			The join point to check
-	 * 	@param 	adviceType
-	 * 			The type of advice
+	 * 	@param 	advce
+	 * 			the advice
 	 * 	@return	True if this weaver supports the join point and advice type, false otherwise
 	 */
-	public boolean supports(MatchResult<? extends PointcutExpression, T> joinpoint, AdviceTypeEnum adviceType) throws LookupException;
+	public boolean supports(Advice advice, MatchResult<? extends PointcutExpression, T> result) throws LookupException;
 	
 	/**
 	 * 	Get a list of all supported types by this weaver
@@ -105,11 +108,13 @@ public interface Weaver<T extends Element, U> {
 	public void weave(Advice advice, MatchResult<? extends PointcutExpression, T> joinpoints) throws LookupException;
 	
 	/**
-	 * 	Get a list of supported advice types
+	 * 	Get the list of supported property sets by this weaver
 	 * 
-	 * 	@return	The list of supported types
+	 * 	@param 	advice
+	 * 			The advice to weave
+	 * 	@returns The list of supported advice property sets
 	 */
-	public List<AdviceTypeEnum> supportedAdviceTypes();
+	public List<PropertySet> supportedAdviceProperties(Advice advice);
 	
 	/**
 	 * 	The start of the weaving process - each weaver is called until one can handle it. No further weavers are called once handled

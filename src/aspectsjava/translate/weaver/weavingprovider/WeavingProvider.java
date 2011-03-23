@@ -1,5 +1,8 @@
 package aspectsjava.translate.weaver.weavingprovider;
 
+import chameleon.aspects.advice.Advice;
+import chameleon.aspects.pointcut.expression.MatchResult;
+import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
 import chameleon.core.element.Element;
 
 /**
@@ -20,5 +23,5 @@ public interface WeavingProvider<T extends Element, U> {
 	 * 	@param 	adviceResult
 	 * 			The advice result
 	 */
-	public void execute(T joinpoint, U adviceResult);
+	public void execute(MatchResult<? extends PointcutExpression, T> joinpoint, U adviceResult, Advice advice);
 }

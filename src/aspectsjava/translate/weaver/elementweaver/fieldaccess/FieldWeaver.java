@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.rejuse.property.PropertySet;
+
 import aspectsjava.translate.weaver.elementweaver.AbstractElementWeaver;
 import aspectsjava.translate.weaver.weavingprovider.ElementReplaceProvider;
 import aspectsjava.translate.weaver.weavingprovider.WeavingProvider;
@@ -22,8 +24,8 @@ import chameleon.core.variable.RegularMemberVariable;
 public abstract class FieldWeaver extends AbstractElementWeaver<NamedTargetExpression, MethodInvocation> {
 
 	@Override
-	public boolean supports(MatchResult<? extends PointcutExpression, NamedTargetExpression> result, AdviceTypeEnum advice) throws LookupException {
-		if (!super.supports(result, advice))
+	public boolean supports(Advice advice, MatchResult<? extends PointcutExpression, NamedTargetExpression> result) throws LookupException {
+		if (!super.supports(advice, result))
 			return false;
 		
 		// We match all NamedTargetExpressions - we only want those that point to RegularMemberVariables
@@ -33,7 +35,7 @@ public abstract class FieldWeaver extends AbstractElementWeaver<NamedTargetExpre
 	private ElementReplaceProvider<NamedTargetExpression, MethodInvocation> strategy = new ElementReplaceProvider<NamedTargetExpression, MethodInvocation>();
 	
 	@Override
-	public WeavingProvider<NamedTargetExpression, MethodInvocation> getWeavingProvider() {
+	public WeavingProvider<NamedTargetExpression, MethodInvocation> getWeavingProvider(Advice advice) {
 		return strategy;
 	}
 
@@ -43,11 +45,15 @@ public abstract class FieldWeaver extends AbstractElementWeaver<NamedTargetExpre
 	}
 
 	@Override
-	public List<AdviceTypeEnum> supportedAdviceTypes() {
-		List<AdviceTypeEnum> supportedAdviceTypes = new ArrayList<AdviceTypeEnum>();
-		supportedAdviceTypes.add(AdviceTypeEnum.AFTER);
+	public List<PropertySet> supportedAdviceProperties(Advice advice) {
+		List<PropertySet> supportedProperties = new ArrayList<PropertySet>();
 		
-		return supportedAdviceTypes;
+		supportedProperties.add(getAround(advice));		
+		supportedProperties.add(getBefore(advice));
+		supportedProperties.add(getAfter(advice));
+		supportedProperties.add(getAfterReturning(advice));
+		
+		return supportedProperties;
 	}
 
 }

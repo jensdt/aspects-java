@@ -375,13 +375,17 @@ pointcutExpressionOr returns [PointcutExpression element]
 	| expr=pointcutAtom {retval.element = expr.element;}
 	;
 
+subtypeMarker returns [SubtypeMarker element]
+	: '+' {retval.element = new SubtypeMarker();};
 	
 pointcutAtom returns [PointcutExpression element]
+@init{SubtypeMarker marker = null;}
 @after{setLocation(retval.element, retval.start, retval.stop);}
 	: cl='call' '(' metref=methodReference ')' {retval.element = new SignatureMethodInvocationPointcutExpression(metref.element); setKeyword(retval.element, cl);}
 	| clA='callAnnotated' '(' annot=Identifier ')' {AnnotatedMethodInvocationExpression result = new AnnotatedMethodInvocationExpression(); result.setReference(new AnnotationReference($annot.text)); retval.element = result; setKeyword(retval.element, clA);}
 	| emptyCatch='emptyCatch' {retval.element = new EmptyCatchClausePointcutExpression(); setKeyword(retval.element, emptyCatch); }
-	| fieldRead='fieldRead' '(' fieldref=fieldReference ')' {retval.element = new FieldReadPointcutExpression(fieldref.element); setKeyword(retval.element, fieldRead); }
+	| fieldRead='fieldRead' '(' fieldreadtype=type fieldref=fieldReference ')' {retval.element = new FieldReadPointcutExpression(fieldreadtype.element, fieldref.element); setKeyword(retval.element, fieldRead); }
+	| handler='handler' '(' exceptionType=type (includeSub=subtypeMarker {marker=includeSub.element;})? ')' {CatchClausePointcutExpression catchHandler = new CatchClausePointcutExpression(); catchHandler.setExceptionType(exceptionType.element); catchHandler.setSubtypeMarker(marker); retval.element = catchHandler; setKeyword(retval.element, handler); }
 	// Runtime checks
 	| getargs='arguments' t=typesOrParameters {ArgsPointcutExpression expr = new ArgsPointcutExpression(); expr.addAll(t.element); retval.element = expr; setKeyword(retval.element, getargs); }
 	| thisType='thisType' '(' exp=expression ')' {ThisTypePointcutExpression expr = new ThisTypePointcutExpression((NamedTargetExpression) exp.element); retval.element = expr; setKeyword(retval.element, thisType); }
@@ -408,14 +412,16 @@ argParams returns [List<NamedTargetExpression> element]
 	;
 
 advice returns [Advice element]
-@init{TypeReference tref = null; List<NamedTargetExpression> arguments = new ArrayList<NamedTargetExpression>();}
+@init{TypeReference tref = null; List<NamedTargetExpression> arguments = new ArrayList<NamedTargetExpression>(); Modifier adviceTypeSpecifier = null;}
 @after{setLocation(retval.element, retval.start, retval.stop);}
-	: (t=type {tref=t.element;}| 'void' {tref = typeRef("void");})? advtype=adviceType pars=formalParameters ':' decl=pointcutDecl '(' (params=argParams {arguments = params.element;})? end=')'
+	: (t=type {tref=t.element;}| 'void' {tref = typeRef("void");})? advtype=adviceTypeModifier pars=formalParameters (advtypespec=adviceTypeModifierSpecifier {adviceTypeSpecifier = advtypespec.element; })? ':' decl=pointcutDecl '(' (params=argParams {arguments = params.element;})? end=')'
 	
 	{
-		retval.element=new Advice(advtype.element, tref);
+		retval.element=new Advice(tref);
 		PointcutReference ref = new PointcutReference(decl.element);
 		ref.addAllArguments(arguments);
+		retval.element.addModifier(advtype.element);
+		retval.element.addModifier(adviceTypeSpecifier);
 		retval.element.setPointcutReference(ref);
 		retval.element.addFormalParameters(pars.element);
 		setLocation(ref, decl.start, end);
@@ -423,7 +429,6 @@ advice returns [Advice element]
 	bdy=adviceBody
 	{
 		retval.element.setBody(bdy.element);
-		setKeyword(retval.element, advtype.start);
 	}
 	;
 	
@@ -453,13 +458,16 @@ adviceReturnStatement returns [Statement element]
     ;
     
 
-adviceType returns [AdviceTypeEnum element]
-	: 'before_' { retval.element = AdviceTypeEnum.BEFORE; }
-	| 'after_' {retval.element = AdviceTypeEnum.AFTER; }
-	| 'after-returning' {retval.element = AdviceTypeEnum.AFTER_RETURNING; }
-	| 'after-throwing' {retval.element = AdviceTypeEnum.AFTER_THROWING; }
-	| 'around_' {retval.element = AdviceTypeEnum.AROUND; }
-	| 'inside_' {retval.element = AdviceTypeEnum.INSIDE; }
+adviceTypeModifier returns [Modifier element]
+	: bf='before_' { retval.element = new Before(); setKeyword(retval.element, bf); }
+	| af='after_' {retval.element = new After(); setKeyword(retval.element, af); }
+	| ar='around_' {retval.element = new Around(); setKeyword(retval.element, ar); }
+	;
+	
+adviceTypeModifierSpecifier returns [Modifier element]
+@init{FormalParameter fp = null; FormalParameter exceptionParam = null;}
+	: rt='returning' ('(' (retparam=formalParameter {fp = retparam.element;})? ')')? { Returning result = new Returning(); result.setReturnParameter(fp); retval.element = result; setKeyword(retval.element, rt); }
+	| tw='throwing' ('(' (throwabletype=formalParameter {exceptionParam = throwabletype.element;})? ')')? { Throwing result = new Throwing(); result.setExceptionParameter(exceptionParam); retval.element = result; setKeyword(retval.element, tw); }
 	;
         
 methodReference returns [MethodReference element]

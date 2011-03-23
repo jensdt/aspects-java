@@ -1,5 +1,8 @@
 package aspectsjava.translate.weaver.weavingprovider;
 
+import chameleon.aspects.advice.Advice;
+import chameleon.aspects.pointcut.expression.MatchResult;
+import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
 import chameleon.core.element.Element;
 
 /**
@@ -13,7 +16,7 @@ public class ElementReplaceProvider<T extends Element, U extends Element> implem
 	 * 	{@inheritDoc}
 	 */
 	@Override
-	public void execute(T joinpoint, U replacement) {
-		joinpoint.parentLink().getOtherRelation().replace(joinpoint.parentLink(), replacement.parentLink());
+	public void execute(MatchResult<? extends PointcutExpression, T> joinpoint, U replacement, Advice advice) {
+		joinpoint.getJoinpoint().parentLink().getOtherRelation().replace(joinpoint.getJoinpoint().parentLink(), replacement.parentLink());
 	}
 }
