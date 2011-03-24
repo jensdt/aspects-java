@@ -2,14 +2,15 @@ package aspectsjava.translate.weaver.weavingprovider;
 
 import java.util.List;
 
+import aspectsjava.model.advice.transformation.runtime.CatchClauseCoordinator;
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeIfCheck;
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeSingleArgumentTypeCheck;
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeTypeCheck;
+
 import chameleon.aspects.advice.Advice;
-import chameleon.aspects.advice.runtimetransformation.CatchClauseCoordinator;
 import chameleon.aspects.advice.runtimetransformation.Coordinator;
 import chameleon.aspects.advice.runtimetransformation.RuntimeTransformationProvider;
 import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeExpressionProvider;
-import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeIfCheck;
-import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeSingleArgumentTypeCheck;
-import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeTypeCheck;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;

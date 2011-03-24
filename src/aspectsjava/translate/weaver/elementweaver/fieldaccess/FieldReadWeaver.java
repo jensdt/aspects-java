@@ -4,14 +4,15 @@ import javax.management.RuntimeErrorException;
 
 import org.rejuse.property.PropertySet;
 
+import aspectsjava.model.advice.transformation.reflection.fieldaccess.AfterReflectiveFieldRead;
+import aspectsjava.model.advice.transformation.reflection.fieldaccess.AroundReflectiveFieldRead;
+import aspectsjava.model.advice.transformation.reflection.fieldaccess.BeforeReflectiveFieldRead;
+import aspectsjava.model.advice.transformation.reflection.methodinvocation.AfterReturningReflectiveMethodInvocation;
+import aspectsjava.model.advice.weaving.reflection.fieldaccess.DefaultReflectiveFieldAccess;
+
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.types.translation.AdviceTransformationProvider;
-import chameleon.aspects.advice.types.translation.reflection.fieldaccess.AfterReflectiveFieldRead;
-import chameleon.aspects.advice.types.translation.reflection.fieldaccess.AroundReflectiveFieldRead;
-import chameleon.aspects.advice.types.translation.reflection.fieldaccess.BeforeReflectiveFieldRead;
-import chameleon.aspects.advice.types.translation.reflection.methodInvocation.AfterReturningReflectiveMethodInvocation;
 import chameleon.aspects.advice.types.weaving.AdviceWeaveResultProvider;
-import chameleon.aspects.advice.types.weaving.fieldaccess.DefaultReflectiveFieldAccess;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
 import chameleon.core.element.Element;

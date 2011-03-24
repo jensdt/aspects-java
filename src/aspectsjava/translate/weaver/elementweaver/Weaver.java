@@ -7,7 +7,6 @@ import org.rejuse.property.PropertySet;
 import aspectsjava.translate.weaver.TranslationExecutor;
 import aspectsjava.translate.weaver.weavingprovider.WeavingProvider;
 import chameleon.aspects.advice.Advice;
-import chameleon.aspects.advice.AdviceTypeEnum;
 import chameleon.aspects.advice.types.translation.AdviceTransformationProvider;
 import chameleon.aspects.advice.types.weaving.AdviceWeaveResultProvider;
 import chameleon.aspects.pointcut.expression.MatchResult;

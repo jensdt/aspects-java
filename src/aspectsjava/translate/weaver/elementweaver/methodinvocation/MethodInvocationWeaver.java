@@ -6,18 +6,18 @@ import java.util.List;
 
 import org.rejuse.property.PropertySet;
 
+import aspectsjava.model.advice.transformation.reflection.methodinvocation.AfterReflectiveMethodInvocation;
+import aspectsjava.model.advice.transformation.reflection.methodinvocation.AfterReturningReflectiveMethodInvocation;
+import aspectsjava.model.advice.transformation.reflection.methodinvocation.AfterThrowingReflectiveMethodInvocation;
+import aspectsjava.model.advice.transformation.reflection.methodinvocation.AroundReflectiveMethodInvocation;
+import aspectsjava.model.advice.transformation.reflection.methodinvocation.BeforeReflectiveMethodInvocation;
+import aspectsjava.model.advice.weaving.reflection.methodinvocation.DefaultReflectiveMethodInvocation;
 import aspectsjava.translate.weaver.elementweaver.AbstractElementWeaver;
 import aspectsjava.translate.weaver.weavingprovider.ElementReplaceProvider;
 import aspectsjava.translate.weaver.weavingprovider.WeavingProvider;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.types.translation.AdviceTransformationProvider;
-import chameleon.aspects.advice.types.translation.reflection.methodInvocation.AfterReflectiveMethodInvocation;
-import chameleon.aspects.advice.types.translation.reflection.methodInvocation.AfterReturningReflectiveMethodInvocation;
-import chameleon.aspects.advice.types.translation.reflection.methodInvocation.AfterThrowingReflectiveMethodInvocation;
-import chameleon.aspects.advice.types.translation.reflection.methodInvocation.AroundReflectiveMethodInvocation;
-import chameleon.aspects.advice.types.translation.reflection.methodInvocation.BeforeReflectiveMethodInvocation;
 import chameleon.aspects.advice.types.weaving.AdviceWeaveResultProvider;
-import chameleon.aspects.advice.types.weaving.methodInvocation.DefaultReflectiveMethodInvocation;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.core.expression.MethodInvocation;
 

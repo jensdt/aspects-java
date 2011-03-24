@@ -4,6 +4,12 @@ package aspectsjava.input;
 
 
 
+import aspectsjava.model.pointcut.expression.methodinvocation.annotated.AnnotatedMethodInvocationExpression;
+import aspectsjava.model.pointcut.expression.methodinvocation.annotated.AnnotationReference;
+import aspectsjava.model.pointcut.expression.methodinvocation.signature.MethodReference;
+import aspectsjava.model.pointcut.expression.methodinvocation.signature.QualifiedMethodHeader;
+import aspectsjava.model.pointcut.expression.methodinvocation.signature.SignatureMethodInvocationPointcutExpression;
+import aspectsjava.model.pointcut.expression.methodinvocation.signature.SimpleNameDeclarationWithParameterTypesHeader;
 import chameleon.aspects.*;
 import chameleon.aspects.advice.*;
 import chameleon.aspects.advice.types.*;
