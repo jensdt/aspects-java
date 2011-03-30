@@ -48,7 +48,7 @@ public class CatchClauseCoordinator extends AbstractCoordinator<Block> {
 		PointcutExpression initialCheckTree = prunedTree.removeFromTree(IfPointcutExpression.class);
 		
 		NamingRegistry<RuntimePointcutExpression> expressionNames = new NamingRegistry<RuntimePointcutExpression>();
-		
+
 		IfThenElseStatement firstTest = null;
 		if (initialCheckTree != null) {
 			firstTest = getTest(initialCheckTree, expressionNames);

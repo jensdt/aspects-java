@@ -98,7 +98,7 @@ public class WeaveTransformer {
 		
 		// Weave all advices
 		for (Advice<?> advice : advices) {
-			List<MatchResult<? extends PointcutExpression, ? extends Element>> joinpoints = advice.pointcut().joinpoints(compilationUnit);
+			List<MatchResult<? extends PointcutExpression, ? extends Element>> joinpoints = advice.pointcutExpression().joinpoints(compilationUnit);
 
 			for (MatchResult<? extends PointcutExpression, ? extends Element> joinpoint : joinpoints)
 				elementWeaver.start(advice, joinpoint, adviceTransformation);		

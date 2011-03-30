@@ -85,48 +85,39 @@ public class MethodCoordinator extends AbstractCoordinator<NormalMethod> {
 		}
 		
 		// Part two: inject the parameters
-		// Get all pointcuts that expose parameters (e.g. 'arguments(s, t)')
-		PointcutExpression parameterExposureTree = prunedTree.getPrunedTree(ParameterExposurePointcutExpression.class);
 		
-		if (parameterExposureTree != null) {
-			// We do not allow conflicting parameter exposures, so don't worry about these. Just iterate over them all.
-			// In 'typical usage', only one exposer will be used.
-			List<ParameterExposurePointcutExpression> parameterExposers = parameterExposureTree.asList();
+		if (!parameters.isEmpty()) {
 			for (FormalParameter fp : parameters) {
-				for (ParameterExposurePointcutExpression exposer : parameterExposers) {
-					if (((ParameterExposurePointcutExpression) exposer.origin()).hasParameter(fp)) {					
-						LocalVariableDeclarator parameterInjector = new LocalVariableDeclarator(fp.getTypeReference().clone());
-						VariableDeclaration parameterInjectorDecl = new VariableDeclaration(fp.getName());					
-						parameterInjector.add(parameterInjectorDecl);
-						
-						int index = ((ParameterExposurePointcutExpression) exposer.origin()).indexOfParameter(fp); // This isn't necessarily equal to the index in the 'parameters' list! Need this explicit search!
-						
-						// Select the correct parameter
-						ArrayAccessExpression argumentsAccess = new ArrayAccessExpression(new NamedTargetExpression(getAdviceTransformationProvider().argumentNameParamName));
-						argumentsAccess.addIndex(new FilledArrayIndex(new RegularLiteral(new BasicJavaTypeReference("int"), Integer.toString(index))));
-						
-						// Add the cast, since the arguments is just an Object array
-						// Mind boxable-unboxable types
-						Java java = fp.language(Java.class);
-						
-						TypeReference typeToCastTo = null;
-						try {
-							if (fp.getTypeReference().getType().isTrue(fp.language().property("primitive")))
-								typeToCastTo = new BasicTypeReference (java.box(fp.getTypeReference().getType()).getFullyQualifiedName());
-							else
-								typeToCastTo = fp.getTypeReference().clone();
-						} catch (LookupException e) {
-							System.out.println("Lookupexception while boxing");
-						}
-	
-						ClassCastExpression cast = new ClassCastExpression(typeToCastTo, argumentsAccess);
-						
-						parameterInjectorDecl.setInitialization(cast);
-						parameterInjector.add(parameterInjectorDecl);
-						
-						finalBody.addStatement(parameterInjector);
-					}
+				LocalVariableDeclarator parameterInjector = new LocalVariableDeclarator(fp.getTypeReference().clone());
+				VariableDeclaration parameterInjectorDecl = new VariableDeclaration(fp.getName());					
+				parameterInjector.add(parameterInjectorDecl);
+				
+				int index = getMatchResult().getExpression().indexOfParameter(fp); // This isn't necessarily equal to the index in the 'parameters' list! Need this explicit search!
+				
+				// Select the correct parameter
+				ArrayAccessExpression argumentsAccess = new ArrayAccessExpression(new NamedTargetExpression(getAdviceTransformationProvider().argumentNameParamName));
+				argumentsAccess.addIndex(new FilledArrayIndex(new RegularLiteral(new BasicJavaTypeReference("int"), Integer.toString(index))));
+				
+				// Add the cast, since the arguments is just an Object array
+				// Mind boxable-unboxable types
+				Java java = fp.language(Java.class);
+				
+				TypeReference typeToCastTo = null;
+				try {
+					if (fp.getTypeReference().getType().isTrue(fp.language().property("primitive")))
+						typeToCastTo = new BasicTypeReference (java.box(fp.getTypeReference().getType()).getFullyQualifiedName());
+					else
+						typeToCastTo = fp.getTypeReference().clone();
+				} catch (LookupException e) {
+					System.out.println("Lookupexception while boxing");
 				}
+
+				ClassCastExpression cast = new ClassCastExpression(typeToCastTo, argumentsAccess);
+				
+				parameterInjectorDecl.setInitialization(cast);
+				parameterInjector.add(parameterInjectorDecl);
+				
+				finalBody.addStatement(parameterInjector);
 			}
 		}
 

@@ -1,20 +1,25 @@
-// $ANTLR 3.3 Nov 30, 2010 12:45:30 JavaP.g 2011-03-22 12:55:54
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 JavaP.g 2011-03-26 12:33:22
 
 package aspectsjava.input;
 
-
-
+import aspectsjava.model.pointcut.expression.methodinvocation.annotated.AnnotatedMethodInvocationExpression;
+import aspectsjava.model.pointcut.expression.methodinvocation.annotated.AnnotationReference;
+import aspectsjava.model.pointcut.expression.methodinvocation.signature.MethodReference;
+import aspectsjava.model.pointcut.expression.methodinvocation.signature.QualifiedMethodHeader;
+import aspectsjava.model.pointcut.expression.methodinvocation.signature.SignatureMethodInvocationPointcutExpression;
+import aspectsjava.model.pointcut.expression.methodinvocation.signature.SimpleNameDeclarationWithParameterTypesHeader;
 import chameleon.aspects.*;
 import chameleon.aspects.advice.*;
+import chameleon.aspects.advice.AdviceReturnStatement;
 import chameleon.aspects.advice.types.*;
-
 import chameleon.aspects.pointcut.*;
 import chameleon.aspects.pointcut.expression.*;
-import chameleon.aspects.pointcut.expression.generic.*;
-import chameleon.aspects.pointcut.expression.methodinvocation.*;
 import chameleon.aspects.pointcut.expression.catchclause.*;
 import chameleon.aspects.pointcut.expression.fieldAccess.*;
+import chameleon.aspects.pointcut.expression.generic.*;
+import chameleon.aspects.pointcut.expression.namedpointcut.*;
 import chameleon.aspects.pointcut.expression.runtime.*;
+
 
 import chameleon.exception.ModelException;
 import chameleon.exception.ChameleonProgrammerException;
@@ -24094,7 +24099,7 @@ public class Aspect_JavaP extends ChameleonParser {
     static final String DFA144_acceptS =
         "\1\uffff\1\1\2\uffff\1\2\35\3";
     static final String DFA144_specialS =
-        "\1\0\2\uffff\1\1\36\uffff}>";
+        "\1\1\2\uffff\1\0\36\uffff}>";
     static final String[] DFA144_transitionS = {
             "\1\1\1\uffff\1\2",
             "",
@@ -24172,21 +24177,6 @@ public class Aspect_JavaP extends ChameleonParser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA144_0 = input.LA(1);
-
-                         
-                        int index144_0 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA144_0==41) && (synpred207_JavaP())) {s = 1;}
-
-                        else if ( (LA144_0==43) ) {s = 2;}
-
-                         
-                        input.seek(index144_0);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
                         int LA144_3 = input.LA(1);
 
                          
@@ -24255,6 +24245,21 @@ public class Aspect_JavaP extends ChameleonParser {
 
                          
                         input.seek(index144_3);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA144_0 = input.LA(1);
+
+                         
+                        int index144_0 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA144_0==41) && (synpred207_JavaP())) {s = 1;}
+
+                        else if ( (LA144_0==43) ) {s = 2;}
+
+                         
+                        input.seek(index144_0);
                         if ( s>=0 ) return s;
                         break;
             }
