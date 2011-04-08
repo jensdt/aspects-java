@@ -12,13 +12,13 @@ import aspectsjava.model.advice.transformation.reflection.methodinvocation.After
 import aspectsjava.model.advice.transformation.reflection.methodinvocation.AroundReflectiveMethodInvocation;
 import aspectsjava.model.advice.transformation.reflection.methodinvocation.BeforeReflectiveMethodInvocation;
 import aspectsjava.model.advice.weaving.reflection.methodinvocation.DefaultReflectiveMethodInvocation;
-import aspectsjava.translate.weaver.elementweaver.AbstractElementWeaver;
 import aspectsjava.translate.weaver.weavingprovider.ElementReplaceProvider;
-import aspectsjava.translate.weaver.weavingprovider.WeavingProvider;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.types.translation.AdviceTransformationProvider;
 import chameleon.aspects.advice.types.weaving.AdviceWeaveResultProvider;
 import chameleon.aspects.pointcut.expression.MatchResult;
+import chameleon.aspects.weaver.AbstractElementWeaver;
+import chameleon.aspects.weaver.weavingprovider.WeavingProvider;
 import chameleon.core.expression.MethodInvocation;
 
 /**
@@ -69,7 +69,7 @@ public class MethodInvocationWeaver extends AbstractElementWeaver<MethodInvocati
 	 *  {@inheritDoc}
 	 */
 	@Override
-	public AdviceWeaveResultProvider<MethodInvocation, MethodInvocation> getWeaveResultProvider(Advice advice) {
+	public AdviceWeaveResultProvider<MethodInvocation, MethodInvocation> getWeaveResultProvider() {
 		return weavingAdviceType;
 	}
 	
@@ -85,19 +85,19 @@ public class MethodInvocationWeaver extends AbstractElementWeaver<MethodInvocati
 		PropertySet afterThrowing = getAfterThrowing(advice);
 		
 		if (around.containsAll(advice.properties().properties()))
-			return new AroundReflectiveMethodInvocation(joinpoint);
+			return new AroundReflectiveMethodInvocation(joinpoint, advice);
 		
 		if (before.containsAll(advice.properties().properties()))
-			return new BeforeReflectiveMethodInvocation(joinpoint);
+			return new BeforeReflectiveMethodInvocation(joinpoint, advice);
 		
 		if (after.containsAll(advice.properties().properties()))
-			return new AfterReflectiveMethodInvocation(joinpoint);
+			return new AfterReflectiveMethodInvocation(joinpoint, advice);
 		
 		if (afterThrowing.containsAll(advice.properties().properties()))
-			return new AfterThrowingReflectiveMethodInvocation(joinpoint);
+			return new AfterThrowingReflectiveMethodInvocation(joinpoint, advice);
 			
 		if (afterReturning.containsAll(advice.properties().properties()))
-			return new AfterReturningReflectiveMethodInvocation(joinpoint);
+			return new AfterReturningReflectiveMethodInvocation(joinpoint, advice);
 			
 		throw new RuntimeException();
 	}

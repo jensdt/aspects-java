@@ -4,6 +4,7 @@ import java.util.List;
 
 import aspectsjava.model.advice.transformation.reflection.fieldaccess.ReflectiveFieldRead;
 
+import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.runtimetransformation.AbstractCoordinator;
 import chameleon.aspects.namingRegistry.NamingRegistry;
 import chameleon.aspects.pointcut.expression.MatchResult;
@@ -29,8 +30,8 @@ public class FieldCoordinator extends AbstractCoordinator<NormalMethod> {
 	/**
 	 * 	{@inheritDoc}
 	 */
-	public FieldCoordinator(ReflectiveFieldRead adviceTransformationProvider, MatchResult matchResult) {
-		super(adviceTransformationProvider, matchResult);
+	public FieldCoordinator(ReflectiveFieldRead adviceTransformationProvider, MatchResult matchResult, WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextWeavingEncapsulator) {
+		super(adviceTransformationProvider, matchResult, previousWeavingEncapsulator, nextWeavingEncapsulator);
 	}
 
 	/**

@@ -43,7 +43,7 @@ public class AnnotatedMethodInvocationExpression<E extends AnnotatedMethodInvoca
 			return MatchResult.noMatch();
 		
 		MethodInvocation joinpoint = (MethodInvocation) element;
-		
+
 		Method target = joinpoint.getElement();
 		
 		List<Modifier> modifiers = target.modifiers();

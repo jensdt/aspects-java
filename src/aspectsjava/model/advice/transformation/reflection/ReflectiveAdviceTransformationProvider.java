@@ -11,6 +11,7 @@ import org.rejuse.predicate.SafePredicate;
 
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeIfCheck;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeTypeCheck;
+import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.runtimetransformation.Coordinator;
 import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeExpressionProvider;
@@ -55,8 +56,16 @@ import chameleon.support.variable.LocalVariableDeclarator;
 
 public abstract class ReflectiveAdviceTransformationProvider extends AbstractAdviceTransformationProvider<NormalMethod> {
 	
-	public ReflectiveAdviceTransformationProvider(MatchResult joinpoint) {
-		super(joinpoint);
+	/**
+	 * 	Constructor
+	 * 
+	 * 	@param 	joinpoint
+	 * 			The joinpoint that is woven
+	 * 	@param 	advice
+	 * 			The advice that is transformed
+	 */
+	public ReflectiveAdviceTransformationProvider(MatchResult joinpoint, Advice advice) {
+		super(joinpoint, advice);
 	}
 
 	/**
@@ -320,5 +329,5 @@ public abstract class ReflectiveAdviceTransformationProvider extends AbstractAdv
 	public abstract String getAdviceMethodName(Advice advice);
 
 	@Override
-	protected abstract Coordinator<NormalMethod> getCoordinator();
+	protected abstract Coordinator<NormalMethod> getCoordinator(WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextWeavingEncapsulator);
 }

@@ -7,6 +7,7 @@ import chameleon.aspects.advice.runtimetransformation.transformationprovider.Run
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
+import chameleon.aspects.weaver.weavingprovider.WeavingProvider;
 import chameleon.core.statement.Block;
 import chameleon.core.statement.Statement;
 
@@ -15,8 +16,11 @@ import chameleon.core.statement.Statement;
  * 
  * 	@author Jens
  */
-public class InsertBeforeProvider extends InsertProvider implements WeavingProvider<Block, List<Statement>> {
+public class CatchClauseInsertBeforeProvider extends CatchClauseInsertProvider implements WeavingProvider<Block, List<Statement>> {
 
+	/**
+	 *  {@inheritDoc}
+	 */
 	@Override
 	protected void executeWeaving(MatchResult<? extends PointcutExpression, Block> joinpoint, List<Statement> adviceResult) {
 		for (int i = adviceResult.size()-1; i >= 0; i--)

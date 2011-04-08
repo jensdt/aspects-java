@@ -2,20 +2,18 @@ package aspectsjava.model.advice.transformation.runtime.reflection.methodinvocat
 
 import java.util.List;
 
-import aspectsjava.model.advice.transformation.reflection.methodinvocation.ReflectiveMethodInvocation;
-
 import jnome.core.expression.ArrayAccessExpression;
 import jnome.core.language.Java;
 import jnome.core.type.BasicJavaTypeReference;
+import aspectsjava.model.advice.transformation.reflection.methodinvocation.ReflectiveMethodInvocation;
+import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.runtimetransformation.AbstractCoordinator;
 import chameleon.aspects.namingRegistry.NamingRegistry;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
 import chameleon.aspects.pointcut.expression.runtime.IfPointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.ParameterExposurePointcutExpression;
 import chameleon.core.expression.MethodInvocation;
-import chameleon.core.expression.NamedTarget;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.lookup.LookupException;
 import chameleon.core.method.RegularImplementation;
@@ -55,8 +53,8 @@ public class MethodCoordinator extends AbstractCoordinator<NormalMethod> {
 	 * 	@param 	matchResult
 	 * 			The joinpoint
 	 */
-	public MethodCoordinator(ReflectiveMethodInvocation adviceTransformationProvider, MatchResult matchResult) {
-		super(adviceTransformationProvider, matchResult);
+	public MethodCoordinator(ReflectiveMethodInvocation adviceTransformationProvider, MatchResult matchResult, WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextWeavingEncapsulator) {
+		super(adviceTransformationProvider, matchResult, previousWeavingEncapsulator, nextWeavingEncapsulator);
 	}
 	
 	/**
@@ -211,7 +209,7 @@ public class MethodCoordinator extends AbstractCoordinator<NormalMethod> {
 	 * 	@return	The proceed invocation
 	 */
 	private RegularMethodInvocation getProceedInvocation() {
-		return getAdviceTransformationProvider().createProceedInvocation(new NamedTarget(getAdviceTransformationProvider().advice().aspect().name()), new NamedTargetExpression(getAdviceTransformationProvider().objectParamName), new NamedTargetExpression(getAdviceTransformationProvider().methodNameParamName), new NamedTargetExpression(getAdviceTransformationProvider().argumentNameParamName));
+		return getAdviceTransformationProvider().getNextInvocation(getNextWeavingEncapsulator());
 	}
 	
 	/**

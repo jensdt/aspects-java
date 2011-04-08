@@ -94,7 +94,6 @@ public class IncrementalJavaTranslator {
 	
 	private List<CompilationUnit> completeRebuild(List<CompilationUnit> allProjectCompilationUnits) throws LookupException {
 		System.out.println("-- Complete rebuild");
-		_translator.reset();
 		List<CompilationUnit> result = new ArrayList<CompilationUnit>();
 		
 		List<CompilationUnit> aspects = new ArrayList<CompilationUnit>();

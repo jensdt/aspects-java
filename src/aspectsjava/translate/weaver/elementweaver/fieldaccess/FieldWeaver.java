@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.rejuse.property.PropertySet;
 
-import aspectsjava.translate.weaver.elementweaver.AbstractElementWeaver;
 import aspectsjava.translate.weaver.weavingprovider.ElementReplaceProvider;
-import aspectsjava.translate.weaver.weavingprovider.WeavingProvider;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.weaver.AbstractElementWeaver;
+import chameleon.aspects.weaver.weavingprovider.WeavingProvider;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.lookup.LookupException;

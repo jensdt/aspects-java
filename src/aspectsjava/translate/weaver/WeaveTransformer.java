@@ -1,16 +1,21 @@
 package aspectsjava.translate.weaver;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import aspectsjava.translate.weaver.elementweaver.Weaver;
 import aspectsjava.translate.weaver.elementweaver.catchclause.CatchClauseWeaver;
 import aspectsjava.translate.weaver.elementweaver.fieldaccess.FieldReadWeaver;
 import aspectsjava.translate.weaver.elementweaver.methodinvocation.MethodInvocationWeaver;
 import chameleon.aspects.Aspect;
+import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.weaver.Weaver;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.element.Element;
 import chameleon.core.lookup.LookupException;
@@ -27,22 +32,13 @@ public class WeaveTransformer {
 	 */
 	public WeaveTransformer() {
 		// Initiate the weavers
-		Weaver methodInvocationWeaver = new MethodInvocationWeaver();
-		Weaver catchClauseWeaver = new CatchClauseWeaver();
-		Weaver fieldWeaver = new FieldReadWeaver();
+		Weaver<?, ?> methodInvocationWeaver = new MethodInvocationWeaver();
+		Weaver<?, ?> catchClauseWeaver = new CatchClauseWeaver();
+		Weaver<?, ?> fieldWeaver = new FieldReadWeaver();
 		
 		elementWeaver = methodInvocationWeaver;
 		methodInvocationWeaver.setNext(catchClauseWeaver);
 		catchClauseWeaver.setNext(fieldWeaver);
-	}
-	
-	TranslationExecutor adviceTransformation = new TranslationExecutor();
-
-	/**
-	 * 	Reset the state of the weaver
-	 */
-	public void reset() {
-		adviceTransformation.clear();
 	}
 	
 	/**
@@ -58,26 +54,29 @@ public class WeaveTransformer {
 	 * 	@throws LookupException
 	 */
 	public CompilationUnit weave(CompilationUnit compilationUnit, List<CompilationUnit> aspectCompilationUnits, List<CompilationUnit> otherCompilationUnits) throws LookupException {
-		if (!compilationUnit.descendants(Aspect.class).isEmpty()) {
-			for (Aspect<?> aspect : compilationUnit.descendants(Aspect.class)) {
-				for (Advice<?> advice : aspect.advices()) {
-					if (adviceTransformation.getAdviceTransformationProvider(advice) == null)
-						System.out.println("No advice transformation found for " + advice);
-					else
-						adviceTransformation.getAdviceTransformationProvider(advice).start(advice);
-				}					
+		if (!compilationUnit.hasDescendant(Aspect.class)) {
+			Map<Element, List<WeavingEncapsulator>> weavingMap = weaveRegularType(compilationUnit, aspectCompilationUnits, otherCompilationUnits);
+			
+			for (Entry<Element, List<WeavingEncapsulator>> entry : weavingMap.entrySet()) {
+				List<WeavingEncapsulator> weavingEncapsulators = entry.getValue();
+				
+				// Sort all weaving that has to be done
+				Collections.sort(weavingEncapsulators, new AdviceTypeComparator());
+				
+				// Transform the weaving encapsulation list to a double linked list
+				WeavingEncapsulator weavingChain = WeavingEncapsulator.fromList(weavingEncapsulators);
+				
+				// Start the weaving
+				weavingChain.start();
 			}
-			
-			for (Aspect<?> aspect : compilationUnit.descendants(Aspect.class))
-				aspect.disconnect();
-			
-			return compilationUnit;
 		}
-		else
-			return weaveRegularType(compilationUnit, aspectCompilationUnits, otherCompilationUnits);
+		
+		return compilationUnit;
 	}
 	
 	/**
+	 * 	FIXME: update this doc
+	 * 
 	 * 	Weave a given regular type
 	 * 
 	 * 	@param 	compilationUnit
@@ -89,21 +88,29 @@ public class WeaveTransformer {
 	 * 	@return	The modified (woven) compilation unit
 	 * 	@throws LookupException
 	 */
-	private CompilationUnit weaveRegularType(CompilationUnit compilationUnit, List<CompilationUnit> aspectCompilationUnits, List<CompilationUnit> otherCompilationUnits) throws LookupException {
+	private Map<Element, List<WeavingEncapsulator>> weaveRegularType(CompilationUnit compilationUnit, List<CompilationUnit> aspectCompilationUnits, List<CompilationUnit> otherCompilationUnits) throws LookupException {
 		// Get a list of all advices
 		List<Advice> advices = new ArrayList<Advice>();
 		for (CompilationUnit cu : aspectCompilationUnits) {
 			advices.addAll(cu.descendants(Advice.class));
 		}
 		
+		// Keep a map, per joinpoint: the weaving encapsulator that weaves it
+		Map<Element, List<WeavingEncapsulator>> weavingMap = new HashMap<Element, List<WeavingEncapsulator>>();
+		
 		// Weave all advices
 		for (Advice<?> advice : advices) {
 			List<MatchResult<? extends PointcutExpression, ? extends Element>> joinpoints = advice.pointcutExpression().joinpoints(compilationUnit);
-
-			for (MatchResult<? extends PointcutExpression, ? extends Element> joinpoint : joinpoints)
-				elementWeaver.start(advice, joinpoint, adviceTransformation);		
+			
+			for (MatchResult<? extends PointcutExpression, ? extends Element> joinpoint : joinpoints) {
+				if (!weavingMap.containsKey(joinpoint.getJoinpoint()))
+					weavingMap.put(joinpoint.getJoinpoint(), new ArrayList<WeavingEncapsulator>());
+				
+				WeavingEncapsulator encapsulator = elementWeaver.start(advice, joinpoint);
+				weavingMap.get(joinpoint.getJoinpoint()).add(encapsulator);
+			}
 		}
 		
-		return compilationUnit;
+		return weavingMap;
 	}	
 }

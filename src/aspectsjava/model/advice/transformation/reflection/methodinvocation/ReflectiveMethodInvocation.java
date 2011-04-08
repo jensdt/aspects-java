@@ -17,6 +17,7 @@ import aspectsjava.model.advice.transformation.runtime.transformationprovider.Ru
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeIfCheck;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeTypeCheck;
 import chameleon.aspects.Aspect;
+import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.runtimetransformation.Coordinator;
 import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeExpressionProvider;
@@ -72,10 +73,16 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 	public final String typesParamName = "_$types";
 	public final String retvalName = "_$retval";
 	
-	private Advice advice;
-	
-	public ReflectiveMethodInvocation(MatchResult<? extends PointcutExpression, ? extends MethodInvocation> joinpoint) {
-		super(joinpoint);
+	/**
+	 * 	Constructor
+	 * 
+	 * 	@param 	joinpoint
+	 * 			The joinpoint that is woven
+	 * 	@param 	advice
+	 * 			The advice that is transformed
+	 */
+	public ReflectiveMethodInvocation(MatchResult<? extends PointcutExpression, ? extends MethodInvocation> joinpoint, Advice advice) {
+		super(joinpoint, advice);
 	}
 	
 	@Override
@@ -83,11 +90,28 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 		return (MatchResult<? extends PointcutExpression, ? extends MethodInvocation>) super.getJoinpoint();
 	}
 	
-	public Advice advice() {
-		return advice;
+	protected abstract Block getInnerBody(WeavingEncapsulator next);
+	
+	public RegularMethodInvocation getNextInvocation(WeavingEncapsulator next) {
+		if (next == null)
+			return createProceedInvocation(new NamedTarget(getAdvice().aspect().name()), new NamedTargetExpression(objectParamName), new NamedTargetExpression(methodNameParamName), new NamedTargetExpression(argumentNameParamName));
+		else
+			return createNextAdviceInvocation(next);
 	}
 	
-	protected abstract Block getInnerBody();
+	private RegularMethodInvocation createNextAdviceInvocation(WeavingEncapsulator next) {
+		RegularMethodInvocation getInstance = new RegularMethodInvocation("instance", new NamedTarget(next.getAdvice().aspect().name()));
+		RegularMethodInvocation adviceInvocation = new RegularMethodInvocation(getAdviceMethodName(next.getAdvice()), getInstance);
+		
+		
+		adviceInvocation.addArgument(new BasicTypeArgument(new BasicTypeReference("T")));
+		adviceInvocation.addArgument(new NamedTargetExpression(objectParamName));
+		adviceInvocation.addArgument(new NamedTargetExpression(methodNameParamName));
+		adviceInvocation.addArgument(new NamedTargetExpression(argumentNameParamName));
+		adviceInvocation.addArgument(new NamedTargetExpression(calleeName));
+
+		return adviceInvocation;
+	}
 	
 	public List<TypeExceptionDeclaration> getCheckedExceptionsWithoutSubtypes(Method method) throws LookupException {
 		List<TypeExceptionDeclaration> checkedTypeExceptions = new ArrayList<TypeExceptionDeclaration>();
@@ -117,7 +141,7 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 	public TryStatement getEnclosingTry(Block tryBody) throws LookupException {
 		// Re-throw unchecked exceptions (subclasses of RuntimeException )	
 		TryStatement exceptionHandler = new TryStatement(tryBody);
-		exceptionHandler.addCatchClause(getCatchClause("unchecked", ((ObjectOrientedLanguage) advice().language(ObjectOrientedLanguage.class)).getUncheckedException()));
+		exceptionHandler.addCatchClause(getCatchClause("unchecked", ((ObjectOrientedLanguage) getAdvice().language(ObjectOrientedLanguage.class)).getUncheckedException()));
 
 		// Add a re-throw for each checked exception
 		int exceptionIndex = 0;
@@ -175,21 +199,18 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 	}
 
 	@Override
-	public NormalMethod transform(Advice advice) throws LookupException {
-		this.advice = advice;
-		
-		Aspect<?> aspect = advice.aspect();
+	public NormalMethod transform(WeavingEncapsulator next) throws LookupException {
+		Aspect<?> aspect = getAdvice().aspect();
 		CompilationUnit compilationUnit = aspect.nearestAncestor(CompilationUnit.class);
 		
 		// Get the class we are going to create this method in
 		RegularType aspectClass = getOrCreateAspectClass(compilationUnit, aspect.name());
 		
 		// Check if the method has already been created
-		if (isAlreadyDefined(advice, compilationUnit))
+		if (isAlreadyDefined(getAdvice(), compilationUnit))
 			return null;
-		
-		
-		String adviceMethodName = getAdviceMethodName(advice);
+				
+		String adviceMethodName = getAdviceMethodName(getAdvice());
 		Method m = getJoinpoint().getJoinpoint().getElement();
 		// Create the method
 		DeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader(adviceMethodName);
@@ -219,7 +240,7 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 		header.addFormalParameter(callee);
 		
 		// Get the body
-		Block body = getBody();
+		Block body = getBody(next);
 		
 		// Set the method body
 		adviceMethod.setImplementation(new RegularImplementation(body));
@@ -230,19 +251,13 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 		return adviceMethod;
 	}
 	
-	protected Block getBody() throws LookupException {
+	protected Block getBody(WeavingEncapsulator next) throws LookupException {
 		Block finalBody = new Block();
-//		/*
-//		 * 	Inject the parameters FIXME: delete after parameter injection has moved to runtime, see getInjectedParameterDeclarations
-//		 */
-//		List<Statement> parameterDeclarations = getInjectedParameterDeclarations(new NamedTargetExpression(argumentNameParamName), new NamedTargetExpression(argumentIndexParamName));
-//		for (Statement parameterDeclaration : parameterDeclarations)
-//			finalBody.addStatement(parameterDeclaration);
 		
 		/*
 		 *	Get the inner body 
 		 */
-		Block adviceBody = getInnerBody();
+		Block adviceBody = getInnerBody(next);
 		
 		/*
 		 *	Check if we need to wrap in a try - catch block. Around advice without proceed calls is one instance where this doesn't have to be done
@@ -275,50 +290,8 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 	protected boolean encloseWithTry() {
 		return true;
 	}
-//	FIXME: delete after move to runtime is completed
-//	protected List<Statement> getInjectedParameterDeclarations(Expression argumentsTarget, Expression argumentsIndexTarget) {
-//		List<Statement> declarations = new ArrayList<Statement>();
-//		
-//		// Iterate over every formal parameter in the advice and add its declaration to the result list
-//		for (FormalParameter fp : (List<FormalParameter>) advice().formalParameters()) {
-//			int index = advice().pointcutReference().indexOfParameter(fp);
-//			
-//			LocalVariableDeclarator parameterInjector = new LocalVariableDeclarator(fp.getTypeReference().clone());
-//			VariableDeclaration parameterInjectorDecl = new VariableDeclaration(fp.getName());
-//			
-//			// Add the indirection to the correct parameter
-//			ArrayAccessExpression argumentsIndexAccess = new ArrayAccessExpression(argumentsIndexTarget);
-//			argumentsIndexAccess.addIndex(new FilledArrayIndex(new RegularLiteral(new BasicJavaTypeReference("int"), Integer.toString(index))));
-//
-//			ArrayAccessExpression argumentsAccess = new ArrayAccessExpression(argumentsTarget);
-//			argumentsAccess.addIndex(new FilledArrayIndex(argumentsIndexAccess));
-//
-//			// Add the cast, since the arguments is just an Object array
-//			// Mind boxable-unboxable types
-//			Java java = fp.language(Java.class);
-//			
-//			TypeReference typeToCastTo = null;
-//			try {
-//				if (fp.getTypeReference().getType().isTrue(fp.language().property("primitive")))
-//					typeToCastTo = new BasicTypeReference (java.box(fp.getTypeReference().getType()).getFullyQualifiedName());
-//				else
-//					typeToCastTo = fp.getTypeReference().clone();
-//			} catch (LookupException e) {
-//				System.out.println("Lookupexception while boxing");
-//			}
-//
-//			ClassCastExpression cast = new ClassCastExpression(typeToCastTo, argumentsAccess);
-//			
-//			parameterInjectorDecl.setInitialization(cast);
-//			parameterInjector.add(parameterInjectorDecl);
-//			
-//			declarations.add(parameterInjector);
-//		}
-//		
-//		return declarations;
-//	}
-	
-	public RegularMethodInvocation createProceedInvocation(InvocationTarget aspectClassTarget, Expression objectTarget, Expression methodNameTarget, Expression argumentsTarget) {
+
+	private RegularMethodInvocation createProceedInvocation(InvocationTarget aspectClassTarget, Expression objectTarget, Expression methodNameTarget, Expression argumentsTarget) {
 		RegularMethodInvocation getInstance = new RegularMethodInvocation("instance", aspectClassTarget);
 		RegularMethodInvocation proceedInvocation = new RegularMethodInvocation("proceed", getInstance);
 		proceedInvocation.addArgument((new BasicTypeArgument(new BasicTypeReference("T"))));
@@ -476,8 +449,8 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 	}
 	
 	@Override
-	public Coordinator<NormalMethod> getCoordinator() {
-		return new MethodCoordinator(this, getJoinpoint());
+	public Coordinator<NormalMethod> getCoordinator(WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextEncapsulator) {
+		return new MethodCoordinator(this, getJoinpoint(), previousWeavingEncapsulator, nextEncapsulator);
 	}
 	
 }

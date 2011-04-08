@@ -2,6 +2,7 @@ package aspectsjava.model.advice.transformation.runtime;
 
 import java.util.List;
 
+import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.runtimetransformation.AbstractCoordinator;
 import chameleon.aspects.advice.runtimetransformation.RuntimeTransformationProvider;
 import chameleon.aspects.namingRegistry.NamingRegistry;
@@ -24,8 +25,8 @@ public class CatchClauseCoordinator extends AbstractCoordinator<Block> {
 
 	private final Block originalBody;
 	
-	public CatchClauseCoordinator(RuntimeTransformationProvider adviceTransformationProvider, MatchResult<?, ?> matchResult, Block originalBody) {
-		super(adviceTransformationProvider, matchResult);
+	public CatchClauseCoordinator(RuntimeTransformationProvider adviceTransformationProvider, MatchResult<?, ?> matchResult, WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextWeavingEncapsulator, Block originalBody) {
+		super(adviceTransformationProvider, matchResult, previousWeavingEncapsulator, nextWeavingEncapsulator);
 		this.originalBody = originalBody;
 	}
 

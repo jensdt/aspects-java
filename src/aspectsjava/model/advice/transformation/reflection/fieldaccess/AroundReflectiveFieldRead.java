@@ -3,12 +3,12 @@ package aspectsjava.model.advice.transformation.reflection.fieldaccess;
 import java.util.List;
 
 import jnome.core.language.Java;
+import chameleon.aspects.WeavingEncapsulator;
+import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.AdviceReturnStatement;
 import chameleon.aspects.advice.types.ProceedCall;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.core.expression.Expression;
-import chameleon.core.expression.NamedTarget;
-import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.lookup.LookupException;
 import chameleon.core.statement.Block;
 import chameleon.oo.type.BasicTypeReference;
@@ -20,19 +20,19 @@ import chameleon.support.statement.ReturnStatement;
 
 public class AroundReflectiveFieldRead extends ReflectiveFieldRead {
 
-	public AroundReflectiveFieldRead(MatchResult<?, ?> joinpoint) {
-		super(joinpoint);
+	public AroundReflectiveFieldRead(MatchResult<?, ?> joinpoint, Advice advice) {
+		super(joinpoint, advice);
 	}
 
 	@Override
-	protected Block getBody() {
+	protected Block getBody(WeavingEncapsulator next) {
 		Block adviceBody = (Block) advice().body().clone();
 		
 		// Replace each proceed call to the method call
 		List<ProceedCall> proceedCalls = adviceBody.descendants(ProceedCall.class);
 		
 		for (ProceedCall pc : proceedCalls) {
-			RegularMethodInvocation<?> getValueInvocation = createGetFieldValueInvocation(new NamedTarget(advice().aspect().name()), new NamedTargetExpression(objectParamName), new NamedTargetExpression(fieldName));
+			RegularMethodInvocation<?> getValueInvocation = getNextInvocation(next);
 				
 			Expression<?> reflectiveCallInvocation = null;
 			// Note that if the return type is a primitive, we first have to cast the primitive to its boxed variant, then cast to T

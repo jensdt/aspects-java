@@ -4,10 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import jnome.core.language.Java;
 import jnome.output.CompilationUnitWriter;
-import jnome.output.JavaCodeWriter;
 import aspectsjava.model.language.AspectsJava;
+import aspectsjava.output.AspectsCodeWriter;
 import aspectsjava.translate.IncrementalJavaTranslator;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.language.Language;
@@ -36,7 +35,7 @@ public class AspectsBuilder extends PluginImpl implements Builder {
 		
 		super.setLanguage(lang, pluginInterface);
 		AspectsJava target = new AspectsJava();
-		target.setPlugin(Syntax.class, new JavaCodeWriter());
+		target.setPlugin(Syntax.class, new AspectsCodeWriter());
 		_translator = new IncrementalJavaTranslator((AspectsJava) lang, target);
 	}
 

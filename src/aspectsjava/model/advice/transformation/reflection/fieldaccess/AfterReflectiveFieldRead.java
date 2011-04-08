@@ -1,5 +1,7 @@
 package aspectsjava.model.advice.transformation.reflection.fieldaccess;
 
+import chameleon.aspects.WeavingEncapsulator;
+import chameleon.aspects.advice.Advice;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.core.expression.NamedTarget;
 import chameleon.core.expression.NamedTargetExpression;
@@ -13,17 +15,17 @@ import chameleon.support.variable.LocalVariableDeclarator;
 
 public class AfterReflectiveFieldRead extends ReflectiveFieldRead {
 
-	public AfterReflectiveFieldRead(MatchResult<?, ?> joinpoint) {
-		super(joinpoint);
+	public AfterReflectiveFieldRead(MatchResult<?, ?> joinpoint, Advice advice) {
+		super(joinpoint, advice);
 	}
 			
-	protected Block getBody() {
+	protected Block getBody(WeavingEncapsulator next) {
 		Block adviceBody = new Block();
 
 		/*
 		 *	Create the proceed call
 		 */
-		RegularMethodInvocation<?> getValueInvocation = createGetFieldValueInvocation(new NamedTarget(advice().aspect().name()), new NamedTargetExpression(objectParamName), new NamedTargetExpression(fieldName));
+		RegularMethodInvocation<?> getValueInvocation = getNextInvocation(next);
 
 		/*
 		 *	Add the proceed-invocation, assign it to a local variable 
