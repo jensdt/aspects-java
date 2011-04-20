@@ -26,7 +26,7 @@ public class AroundReflectiveFieldRead extends ReflectiveFieldRead {
 
 	@Override
 	protected Block getBody(WeavingEncapsulator next) {
-		Block adviceBody = (Block) advice().body().clone();
+		Block adviceBody = getAdvice().body().clone();
 		
 		// Replace each proceed call to the method call
 		List<ProceedCall> proceedCalls = adviceBody.descendants(ProceedCall.class);
@@ -37,8 +37,8 @@ public class AroundReflectiveFieldRead extends ReflectiveFieldRead {
 			Expression<?> reflectiveCallInvocation = null;
 			// Note that if the return type is a primitive, we first have to cast the primitive to its boxed variant, then cast to T
 			try {
-				Type type = advice().actualReturnType().getType();
-				Java java = advice().language(Java.class);
+				Type type = getAdvice().actualReturnType().getType();
+				Java java = (Java) getAdvice().language(Java.class);
 				
 				if (type.isTrue(java.property("primitive")))
 					reflectiveCallInvocation = new ClassCastExpression(new BasicTypeReference<BasicTypeReference<?>>(java.box(type).getFullyQualifiedName()), getValueInvocation);
@@ -52,7 +52,7 @@ public class AroundReflectiveFieldRead extends ReflectiveFieldRead {
 		}
 		
 		try {
-			Type type = advice.actualReturnType().getType();
+			Type type = getAdvice().actualReturnType().getType();
 			if (type.signature().name().equals("void"))
 				// We need an explicit return because the return type of the advice method is never 'void'
 				adviceBody.addStatement(new ReturnStatement(new NullLiteral()));
@@ -62,7 +62,7 @@ public class AroundReflectiveFieldRead extends ReflectiveFieldRead {
 				// but no harm is done if we do it anyway in those cases.
 				for (AdviceReturnStatement st : adviceBody.descendants(AdviceReturnStatement.class)) {
 					// Note that if the type is a primitive, we first have to cast the primitive to its boxed variant, then cast to T
-					Java java = advice.language(Java.class);
+					Java java = (Java) getAdvice().language(Java.class);
 					
 					Expression<?> expressionToCast = null;
 					if (type.isTrue(java.property("primitive")))

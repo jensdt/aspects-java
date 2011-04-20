@@ -8,14 +8,12 @@ import jnome.core.modifier.AnnotationModifier;
 import org.rejuse.association.SingleAssociation;
 
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
-import chameleon.aspects.pointcut.expression.methodinvocation.MethodInvocationPointcutExpression;
+import chameleon.aspects.pointcut.expression.staticexpression.methodinvocation.MethodInvocationPointcutExpression;
 import chameleon.core.element.Element;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.lookup.LookupException;
 import chameleon.core.method.Method;
 import chameleon.core.modifier.Modifier;
-import chameleon.core.variable.FormalParameter;
 import chameleon.util.Util;
 
 public class AnnotatedMethodInvocationExpression<E extends AnnotatedMethodInvocationExpression<E>> extends MethodInvocationPointcutExpression<E> {
@@ -38,10 +36,7 @@ public class AnnotatedMethodInvocationExpression<E extends AnnotatedMethodInvoca
 	}
 
 	@Override
-	public MatchResult matches(Element element) throws LookupException {
-		if (!(element instanceof MethodInvocation))
-			return MatchResult.noMatch();
-		
+	public MatchResult matches(Element element) throws LookupException {		
 		MethodInvocation joinpoint = (MethodInvocation) element;
 
 		Method target = joinpoint.getElement();

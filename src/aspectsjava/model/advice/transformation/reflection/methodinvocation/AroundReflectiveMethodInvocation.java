@@ -12,7 +12,7 @@ import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.AdviceReturnStatement;
 import chameleon.aspects.advice.types.ProceedCall;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.core.expression.Expression;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.lookup.LookupException;

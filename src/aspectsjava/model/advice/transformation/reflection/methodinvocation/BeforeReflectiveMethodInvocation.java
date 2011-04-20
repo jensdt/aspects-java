@@ -3,7 +3,7 @@ package aspectsjava.model.advice.transformation.reflection.methodinvocation;
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.statement.Block;
 import chameleon.support.member.simplename.method.RegularMethodInvocation;

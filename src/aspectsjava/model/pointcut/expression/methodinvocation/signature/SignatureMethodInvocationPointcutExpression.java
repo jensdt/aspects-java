@@ -11,7 +11,7 @@ import jnome.core.type.RegularJavaType;
 import org.rejuse.association.SingleAssociation;
 
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.methodinvocation.MethodInvocationPointcutExpression;
+import chameleon.aspects.pointcut.expression.staticexpression.methodinvocation.MethodInvocationPointcutExpression;
 import chameleon.core.element.Element;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.lookup.LocalLookupStrategy;
@@ -38,10 +38,7 @@ public class SignatureMethodInvocationPointcutExpression<E extends SignatureMeth
 	}
 
 	@Override
-	public MatchResult matches(Element element) throws LookupException {
-		if (!(element instanceof MethodInvocation))
-			return MatchResult.noMatch();
-		
+	public MatchResult matches(Element element) throws LookupException {		
 		MethodInvocation joinpoint = (MethodInvocation) element;
 		
 		Method e = joinpoint.getElement();

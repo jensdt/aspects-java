@@ -2,8 +2,13 @@ package aspectsjava.model.advice.transformation.reflection.fieldaccess;
 
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.Advice;
+import chameleon.aspects.advice.runtimetransformation.Coordinator;
 import chameleon.aspects.pointcut.expression.MatchResult;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
+import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
+import chameleon.core.element.Element;
 import chameleon.core.statement.Block;
+import chameleon.support.member.simplename.method.NormalMethod;
 import chameleon.support.member.simplename.method.RegularMethodInvocation;
 import chameleon.support.statement.ReturnStatement;
 
@@ -20,7 +25,7 @@ public class BeforeReflectiveFieldRead extends ReflectiveFieldRead {
 		/*
 		 *	Add the advice-body itself 
 		 */
-		adviceBody.addBlock(((Block) advice().body()).clone());
+		adviceBody.addBlock(getAdvice().body().clone());
 		
 		/*
 		 *	Create the proceed call

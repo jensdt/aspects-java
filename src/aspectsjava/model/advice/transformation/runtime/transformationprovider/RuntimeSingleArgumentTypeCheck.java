@@ -1,7 +1,8 @@
 package aspectsjava.model.advice.transformation.runtime.transformationprovider;
 
+import chameleon.aspects.namingRegistry.NamingRegistry;
+import chameleon.aspects.pointcut.expression.dynamicexpression.ArgsPointcutExpression;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.ArgsPointcutExpression;
 import chameleon.core.expression.Expression;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.oo.type.TypeReference;
@@ -20,12 +21,8 @@ public class RuntimeSingleArgumentTypeCheck extends RuntimeArgumentsTypeCheck {
 	 *  
 	 */
 	@Override
-	public Expression<?> getExpression(RuntimePointcutExpression<?> expr) {
-		if (!(expr instanceof ArgsPointcutExpression))
-			return null;
-		
-		ArgsPointcutExpression<?> argumentsExpression = (ArgsPointcutExpression<?>) expr;
-		NamedTargetExpression parameter = argumentsExpression.parameters().get(0);
+	public Expression<?> getExpression(ArgsPointcutExpression<?> expr, NamingRegistry<RuntimePointcutExpression<?>> namingRegistry) {
+		NamedTargetExpression parameter = expr.parameters().get(0);
 		TypeReference<?> typeToTest = getTypeToTest(parameter);
 		
 		// Create the instanceof

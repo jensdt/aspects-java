@@ -4,19 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jnome.core.language.Java;
-
-import org.rejuse.logic.ternary.Ternary;
-
 import aspectsjava.model.advice.weaving.reflection.ReflectiveProvider;
-
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.namingRegistry.NamingRegistry;
 import chameleon.aspects.namingRegistry.NamingRegistryFactory;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.core.expression.Expression;
 import chameleon.core.expression.InvocationTarget;
-import chameleon.core.expression.Literal;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.expression.VariableReference;
 import chameleon.core.lookup.LookupException;

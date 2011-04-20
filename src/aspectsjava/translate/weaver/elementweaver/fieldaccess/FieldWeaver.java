@@ -9,7 +9,7 @@ import org.rejuse.property.PropertySet;
 import aspectsjava.translate.weaver.weavingprovider.ElementReplaceProvider;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.aspects.weaver.AbstractElementWeaver;
 import chameleon.aspects.weaver.weavingprovider.WeavingProvider;
 import chameleon.core.expression.MethodInvocation;

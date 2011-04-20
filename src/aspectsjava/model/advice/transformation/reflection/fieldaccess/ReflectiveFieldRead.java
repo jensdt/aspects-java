@@ -5,18 +5,21 @@ import java.util.List;
 
 import aspectsjava.model.advice.transformation.reflection.ReflectiveAdviceTransformationProvider;
 import aspectsjava.model.advice.transformation.runtime.reflection.fieldaccess.FieldCoordinator;
-
 import chameleon.aspects.Aspect;
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.runtimetransformation.Coordinator;
+import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeParameterExposureProvider;
 import chameleon.aspects.namingRegistry.NamingRegistry;
 import chameleon.aspects.namingRegistry.NamingRegistryFactory;
 import chameleon.aspects.pointcut.expression.MatchResult;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.ParameterExposurePointcutExpression;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.declaration.DeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameSignature;
+import chameleon.core.element.Element;
 import chameleon.core.expression.NamedTarget;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.lookup.LookupException;
@@ -52,7 +55,7 @@ public abstract class ReflectiveFieldRead extends ReflectiveAdviceTransformation
 	
 	public RegularMethodInvocation getNextInvocation(WeavingEncapsulator next) {
 		if (next == null)
-			return createGetFieldValueInvocation(new NamedTarget(advice().aspect().name()), new NamedTargetExpression(objectParamName), new NamedTargetExpression(fieldName));
+			return createGetFieldValueInvocation(new NamedTarget(getAdvice().aspect().name()), new NamedTargetExpression(objectParamName), new NamedTargetExpression(fieldName));
 		else
 			return createNextAdviceInvocation(next);
 	}
@@ -163,17 +166,17 @@ public abstract class ReflectiveFieldRead extends ReflectiveAdviceTransformation
 	
 	@Override
 	public NormalMethod transform(WeavingEncapsulator next) throws LookupException {
-		Aspect<?> aspect = advice.aspect();
+		Aspect<?> aspect = getAdvice().aspect();
 		CompilationUnit compilationUnit = aspect.nearestAncestor(CompilationUnit.class);
 		
 		// Get the class we are going to create this method in
 		RegularType aspectClass = getOrCreateAspectClass(compilationUnit, aspect.name());
 		
 		// Check if the method has already been created
-		if (isAlreadyDefined(advice, compilationUnit))
+		if (isAlreadyDefined(getAdvice(), compilationUnit))
 			return null;
 		
-		String adviceMethodName = getAdviceMethodName(advice);
+		String adviceMethodName = getAdviceMethodName(getAdvice());
 		
 		DeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader(adviceMethodName);
 		
@@ -209,19 +212,13 @@ public abstract class ReflectiveFieldRead extends ReflectiveAdviceTransformation
 	
 	protected abstract Block getBody(WeavingEncapsulator next);
 
-	protected Advice<?> advice;
-	
-	public Advice<?> advice() {
-		return this.advice;
-	}
-	
 	@Override
 	protected String getReflectiveMethodName() {
 		return "getFieldValue";
 	}
 	
 	@Override
-	public Coordinator<NormalMethod> getCoordinator(WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextWeavingEncapsulator) {
+	public Coordinator<NormalMethod> getCoordinator(MatchResult joinpoint, WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextWeavingEncapsulator) {
 		return new FieldCoordinator(this, getJoinpoint(), previousWeavingEncapsulator, nextWeavingEncapsulator);
 	}
 }

@@ -41,7 +41,7 @@ public class AfterReflectiveFieldRead extends ReflectiveFieldRead {
 		/*
 		 *	Add the advice-body itself 
 		 */
-		adviceBody.addBlock(((Block) advice().body()).clone());
+		adviceBody.addBlock(getAdvice().body().clone());
 		
 		/*
 		 * 	Add the return statement

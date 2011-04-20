@@ -10,15 +10,14 @@ import aspectsjava.model.pointcut.expression.methodinvocation.signature.Signatur
 import aspectsjava.model.pointcut.expression.methodinvocation.signature.SimpleNameDeclarationWithParameterTypesHeader;
 import chameleon.aspects.*;
 import chameleon.aspects.advice.*;
-import chameleon.aspects.advice.AdviceReturnStatement;
 import chameleon.aspects.advice.types.*;
 import chameleon.aspects.pointcut.*;
 import chameleon.aspects.pointcut.expression.*;
-import chameleon.aspects.pointcut.expression.catchclause.*;
-import chameleon.aspects.pointcut.expression.fieldAccess.*;
+import chameleon.aspects.pointcut.expression.dynamicexpression.*;
 import chameleon.aspects.pointcut.expression.generic.*;
 import chameleon.aspects.pointcut.expression.namedpointcut.*;
-import chameleon.aspects.pointcut.expression.runtime.*;
+import chameleon.aspects.pointcut.expression.staticexpression.catchclause.*;
+import chameleon.aspects.pointcut.expression.staticexpression.fieldAccess.*;
 
 
 import chameleon.exception.ModelException;

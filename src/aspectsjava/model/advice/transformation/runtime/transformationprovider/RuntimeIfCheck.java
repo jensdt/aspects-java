@@ -1,8 +1,9 @@
 package aspectsjava.model.advice.transformation.runtime.transformationprovider;
 
 import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeExpressionProvider;
+import chameleon.aspects.namingRegistry.NamingRegistry;
+import chameleon.aspects.pointcut.expression.dynamicexpression.IfPointcutExpression;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.IfPointcutExpression;
 import chameleon.core.expression.Expression;
 
 /**
@@ -11,7 +12,7 @@ import chameleon.core.expression.Expression;
  * 	@author Jens
  *
  */
-public class RuntimeIfCheck implements RuntimeExpressionProvider {
+public class RuntimeIfCheck implements RuntimeExpressionProvider<IfPointcutExpression<?>> {
 	
 	/**
 	 * 	{@inheritDoc}
@@ -19,12 +20,7 @@ public class RuntimeIfCheck implements RuntimeExpressionProvider {
 	 *	This is trivial, since the expression is exactly that one contained in the if expression
 	 */
 	@Override
-	public Expression<?> getExpression(RuntimePointcutExpression<?> expr) {
-		if (!(expr instanceof IfPointcutExpression))
-			return null;
-		
-		IfPointcutExpression<?> ifCheck = (IfPointcutExpression<?>) expr;
-		
-		return ifCheck.expression().clone();
+	public Expression<?> getExpression(IfPointcutExpression<?> expr, NamingRegistry<RuntimePointcutExpression<?>> namingRegistry) {
+		return expr.expression().clone();
 	}
 }

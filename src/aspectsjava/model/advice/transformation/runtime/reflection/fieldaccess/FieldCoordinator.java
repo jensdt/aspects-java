@@ -2,13 +2,16 @@ package aspectsjava.model.advice.transformation.runtime.reflection.fieldaccess;
 
 import java.util.List;
 
+import org.rejuse.predicate.SafePredicate;
+
 import aspectsjava.model.advice.transformation.reflection.fieldaccess.ReflectiveFieldRead;
 
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.runtimetransformation.AbstractCoordinator;
 import chameleon.aspects.namingRegistry.NamingRegistry;
+import chameleon.aspects.pointcut.expression.AbstractPointcutExpression;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.NamedTarget;
@@ -42,8 +45,20 @@ public class FieldCoordinator extends AbstractCoordinator<NormalMethod> {
 		if (element == null)
 			return;
 		
-		// First, get all the runtime pointcut expressions but maintain the structure (and/or/...)
-		PointcutExpression prunedTree = getMatchResult().getExpression().getPrunedTree(RuntimePointcutExpression.class);
+		// Part one: get all the runtime pointcut expressions but maintain the structure (and/or/...)
+		SafePredicate<PointcutExpression<?>> filter = new SafePredicate<PointcutExpression<?>>() {
+
+			@Override
+			public boolean eval(PointcutExpression<?> object) {
+				if (!(object instanceof RuntimePointcutExpression))
+					return false;
+				
+				return getAdviceTransformationProvider().supports((RuntimePointcutExpression<?>) object);
+			}
+		};
+		
+		// Cast is safe due to the filter
+		RuntimePointcutExpression<?> prunedTree = (RuntimePointcutExpression<?>) ((PointcutExpression<?>) getMatchResult().getExpression()).getPrunedTree(filter);
 		
 		if (prunedTree == null)
 			return;
@@ -72,7 +87,7 @@ public class FieldCoordinator extends AbstractCoordinator<NormalMethod> {
 	 * 	@return	The proceed invocation
 	 */
 	private RegularMethodInvocation getProceedInvocation() {
-		return getAdviceTransformationProvider().createGetFieldValueInvocation(new NamedTarget(getAdviceTransformationProvider().advice().aspect().name()), new NamedTargetExpression(getAdviceTransformationProvider().objectParamName), new NamedTargetExpression(getAdviceTransformationProvider().fieldName));
+		return getAdviceTransformationProvider().createGetFieldValueInvocation(new NamedTarget(getAdviceTransformationProvider().getAdvice().aspect().name()), new NamedTargetExpression(getAdviceTransformationProvider().objectParamName), new NamedTargetExpression(getAdviceTransformationProvider().fieldName));
 	}
 
 	/**
@@ -86,7 +101,7 @@ public class FieldCoordinator extends AbstractCoordinator<NormalMethod> {
 	/**
 	 * 	{@inheritDoc}
 	 */
-	public MatchResult<? extends PointcutExpression, ? extends MethodInvocation> getMatchResult() {
-		return (MatchResult<? extends PointcutExpression, ? extends MethodInvocation>) super.getMatchResult();
+	public MatchResult<? extends AbstractPointcutExpression, ? extends MethodInvocation> getMatchResult() {
+		return (MatchResult<? extends AbstractPointcutExpression, ? extends MethodInvocation>) super.getMatchResult();
 	}
 }

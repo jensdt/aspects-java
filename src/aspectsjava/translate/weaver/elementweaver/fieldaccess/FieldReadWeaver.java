@@ -10,7 +10,7 @@ import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.types.translation.AdviceTransformationProvider;
 import chameleon.aspects.advice.types.weaving.AdviceWeaveResultProvider;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.core.element.Element;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.NamedTargetExpression;

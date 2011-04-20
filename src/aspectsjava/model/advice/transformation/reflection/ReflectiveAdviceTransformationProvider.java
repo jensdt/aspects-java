@@ -9,23 +9,33 @@ import jnome.core.variable.JavaVariableDeclaration;
 
 import org.rejuse.predicate.SafePredicate;
 
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeAnd;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeIfCheck;
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeNot;
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeOr;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeTypeCheck;
-import chameleon.aspects.WeavingEncapsulator;
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.reflection.ReflectiveTargetTypeParameterExposure;
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.reflection.ReflectiveThisTypeParameterExposure;
 import chameleon.aspects.advice.Advice;
-import chameleon.aspects.advice.runtimetransformation.Coordinator;
 import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeExpressionProvider;
-import chameleon.aspects.advice.types.translation.AbstractAdviceTransformationProvider;
+import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeParameterExposureProvider;
+import chameleon.aspects.advice.types.translation.AbstractAdviceTransformationProviderSupportingRuntime;
 import chameleon.aspects.pointcut.expression.MatchResult;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.IfPointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.ParameterExposurePointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.TargetTypePointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.ThisTypePointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.TypePointcutExpression;
+import chameleon.aspects.pointcut.expression.generic.PointcutExpressionAnd;
+import chameleon.aspects.pointcut.expression.generic.PointcutExpressionNot;
+import chameleon.aspects.pointcut.expression.generic.PointcutExpressionOr;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.IfPointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.TargetTypePointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.ThisTypePointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.TypePointcutExpression;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.declaration.DeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameSignature;
+import chameleon.core.element.Element;
 import chameleon.core.expression.NamedTarget;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.method.RegularImplementation;
@@ -54,7 +64,7 @@ import chameleon.support.statement.ThrowStatement;
 import chameleon.support.statement.TryStatement;
 import chameleon.support.variable.LocalVariableDeclarator;
 
-public abstract class ReflectiveAdviceTransformationProvider extends AbstractAdviceTransformationProvider<NormalMethod> {
+public abstract class ReflectiveAdviceTransformationProvider extends AbstractAdviceTransformationProviderSupportingRuntime<NormalMethod> {
 	
 	/**
 	 * 	Constructor
@@ -290,11 +300,20 @@ public abstract class ReflectiveAdviceTransformationProvider extends AbstractAdv
 		aspectClass.add(method);
 	}
 	@Override
-	public boolean supports(RuntimePointcutExpression pointcutExpression) {
+	public boolean supports(PointcutExpression<?> pointcutExpression) {
 		if (pointcutExpression instanceof TypePointcutExpression)
 			return true;
 		
 		if (pointcutExpression instanceof IfPointcutExpression)
+			return true;
+		
+		if (pointcutExpression instanceof PointcutExpressionOr)
+			return true;
+		
+		if (pointcutExpression instanceof PointcutExpressionAnd)
+			return true;
+		
+		if (pointcutExpression instanceof PointcutExpressionNot)
 			return true;
 		
 		return false;
@@ -311,8 +330,24 @@ public abstract class ReflectiveAdviceTransformationProvider extends AbstractAdv
 		if (pointcutExpression instanceof IfPointcutExpression)
 			return new RuntimeIfCheck();
 		
+		if (pointcutExpression instanceof PointcutExpressionOr)
+			return new RuntimeOr();
+		
+		if (pointcutExpression instanceof PointcutExpressionAnd)
+			return new RuntimeAnd();
+		
+		if (pointcutExpression instanceof PointcutExpressionNot)
+			return new RuntimeNot();
+		
 		return null;
 	}
+	
+	@Override
+	public void initialiseRuntimeTransformers(MatchResult<? extends PointcutExpression, ? extends Element> joinpoint) {
+		// Nothing needs to be done
+	}
+	
+	public abstract String getAdviceMethodName(Advice advice);
 	
 	public boolean isAlreadyDefined(Advice advice, CompilationUnit cu) {
 		final String name = getAdviceMethodName(advice);
@@ -326,8 +361,14 @@ public abstract class ReflectiveAdviceTransformationProvider extends AbstractAdv
 		});
 	}
 	
-	public abstract String getAdviceMethodName(Advice advice);
-
 	@Override
-	protected abstract Coordinator<NormalMethod> getCoordinator(WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextWeavingEncapsulator);
+	public RuntimeParameterExposureProvider getRuntimeParameterInjectionProvider(ParameterExposurePointcutExpression<?> expression) {
+		if (expression instanceof ThisTypePointcutExpression)
+			return new ReflectiveThisTypeParameterExposure(this);
+		
+		if (expression instanceof TargetTypePointcutExpression)
+			return new ReflectiveTargetTypeParameterExposure(this);
+		
+		return null;
+	}
 }

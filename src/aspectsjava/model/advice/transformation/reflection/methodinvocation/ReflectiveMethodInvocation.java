@@ -14,22 +14,23 @@ import jnome.core.variable.JavaVariableDeclaration;
 import aspectsjava.model.advice.transformation.reflection.ReflectiveAdviceTransformationProvider;
 import aspectsjava.model.advice.transformation.runtime.reflection.methodinvocation.MethodCoordinator;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeArgumentsTypeCheck;
-import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeIfCheck;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeTypeCheck;
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.reflection.ReflectiveArgsParameterExposure;
 import chameleon.aspects.Aspect;
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.runtimetransformation.Coordinator;
 import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeExpressionProvider;
+import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeParameterExposureProvider;
 import chameleon.aspects.namingRegistry.NamingRegistry;
 import chameleon.aspects.namingRegistry.NamingRegistryFactory;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.ArgsPointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.ParameterExposurePointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.TargetTypePointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.ThisTypePointcutExpression;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.ArgsPointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.IfPointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.TargetTypePointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.ThisTypePointcutExpression;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.declaration.DeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
@@ -417,10 +418,8 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 		return "proceed";
 	}
 	
-
-
 	@Override
-	public boolean supports(RuntimePointcutExpression pointcutExpression) {
+	public boolean supports(PointcutExpression<?> pointcutExpression) {
 		if (super.supports(pointcutExpression))
 			return true;
 		
@@ -442,15 +441,21 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 			return new RuntimeTypeCheck(new NamedTargetExpression(
 					objectParamName));
 
-		if (pointcutExpression instanceof IfPointcutExpression)
-			return new RuntimeIfCheck();
-
-		return null;
+		return super.getRuntimeTransformer(pointcutExpression);
 	}
 	
 	@Override
-	public Coordinator<NormalMethod> getCoordinator(WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextEncapsulator) {
+	public RuntimeParameterExposureProvider getRuntimeParameterInjectionProvider(ParameterExposurePointcutExpression<?> expression) {
+		if (expression instanceof ArgsPointcutExpression)
+			return new ReflectiveArgsParameterExposure(this);
+		
+		return super.getRuntimeParameterInjectionProvider(expression);
+	}
+	
+	@Override
+	public Coordinator<NormalMethod> getCoordinator(MatchResult<? extends PointcutExpression, ?> joinpoint, WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextEncapsulator) {
 		return new MethodCoordinator(this, getJoinpoint(), previousWeavingEncapsulator, nextEncapsulator);
 	}
 	
+
 }

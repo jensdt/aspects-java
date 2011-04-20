@@ -2,21 +2,22 @@ package aspectsjava.model.advice.transformation.runtime;
 
 import java.util.List;
 
+import org.rejuse.predicate.SafePredicate;
+
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.runtimetransformation.AbstractCoordinator;
 import chameleon.aspects.advice.runtimetransformation.RuntimeTransformationProvider;
 import chameleon.aspects.namingRegistry.NamingRegistry;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.IfPointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.ParameterExposurePointcutExpression;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.IfPointcutExpression;
-import chameleon.core.expression.Expression;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.statement.Block;
 import chameleon.core.variable.FormalParameter;
 import chameleon.core.variable.VariableDeclaration;
 import chameleon.support.expression.ClassCastExpression;
-import chameleon.support.member.simplename.operator.prefix.PrefixOperatorInvocation;
 import chameleon.support.statement.CatchClause;
 import chameleon.support.statement.IfThenElseStatement;
 import chameleon.support.variable.LocalVariableDeclarator;
@@ -25,9 +26,9 @@ public class CatchClauseCoordinator extends AbstractCoordinator<Block> {
 
 	private final Block originalBody;
 	
-	public CatchClauseCoordinator(RuntimeTransformationProvider adviceTransformationProvider, MatchResult<?, ?> matchResult, WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextWeavingEncapsulator, Block originalBody) {
+	public CatchClauseCoordinator(RuntimeTransformationProvider adviceTransformationProvider, MatchResult<?, Block> matchResult, WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextWeavingEncapsulator) {
 		super(adviceTransformationProvider, matchResult, previousWeavingEncapsulator, nextWeavingEncapsulator);
-		this.originalBody = originalBody;
+		this.originalBody = matchResult.getJoinpoint().clone();
 	}
 
 	/**
@@ -38,15 +39,30 @@ public class CatchClauseCoordinator extends AbstractCoordinator<Block> {
 		if (element == null)
 			return;
 		
+		PointcutExpression<?> initialTree = (PointcutExpression<?>) getMatchResult().getExpression();
+		
 		// Part one: get all the runtime pointcut expressions but maintain the structure (and/or/...)
-		PointcutExpression prunedTree = getMatchResult().getExpression().getPrunedTree(RuntimePointcutExpression.class);
+		SafePredicate<PointcutExpression<?>> filter = new SafePredicate<PointcutExpression<?>>() {
+
+			@Override
+			public boolean eval(PointcutExpression<?> object) {
+				if (!(object instanceof RuntimePointcutExpression))
+					return false;
+				
+				return getAdviceTransformationProvider().supports(object);
+			}
+		};
+		
+		// Cast is safe due to the filter
+		RuntimePointcutExpression<?> prunedTree = (RuntimePointcutExpression<?>) initialTree.getPrunedTree(filter);
 		
 		if (prunedTree == null)
 			return;
 		
 		// Now, select all pointcut expressions we can weave at the start of the method.
 		// Currently, this is all except the 'if'-expression, since it can refer to the value of parameters
-		PointcutExpression initialCheckTree = prunedTree.removeFromTree(IfPointcutExpression.class);
+		// Cast is safe, since we already pruned to RuntimePCEs
+		RuntimePointcutExpression<?> initialCheckTree = (RuntimePointcutExpression<?>) prunedTree.removeFromTree(IfPointcutExpression.class);
 		
 		NamingRegistry<RuntimePointcutExpression> expressionNames = new NamingRegistry<RuntimePointcutExpression>();
 
@@ -56,30 +72,40 @@ public class CatchClauseCoordinator extends AbstractCoordinator<Block> {
 		}
 		
 		// Part two: inject the parameters
-		// // There is only one parameter in catch clauses - the caught exception, so the parameter exposing pointcut doesn't really matter - we know the type and the name from the given parameter list
 		Block secondPart = new Block();
 		if (!parameters.isEmpty()) {
-			FormalParameter fp = parameters.get(0);
+			SafePredicate<PointcutExpression<?>> parameterInjectionFilter = new SafePredicate<PointcutExpression<?>>() {
+
+				@Override
+				public boolean eval(PointcutExpression<?> object) {
+					if (!(object instanceof ParameterExposurePointcutExpression))
+						return false;
+					
+					return getAdviceTransformationProvider().supports(object);
+				}
+			};
 			
-			LocalVariableDeclarator parameterInjector = new LocalVariableDeclarator(fp.getTypeReference().clone());
-			VariableDeclaration parameterInjectorDecl = new VariableDeclaration(fp.getName());					
-			parameterInjector.add(parameterInjectorDecl);
-			
-			ClassCastExpression cast = new ClassCastExpression(fp.getTypeReference().clone(), new NamedTargetExpression(((CatchClause) element.parent()).getExceptionParameter().getName()));
-			
-			parameterInjectorDecl.setInitialization(cast);
-			parameterInjector.add(parameterInjectorDecl);
+			// Cast is safe due to the filter
+			ParameterExposurePointcutExpression<?> parameterTree = (ParameterExposurePointcutExpression<?>) initialTree.getPrunedTree(parameterInjectionFilter);
+
+			for (FormalParameter fp : parameters) {
 				
-			secondPart.addStatement(parameterInjector);
+				ParameterExposurePointcutExpression<?> exposingParameter = ((ParameterExposurePointcutExpression<?>) parameterTree.origin()).findExpressionFor(fp);
+				
+				LocalVariableDeclarator parameterInjector = getAdviceTransformationProvider().getRuntimeParameterInjectionProvider(exposingParameter).getParameterExposureDeclaration(exposingParameter.origin(), fp);
+				secondPart.addStatement(parameterInjector);
+			}
 		}
 				
 
 		// Get the if-expressions
-		PointcutExpression ifExprTree = prunedTree.getPrunedTree(IfPointcutExpression.class);
+		RuntimePointcutExpression<?> ifExprTree = (RuntimePointcutExpression<?>) prunedTree.getPrunedTree(IfPointcutExpression.class);
 		if (ifExprTree != null) {
 			IfThenElseStatement secondTest = getTest(ifExprTree, expressionNames);
 			secondTest.setElseStatement(element.clone());
 			secondPart.addBlock(addTest(ifExprTree, expressionNames, secondTest));
+		} else {
+			secondPart.addBlock(element.clone());
 		}
 		
 		Block finalBody = new Block();

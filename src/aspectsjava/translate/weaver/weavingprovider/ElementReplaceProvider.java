@@ -3,7 +3,7 @@ package aspectsjava.translate.weaver.weavingprovider;
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.aspects.weaver.weavingprovider.WeavingProvider;
 import chameleon.core.element.Element;
 

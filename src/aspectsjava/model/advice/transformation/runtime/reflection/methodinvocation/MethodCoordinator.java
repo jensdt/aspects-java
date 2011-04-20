@@ -2,17 +2,18 @@ package aspectsjava.model.advice.transformation.runtime.reflection.methodinvocat
 
 import java.util.List;
 
-import jnome.core.expression.ArrayAccessExpression;
-import jnome.core.language.Java;
-import jnome.core.type.BasicJavaTypeReference;
+import org.rejuse.predicate.SafePredicate;
+
 import aspectsjava.model.advice.transformation.reflection.methodinvocation.ReflectiveMethodInvocation;
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.runtimetransformation.AbstractCoordinator;
 import chameleon.aspects.namingRegistry.NamingRegistry;
+import chameleon.aspects.pointcut.expression.AbstractPointcutExpression;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.IfPointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.ParameterExposurePointcutExpression;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
-import chameleon.aspects.pointcut.expression.runtime.IfPointcutExpression;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.lookup.LookupException;
@@ -20,12 +21,8 @@ import chameleon.core.method.RegularImplementation;
 import chameleon.core.method.exception.TypeExceptionDeclaration;
 import chameleon.core.statement.Block;
 import chameleon.core.variable.FormalParameter;
-import chameleon.core.variable.VariableDeclaration;
 import chameleon.oo.type.BasicTypeReference;
 import chameleon.oo.type.TypeReference;
-import chameleon.support.expression.ClassCastExpression;
-import chameleon.support.expression.FilledArrayIndex;
-import chameleon.support.expression.RegularLiteral;
 import chameleon.support.member.simplename.method.NormalMethod;
 import chameleon.support.member.simplename.method.RegularMethodInvocation;
 import chameleon.support.statement.CatchClause;
@@ -65,15 +62,29 @@ public class MethodCoordinator extends AbstractCoordinator<NormalMethod> {
 		if (element == null)
 			return;
 		
+		PointcutExpression<?> initialTree = (PointcutExpression<?>) getMatchResult().getExpression();
+		
 		// Part one: get all the runtime pointcut expressions but maintain the structure (and/or/...)
-		PointcutExpression prunedTree = getMatchResult().getExpression().getPrunedTree(RuntimePointcutExpression.class);
+		SafePredicate<PointcutExpression<?>> runtimeFilter = new SafePredicate<PointcutExpression<?>>() {
+
+			@Override
+			public boolean eval(PointcutExpression<?> object) {
+				if (!(object instanceof RuntimePointcutExpression))
+					return false;
+				
+				return getAdviceTransformationProvider().supports(object);
+			}
+		};
+		
+		// Cast is safe due to the filter
+		RuntimePointcutExpression<?> prunedTree = (RuntimePointcutExpression<?>) initialTree.getPrunedTree(runtimeFilter);
 		
 		if (prunedTree == null)
 			return;
 		
 		// Now, select all pointcut expressions we can weave at the start of the method.
 		// Currently, this is all except the 'if'-expression, since it can refer to the value of parameters
-		PointcutExpression initialCheckTree = prunedTree.removeFromTree(IfPointcutExpression.class);
+		RuntimePointcutExpression<?> initialCheckTree = (RuntimePointcutExpression<?>) prunedTree.removeFromTree(IfPointcutExpression.class);
 		
 		NamingRegistry<RuntimePointcutExpression> expressionNames = new NamingRegistry<RuntimePointcutExpression>();
 		Block finalBody = new Block();
@@ -85,7 +96,27 @@ public class MethodCoordinator extends AbstractCoordinator<NormalMethod> {
 		// Part two: inject the parameters
 		
 		if (!parameters.isEmpty()) {
+			SafePredicate<PointcutExpression<?>> parameterInjectionFilter = new SafePredicate<PointcutExpression<?>>() {
+
+				@Override
+				public boolean eval(PointcutExpression<?> object) {
+					if (!(object instanceof ParameterExposurePointcutExpression))
+						return false;
+					
+					return getAdviceTransformationProvider().supports(object);
+				}
+			};
+			
+			// Cast is safe due to the filter
+			ParameterExposurePointcutExpression<?> parameterTree = (ParameterExposurePointcutExpression<?>) initialTree.getPrunedTree(parameterInjectionFilter);
+			
 			for (FormalParameter fp : parameters) {
+				ParameterExposurePointcutExpression<?> exposingParameter = ((ParameterExposurePointcutExpression<?>) parameterTree.origin()).findExpressionFor(fp);
+				
+				LocalVariableDeclarator parameterInjector = getAdviceTransformationProvider().getRuntimeParameterInjectionProvider(exposingParameter).getParameterExposureDeclaration(exposingParameter.origin(), fp);
+				finalBody.addStatement(parameterInjector);
+				
+				/*
 				LocalVariableDeclarator parameterInjector = new LocalVariableDeclarator(fp.getTypeReference().clone());
 				VariableDeclaration parameterInjectorDecl = new VariableDeclaration(fp.getName());					
 				parameterInjector.add(parameterInjectorDecl);
@@ -116,13 +147,15 @@ public class MethodCoordinator extends AbstractCoordinator<NormalMethod> {
 				parameterInjector.add(parameterInjectorDecl);
 				
 				finalBody.addStatement(parameterInjector);
+				*/
 			}
+			
 		}
 
 		// Part Three: add the check for the 'if' expressions
 		
 		// Get the if-expressions
-		PointcutExpression ifExprTree = prunedTree.getPrunedTree(IfPointcutExpression.class);
+		RuntimePointcutExpression<?> ifExprTree = (RuntimePointcutExpression<?>) prunedTree.getPrunedTree(IfPointcutExpression.class);
 		if (ifExprTree != null) {	
 			finalBody.addBlock(addTest(ifExprTree, expressionNames));
 		}
@@ -140,7 +173,7 @@ public class MethodCoordinator extends AbstractCoordinator<NormalMethod> {
 	 * 			The naming registry for expressions
 	 */
 	@Override
-	protected Block addTest(PointcutExpression tree, NamingRegistry<RuntimePointcutExpression> expressionNames) {
+	protected Block addTest(RuntimePointcutExpression tree, NamingRegistry<RuntimePointcutExpression> expressionNames) {
 		Block body = new Block();
 		
 		// Re-throw unchecked exceptions (subclasses of RuntimeException )	
@@ -223,7 +256,7 @@ public class MethodCoordinator extends AbstractCoordinator<NormalMethod> {
 	/**
 	 * 	{@inheritDoc}
 	 */
-	public MatchResult<? extends PointcutExpression, ? extends MethodInvocation> getMatchResult() {
-		return (MatchResult<? extends PointcutExpression, ? extends MethodInvocation>) super.getMatchResult();
+	public MatchResult<? extends AbstractPointcutExpression, ? extends MethodInvocation> getMatchResult() {
+		return (MatchResult<? extends AbstractPointcutExpression, ? extends MethodInvocation>) super.getMatchResult();
 	}
 }

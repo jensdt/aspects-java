@@ -15,7 +15,7 @@ import chameleon.aspects.advice.types.translation.NoOperationTranslator;
 import chameleon.aspects.advice.types.weaving.AdviceWeaveResultProvider;
 import chameleon.aspects.advice.types.weaving.ReturnAdviceProvider;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.aspects.weaver.AbstractElementWeaver;
 import chameleon.aspects.weaver.weavingprovider.WeavingProvider;
 import chameleon.core.element.Element;

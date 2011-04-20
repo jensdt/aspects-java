@@ -14,7 +14,7 @@ import chameleon.aspects.Aspect;
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.aspects.weaver.Weaver;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.element.Element;
@@ -64,7 +64,7 @@ public class WeaveTransformer {
 				Collections.sort(weavingEncapsulators, new AdviceTypeComparator());
 				
 				// Transform the weaving encapsulation list to a double linked list
-				WeavingEncapsulator weavingChain = WeavingEncapsulator.fromList(weavingEncapsulators);
+				WeavingEncapsulator weavingChain = WeavingEncapsulator.fromIterable(weavingEncapsulators);
 				
 				// Start the weaving
 				weavingChain.start();
@@ -75,7 +75,6 @@ public class WeaveTransformer {
 	}
 	
 	/**
-	 * 	FIXME: update this doc
 	 * 
 	 * 	Weave a given regular type
 	 * 
@@ -85,7 +84,7 @@ public class WeaveTransformer {
 	 * 			All compilation units that contain aspects
 	 * 	@param 	otherCompilationUnits
 	 * 			All other compilation units
-	 * 	@return	The modified (woven) compilation unit
+	 * 	@return	The map of joinpoints to weaving encapsulators that handle this joinpoint
 	 * 	@throws LookupException
 	 */
 	private Map<Element, List<WeavingEncapsulator>> weaveRegularType(CompilationUnit compilationUnit, List<CompilationUnit> aspectCompilationUnits, List<CompilationUnit> otherCompilationUnits) throws LookupException {
@@ -95,13 +94,15 @@ public class WeaveTransformer {
 			advices.addAll(cu.descendants(Advice.class));
 		}
 		
-		// Keep a map, per joinpoint: the weaving encapsulator that weaves it
+		// Keep a map, per joinpoint: the weaving encapsulators that weave it
 		Map<Element, List<WeavingEncapsulator>> weavingMap = new HashMap<Element, List<WeavingEncapsulator>>();
 		
 		// Weave all advices
 		for (Advice<?> advice : advices) {
-			List<MatchResult<? extends PointcutExpression, ? extends Element>> joinpoints = advice.pointcutExpression().joinpoints(compilationUnit);
+			// Get all joinpoints matched by that expression
+			List<MatchResult<? extends PointcutExpression, ? extends Element>> joinpoints = advice.getExpandedPointcutExpression().joinpoints(compilationUnit);
 			
+			// For each joinpoint, get all necessairy weaving info and add it to the list
 			for (MatchResult<? extends PointcutExpression, ? extends Element> joinpoint : joinpoints) {
 				if (!weavingMap.containsKey(joinpoint.getJoinpoint()))
 					weavingMap.put(joinpoint.getJoinpoint(), new ArrayList<WeavingEncapsulator>());

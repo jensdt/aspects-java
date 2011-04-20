@@ -2,12 +2,15 @@ package aspectsjava.translate.weaver.weavingprovider;
 
 import java.util.List;
 
-
-import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeExpressionProvider;
+import chameleon.aspects.WeavingEncapsulator;
+import chameleon.aspects.advice.runtimetransformation.Coordinator;
+import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeParameterExposureProvider;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.generic.PointcutExpression;
+import chameleon.aspects.pointcut.expression.PointcutExpression;
+import chameleon.aspects.pointcut.expression.dynamicexpression.ParameterExposurePointcutExpression;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
 import chameleon.aspects.weaver.weavingprovider.WeavingProvider;
+import chameleon.core.element.Element;
 import chameleon.core.statement.Block;
 import chameleon.core.statement.Statement;
 
