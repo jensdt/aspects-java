@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.rejuse.association.SingleAssociation;
 
-import chameleon.core.declaration.Signature;
 import chameleon.core.element.Element;
 import chameleon.core.namespace.NamespaceElementImpl;
 import chameleon.core.validation.BasicProblem;

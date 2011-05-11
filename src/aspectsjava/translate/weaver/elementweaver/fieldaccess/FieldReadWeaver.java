@@ -10,8 +10,6 @@ import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.types.translation.AdviceTransformationProvider;
 import chameleon.aspects.advice.types.weaving.AdviceWeaveResultProvider;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.PointcutExpression;
-import chameleon.core.element.Element;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.lookup.LookupException;
@@ -19,7 +17,7 @@ import chameleon.support.expression.AssignmentExpression;
 
 public class FieldReadWeaver extends FieldWeaver {
 	@Override
-	public boolean supports(Advice advice,MatchResult<? extends PointcutExpression, NamedTargetExpression> result) throws LookupException {
+	public boolean supports(Advice advice,MatchResult<NamedTargetExpression> result) throws LookupException {
 		if (!super.supports(advice, result))
 			return false;
 
@@ -38,23 +36,23 @@ public class FieldReadWeaver extends FieldWeaver {
 	}
 
 	@Override
-	public AdviceTransformationProvider getTransformationStrategy(Advice advice, MatchResult<? extends PointcutExpression, ? extends Element> joinpoint) {
+	public AdviceTransformationProvider getTransformationStrategy(Advice advice, MatchResult<NamedTargetExpression> joinpoint) {
 		PropertySet around = getAround(advice);		
 		PropertySet before = getBefore(advice);
 		PropertySet after = getAfter(advice);
 		PropertySet afterReturning = getAfterReturning(advice);
 		
 		if (around.containsAll(advice.properties().properties()))
-			return new AroundReflectiveFieldRead(joinpoint, advice);
+			return new AroundReflectiveFieldRead();
 		
 		if (before.containsAll(advice.properties().properties()))
-			return new BeforeReflectiveFieldRead(joinpoint, advice);
+			return new BeforeReflectiveFieldRead();
 		
 		if (after.containsAll(advice.properties().properties()))
-			return new AfterReflectiveFieldRead(joinpoint, advice);
+			return new AfterReflectiveFieldRead();
 					
 		if (afterReturning.containsAll(advice.properties().properties()))
-			return new AfterReflectiveFieldRead(joinpoint, advice);
+			return new AfterReflectiveFieldRead();
 	
 		throw new RuntimeException();
 	}

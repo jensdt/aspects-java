@@ -1,11 +1,7 @@
 package aspectsjava.model.advice.transformation.reflection.methodinvocation;
 
 import chameleon.aspects.WeavingEncapsulator;
-import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.types.Returning;
-import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.PointcutExpression;
-import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.statement.Block;
 import chameleon.core.variable.VariableDeclaration;
@@ -16,11 +12,6 @@ import chameleon.support.statement.ReturnStatement;
 import chameleon.support.variable.LocalVariableDeclarator;
 
 public class AfterReturningReflectiveMethodInvocation extends ReflectiveMethodInvocation {
-
-	public AfterReturningReflectiveMethodInvocation(MatchResult<? extends PointcutExpression, ? extends MethodInvocation> joinpoint, Advice advice) {
-		super(joinpoint, advice);
-	}
-
 	@Override
 	protected Block getInnerBody(WeavingEncapsulator next) {
 		Block adviceBody = new Block();

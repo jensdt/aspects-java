@@ -46,7 +46,7 @@ public class AnnotatedMethodInvocationExpression<E extends AnnotatedMethodInvoca
 		for (Modifier modifier : modifiers) {
 			if (modifier instanceof AnnotationModifier) {
 				if (((AnnotationModifier) modifier).name().equals(reference().referencendName()))
-					return new MatchResult<AnnotatedMethodInvocationExpression, MethodInvocation>(this, joinpoint);
+					return new MatchResult<MethodInvocation>(this, joinpoint);
 			}
 		}
 		

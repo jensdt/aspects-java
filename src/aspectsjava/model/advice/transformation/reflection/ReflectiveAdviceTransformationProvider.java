@@ -9,17 +9,15 @@ import jnome.core.variable.JavaVariableDeclaration;
 
 import org.rejuse.predicate.SafePredicate;
 
+import aspectsjava.model.advice.transformation.CreateAdviceMethodTransformationProvider;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeAnd;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeIfCheck;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeNot;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeOr;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeTypeCheck;
-import aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.reflection.ReflectiveTargetTypeParameterExposure;
-import aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.reflection.ReflectiveThisTypeParameterExposure;
-import chameleon.aspects.advice.Advice;
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.TypeParameterExposure;
 import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeExpressionProvider;
 import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeParameterExposureProvider;
-import chameleon.aspects.advice.types.translation.AbstractAdviceTransformationProviderSupportingRuntime;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.aspects.pointcut.expression.dynamicexpression.IfPointcutExpression;
@@ -49,6 +47,7 @@ import chameleon.oo.type.generics.FormalTypeParameter;
 import chameleon.support.expression.AssignmentExpression;
 import chameleon.support.expression.ClassCastExpression;
 import chameleon.support.expression.InstanceofExpression;
+import chameleon.support.expression.ThisLiteral;
 import chameleon.support.member.simplename.method.NormalMethod;
 import chameleon.support.member.simplename.method.RegularMethodInvocation;
 import chameleon.support.member.simplename.variable.MemberVariableDeclarator;
@@ -64,98 +63,20 @@ import chameleon.support.statement.ThrowStatement;
 import chameleon.support.statement.TryStatement;
 import chameleon.support.variable.LocalVariableDeclarator;
 
-public abstract class ReflectiveAdviceTransformationProvider extends AbstractAdviceTransformationProviderSupportingRuntime<NormalMethod> {
-	
+public abstract class ReflectiveAdviceTransformationProvider extends CreateAdviceMethodTransformationProvider {
 	/**
-	 * 	Constructor
+	 *  {@inheritDoc}
 	 * 
-	 * 	@param 	joinpoint
-	 * 			The joinpoint that is woven
-	 * 	@param 	advice
-	 * 			The advice that is transformed
+	 * 	Also create the reflective method
 	 */
-	public ReflectiveAdviceTransformationProvider(MatchResult joinpoint, Advice advice) {
-		super(joinpoint, advice);
-	}
-
-	/**
-	 * 	Return the type used for implementing the advice - methods. If it doesn't exist, it is created. It is always created in the same
-	 * 	compilation unit as the aspect.
-	 * 
-	 * 	@param 	compilationUnit
-	 * 			The compilation unit the aspect belongs to
-	 * 	@param 	name
-	 * 			The name of the aspect
-	 * 	@return	The type representing the aspect
-	 */
+	@Override
 	protected RegularType getOrCreateAspectClass(CompilationUnit compilationUnit, final String name) {
-		// Find the aspect class
-		List<RegularType> aspectClasses = compilationUnit.descendants(RegularType.class, new SafePredicate<RegularType>() {
-			@Override
-			public boolean eval(RegularType object) {
-				return object.getName().equals(name);
-			}
-		});
-		
-		// Sanity check
-		if (aspectClasses.size() > 1)
-			throw new RuntimeException("More than one aspect class");
-		
-		// Create the aspect class, or get it if it already exists
-		RegularType aspectClass;
-		if (aspectClasses.isEmpty()) {
-			// No aspect class yet
-			aspectClass = new RegularType(name);
-			aspectClass.addModifier(new Public());
-			
-			// Create new empty constructor
-			NormalMethod m = new NormalMethod(new SimpleNameDeclarationWithParametersHeader(name), null);
-			m.addModifier(new Constructor());
-			m.addModifier(new Private());
-			m.setImplementation(new RegularImplementation(new Block()));
-			
-			aspectClass.add(m);
-			
-			// Add instance variable
-			MemberVariableDeclarator decl = new MemberVariableDeclarator(new BasicTypeReference(name));
-			VariableDeclaration varDecl = new VariableDeclaration("instance");
-			
-			decl.add(varDecl);
-			decl.addModifier(new Static());
-			decl.addModifier(new Private());
-			varDecl.setInitialization(new ConstructorInvocation(new BasicJavaTypeReference(name), null));
-			aspectClass.add(decl);
-			
-			// Getter for the instance
-			NormalMethod getter = new NormalMethod(new SimpleNameDeclarationWithParametersHeader("instance"), new BasicTypeReference(name));
-			getter.addModifier(new Static());
-			getter.addModifier(new Public());
-			
-			Block getterBody = new Block();
-			getterBody.addStatement(new ReturnStatement(new NamedTargetExpression("instance")));
-			getter.setImplementation(new RegularImplementation(getterBody));
-			aspectClass.add(getter);
-			
-			compilationUnit.namespacePart(1).add(aspectClass);
-		} else {
-			// Aspect class already exist!
-			aspectClass = aspectClasses.get(0);
-		}
+		RegularType aspectClass = super.getOrCreateAspectClass(compilationUnit, name);
 		
 		// Add the method used to make reflective calls
-		createReflectiveMethod(aspectClass); 
+		createReflectiveMethod(aspectClass);
 		
 		return aspectClass;
-	}
-	
-	protected boolean hasMethodWithName(RegularType type, final String methodName) {
-		return type.hasDescendant(NormalMethod.class, new SafePredicate<NormalMethod>() {
-
-			@Override
-			public boolean eval(NormalMethod object) {
-				return object.signature().name().equals(methodName);
-			}
-		});
 	}
 	
 	protected abstract String getReflectiveMethodName();
@@ -320,7 +241,7 @@ public abstract class ReflectiveAdviceTransformationProvider extends AbstractAdv
 	}
 
 	@Override
-	public RuntimeExpressionProvider getRuntimeTransformer(RuntimePointcutExpression pointcutExpression) {		
+	public RuntimeExpressionProvider getRuntimeExpressionProvider(RuntimePointcutExpression pointcutExpression) {		
 		if (pointcutExpression instanceof ThisTypePointcutExpression)
 			return new RuntimeTypeCheck(new NamedTargetExpression(calleeName));
 		
@@ -343,31 +264,18 @@ public abstract class ReflectiveAdviceTransformationProvider extends AbstractAdv
 	}
 	
 	@Override
-	public void initialiseRuntimeTransformers(MatchResult<? extends PointcutExpression, ? extends Element> joinpoint) {
+	public void initialiseRuntimeTransformers(MatchResult<? extends Element> joinpoint) {
 		// Nothing needs to be done
 	}
 	
-	public abstract String getAdviceMethodName(Advice advice);
-	
-	public boolean isAlreadyDefined(Advice advice, CompilationUnit cu) {
-		final String name = getAdviceMethodName(advice);
-		
-		return cu.hasDescendant(NormalMethod.class, new SafePredicate<NormalMethod>() {
-
-			@Override
-			public boolean eval(NormalMethod object) {
-				return name.equals(object.name());
-			}
-		});
-	}
 	
 	@Override
 	public RuntimeParameterExposureProvider getRuntimeParameterInjectionProvider(ParameterExposurePointcutExpression<?> expression) {
 		if (expression instanceof ThisTypePointcutExpression)
-			return new ReflectiveThisTypeParameterExposure(this);
+			return new TypeParameterExposure(new NamedTargetExpression(calleeName));
 		
 		if (expression instanceof TargetTypePointcutExpression)
-			return new ReflectiveTargetTypeParameterExposure(this);
+			return new TypeParameterExposure(new NamedTargetExpression(objectParamName));
 		
 		return null;
 	}

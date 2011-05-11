@@ -74,33 +74,25 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 	public final String typesParamName = "_$types";
 	public final String retvalName = "_$retval";
 	
-	/**
-	 * 	Constructor
-	 * 
-	 * 	@param 	joinpoint
-	 * 			The joinpoint that is woven
-	 * 	@param 	advice
-	 * 			The advice that is transformed
-	 */
-	public ReflectiveMethodInvocation(MatchResult<? extends PointcutExpression, ? extends MethodInvocation> joinpoint, Advice advice) {
-		super(joinpoint, advice);
-	}
-	
 	@Override
-	public MatchResult<? extends PointcutExpression, ? extends MethodInvocation> getJoinpoint() {
-		return (MatchResult<? extends PointcutExpression, ? extends MethodInvocation>) super.getJoinpoint();
+	public MatchResult<? extends MethodInvocation> getJoinpoint() {
+		return (MatchResult<? extends MethodInvocation>) super.getJoinpoint();
 	}
 	
 	protected abstract Block getInnerBody(WeavingEncapsulator next);
 	
 	public RegularMethodInvocation getNextInvocation(WeavingEncapsulator next) {
-		if (next == null)
-			return createProceedInvocation(new NamedTarget(getAdvice().aspect().name()), new NamedTargetExpression(objectParamName), new NamedTargetExpression(methodNameParamName), new NamedTargetExpression(argumentNameParamName));
-		else
-			return createNextAdviceInvocation(next);
+		return getNextInvocation(next, new NamedTargetExpression(argumentNameParamName));
 	}
 	
-	private RegularMethodInvocation createNextAdviceInvocation(WeavingEncapsulator next) {
+	public RegularMethodInvocation getNextInvocation(WeavingEncapsulator next, Expression parameters) {
+		if (next == null)
+			return createProceedInvocation(new NamedTarget(getAdvice().aspect().name()), new NamedTargetExpression(objectParamName), new NamedTargetExpression(methodNameParamName), parameters);
+		else
+			return createNextAdviceInvocation(next, parameters);
+	}
+	
+	private RegularMethodInvocation createNextAdviceInvocation(WeavingEncapsulator next, Expression parameters) {
 		RegularMethodInvocation getInstance = new RegularMethodInvocation("instance", new NamedTarget(next.getAdvice().aspect().name()));
 		RegularMethodInvocation adviceInvocation = new RegularMethodInvocation(getAdviceMethodName(next.getAdvice()), getInstance);
 		
@@ -108,7 +100,7 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 		adviceInvocation.addArgument(new BasicTypeArgument(new BasicTypeReference("T")));
 		adviceInvocation.addArgument(new NamedTargetExpression(objectParamName));
 		adviceInvocation.addArgument(new NamedTargetExpression(methodNameParamName));
-		adviceInvocation.addArgument(new NamedTargetExpression(argumentNameParamName));
+		adviceInvocation.addArgument(parameters);
 		adviceInvocation.addArgument(new NamedTargetExpression(calleeName));
 
 		return adviceInvocation;
@@ -200,7 +192,7 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 	}
 
 	@Override
-	public NormalMethod transform(WeavingEncapsulator next) throws LookupException {
+	public NormalMethod transform(WeavingEncapsulator previous, WeavingEncapsulator next) throws LookupException {
 		Aspect<?> aspect = getAdvice().aspect();
 		CompilationUnit compilationUnit = aspect.nearestAncestor(CompilationUnit.class);
 		
@@ -300,7 +292,7 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 		proceedInvocation.addArgument(objectTarget);
 		proceedInvocation.addArgument(methodNameTarget);
 		proceedInvocation.addArgument(argumentsTarget);
-		
+
 		ArrayCreationExpression typesArray = new ArrayCreationExpression(new ArrayTypeReference(new BasicJavaTypeReference("Class")));
 		ArrayInitializer typesInitializer = new ArrayInitializer();					
 	
@@ -308,13 +300,12 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 			for (FormalParameter fp : (List<FormalParameter>) getJoinpoint().getJoinpoint().getElement().formalParameters())
 				typesInitializer.addInitializer(new ClassLiteral(fp.getTypeReference().clone()));
 		} catch (LookupException e) {
-			throw new RuntimeException(e);
+			// This shouldn't occur in normal usage, only a bug can cause this
+			e.printStackTrace();
 		}
 		
 		typesArray.setInitializer(typesInitializer);
-		
 		proceedInvocation.addArgument(typesArray);
-		
 		
 		return proceedInvocation;
 	}
@@ -356,6 +347,7 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 		return publicCall;
 	}
 	
+	@Override
 	protected List<CatchClause> getIgnoredPrivateCatchClauses() {
 		List<CatchClause> ignoredClauses = super.getIgnoredPrivateCatchClauses();
 		
@@ -430,18 +422,11 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 	}
 
 	@Override
-	public RuntimeExpressionProvider getRuntimeTransformer(RuntimePointcutExpression pointcutExpression) {
+	public RuntimeExpressionProvider getRuntimeExpressionProvider(RuntimePointcutExpression pointcutExpression) {
 		if (pointcutExpression instanceof ArgsPointcutExpression)
 			return new RuntimeArgumentsTypeCheck(new NamedTargetExpression(argumentNameParamName));
-		
-		if (pointcutExpression instanceof ThisTypePointcutExpression)
-			return new RuntimeTypeCheck(new NamedTargetExpression(calleeName));
 
-		if (pointcutExpression instanceof TargetTypePointcutExpression)
-			return new RuntimeTypeCheck(new NamedTargetExpression(
-					objectParamName));
-
-		return super.getRuntimeTransformer(pointcutExpression);
+		return super.getRuntimeExpressionProvider(pointcutExpression);
 	}
 	
 	@Override
@@ -453,7 +438,7 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 	}
 	
 	@Override
-	public Coordinator<NormalMethod> getCoordinator(MatchResult<? extends PointcutExpression, ?> joinpoint, WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextEncapsulator) {
+	public Coordinator<NormalMethod> getCoordinator(MatchResult<?> joinpoint, WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextEncapsulator) {
 		return new MethodCoordinator(this, getJoinpoint(), previousWeavingEncapsulator, nextEncapsulator);
 	}
 	

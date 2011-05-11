@@ -38,5 +38,4 @@ public class AnnotationReference<E extends AnnotationReference<E>> extends Names
 	public VerificationResult verifySelf() {
 		return Valid.create();
 	}
-
 }

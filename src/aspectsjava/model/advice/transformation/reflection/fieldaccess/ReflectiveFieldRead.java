@@ -9,17 +9,13 @@ import chameleon.aspects.Aspect;
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.runtimetransformation.Coordinator;
-import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeParameterExposureProvider;
 import chameleon.aspects.namingRegistry.NamingRegistry;
 import chameleon.aspects.namingRegistry.NamingRegistryFactory;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.PointcutExpression;
-import chameleon.aspects.pointcut.expression.dynamicexpression.ParameterExposurePointcutExpression;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.declaration.DeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameSignature;
-import chameleon.core.element.Element;
 import chameleon.core.expression.NamedTarget;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.lookup.LookupException;
@@ -45,11 +41,6 @@ import chameleon.support.variable.LocalVariable;
 import chameleon.support.variable.LocalVariableDeclarator;
 
 public abstract class ReflectiveFieldRead extends ReflectiveAdviceTransformationProvider {
-
-	public ReflectiveFieldRead(MatchResult<?, ?> joinpoint, Advice advice) {
-		super(joinpoint, advice);
-	}
-	
 	public final String fieldName = "_$field";
 	public final String retvalName = "_$retval";
 	
@@ -158,14 +149,7 @@ public abstract class ReflectiveFieldRead extends ReflectiveAdviceTransformation
 	}
 	
 	@Override
-	public String getAdviceMethodName(Advice advice) {
-		NamingRegistry<Advice> adviceNamingRegistry = NamingRegistryFactory.instance().getNamingRegistryFor("advice");
-		
-		return "advice_" + adviceNamingRegistry.getName(advice);
-	}
-	
-	@Override
-	public NormalMethod transform(WeavingEncapsulator next) throws LookupException {
+	public NormalMethod transform(WeavingEncapsulator previous, WeavingEncapsulator next) throws LookupException {
 		Aspect<?> aspect = getAdvice().aspect();
 		CompilationUnit compilationUnit = aspect.nearestAncestor(CompilationUnit.class);
 		

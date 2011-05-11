@@ -6,19 +6,17 @@ import java.util.List;
 
 import org.rejuse.property.PropertySet;
 
-import aspectsjava.translate.weaver.weavingprovider.CatchClauseInsertAfterProvider;
-import aspectsjava.translate.weaver.weavingprovider.CatchClauseInsertAroundProvider;
-import aspectsjava.translate.weaver.weavingprovider.CatchClauseInsertBeforeProvider;
+import aspectsjava.translate.weaver.weavingprovider.catchclause.CatchClauseInsertAfterProvider;
+import aspectsjava.translate.weaver.weavingprovider.catchclause.CatchClauseInsertAroundProvider;
+import aspectsjava.translate.weaver.weavingprovider.catchclause.CatchClauseInsertBeforeProvider;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.types.translation.AdviceTransformationProvider;
-import chameleon.aspects.advice.types.translation.NoOperationTranslator;
+import chameleon.aspects.advice.types.translation.NoOperationTransformationProvider;
 import chameleon.aspects.advice.types.weaving.AdviceWeaveResultProvider;
 import chameleon.aspects.advice.types.weaving.ReturnAdviceProvider;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.aspects.weaver.AbstractElementWeaver;
 import chameleon.aspects.weaver.weavingprovider.WeavingProvider;
-import chameleon.core.element.Element;
 import chameleon.core.statement.Block;
 import chameleon.core.statement.Statement;
 
@@ -34,8 +32,8 @@ public class CatchClauseWeaver extends AbstractElementWeaver<Block, List<Stateme
 	 *  {@inheritDoc}
 	 */
 	@Override
-	public AdviceTransformationProvider getTransformationStrategy(Advice advice, MatchResult<? extends PointcutExpression, ? extends Element> joinpoint) {
-		return new NoOperationTranslator();
+	public AdviceTransformationProvider getTransformationStrategy(Advice advice, MatchResult<Block> joinpoint) {
+		return new NoOperationTransformationProvider();
 	}
 
 	/**
@@ -81,7 +79,7 @@ public class CatchClauseWeaver extends AbstractElementWeaver<Block, List<Stateme
 		throw new RuntimeException();
 	}
 	
-	AdviceWeaveResultProvider<Block, List<Statement>> weavingAdviceType = new ReturnAdviceProvider();
+	AdviceWeaveResultProvider<Block, List<Statement>> weavingAdviceType = new ReturnAdviceProvider<Block>();
 
 	/**
 	 *  {@inheritDoc}

@@ -1,17 +1,30 @@
 package aspectsjava.model.advice.transformation.runtime.transformationprovider;
 
+import jnome.core.expression.ClassLiteral;
+import jnome.core.language.Java;
+import jnome.core.type.BasicJavaTypeReference;
 import chameleon.aspects.namingRegistry.NamingRegistry;
 import chameleon.aspects.pointcut.expression.dynamicexpression.ArgsPointcutExpression;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
 import chameleon.core.expression.Expression;
 import chameleon.core.expression.NamedTargetExpression;
-import chameleon.oo.type.TypeReference;
-import chameleon.support.expression.InstanceofExpression;
+import chameleon.core.lookup.LookupException;
+import chameleon.oo.type.BasicTypeReference;
+import chameleon.oo.type.Type;
+import chameleon.support.expression.ClassCastExpression;
+import chameleon.support.member.simplename.method.RegularMethodInvocation;
 
 public class RuntimeSingleArgumentTypeCheck extends RuntimeArgumentsTypeCheck {
 
 	public RuntimeSingleArgumentTypeCheck(NamedTargetExpression argumentReference) {
 		super(argumentReference);
+	}
+	
+	private Type type;
+
+	public RuntimeSingleArgumentTypeCheck(NamedTargetExpression argumentReference, Type type) {
+		this(argumentReference);
+		this.type = type;
 	}
 
 	/**
@@ -22,12 +35,28 @@ public class RuntimeSingleArgumentTypeCheck extends RuntimeArgumentsTypeCheck {
 	 */
 	@Override
 	public Expression<?> getExpression(ArgsPointcutExpression<?> expr, NamingRegistry<RuntimePointcutExpression<?>> namingRegistry) {
-		NamedTargetExpression parameter = expr.parameters().get(0);
-		TypeReference<?> typeToTest = getTypeToTest(parameter);
-		
-		// Create the instanceof
-		InstanceofExpression test = new InstanceofExpression(getArgumentReference(), typeToTest);
+		ClassLiteral getDeclaredClass;
+		try {
+			getDeclaredClass = new ClassLiteral(new BasicJavaTypeReference(expr.parameters().get(0).getType().getFullyQualifiedName()));
+			
+			Expression getGivenClass = getClassOfParameter(getArgumentReference());
+			
+			RegularMethodInvocation test = new RegularMethodInvocation("isAssignableFrom", getDeclaredClass);
+			test.addArgument(getGivenClass);
+			
+			return test;
+		} catch (LookupException e) {
+			// Shouldn't be able to occur
+			e.printStackTrace();
+			return null;
+		}
+	}
 
-		return test;
+	private Expression getClassOfParameter(NamedTargetExpression argumentReference) {
+		
+		if (type != null && type.isTrue(type.language().property("primitive")))
+			return new ClassLiteral(new BasicTypeReference(type.getFullyQualifiedName()));
+		else
+			return new RegularMethodInvocation("getClass", argumentReference.clone());
 	}
 }

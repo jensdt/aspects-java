@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jnome.core.language.Java;
-import aspectsjava.model.advice.weaving.reflection.ReflectiveProvider;
+import aspectsjava.model.advice.weaving.TargetedAdviceMethodProvider;
 import chameleon.aspects.advice.Advice;
-import chameleon.aspects.namingRegistry.NamingRegistry;
-import chameleon.aspects.namingRegistry.NamingRegistryFactory;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.core.expression.Expression;
 import chameleon.core.expression.InvocationTarget;
 import chameleon.core.expression.NamedTargetExpression;
@@ -20,17 +17,9 @@ import chameleon.oo.type.Type;
 import chameleon.oo.type.generics.BasicTypeArgument;
 import chameleon.support.expression.RegularLiteral;
 
-public class DefaultReflectiveFieldAccess extends ReflectiveProvider<NamedTargetExpression> {
-
+public class DefaultReflectiveFieldAccess extends TargetedAdviceMethodProvider<NamedTargetExpression> {
 	@Override
-	protected String getName(Advice advice, MatchResult<? extends PointcutExpression, ? extends NamedTargetExpression> joinpoint) {
-		NamingRegistry<Advice> adviceNamingRegistry = NamingRegistryFactory.instance().getNamingRegistryFor("advice");
-		
-		return "advice_" + adviceNamingRegistry.getName(advice);
-	}
-	
-	@Override
-	protected List<Expression> getParameters(Advice advice, MatchResult<? extends PointcutExpression, ? extends NamedTargetExpression> joinpoint) throws LookupException {
+	protected List<Expression> getParameters(Advice advice, MatchResult<NamedTargetExpression> joinpoint) throws LookupException {
 		List<Expression> parameters = new ArrayList<Expression>();
 		
 		InvocationTarget target = getTarget(joinpoint);
@@ -44,15 +33,15 @@ public class DefaultReflectiveFieldAccess extends ReflectiveProvider<NamedTarget
 		
 		return parameters;
 	}
-
+	
 	@Override
-	protected BasicTypeArgument getGenericParameter(Advice advice,	MatchResult<? extends PointcutExpression, ? extends NamedTargetExpression> joinpoint) throws LookupException {
+	protected BasicTypeArgument getGenericParameter(Advice advice,	MatchResult<NamedTargetExpression> joinpoint) throws LookupException {
 		Type type = joinpoint.getJoinpoint().getElement().declarationType();
 		Java java = joinpoint.getJoinpoint().language(Java.class);
-		
+
 		if (type.isTrue(java.property("primitive")))
 			type = java.box(type);
-		
+
 		return new BasicTypeArgument(new BasicTypeReference(type.getFullyQualifiedName()));		
 	}
 }

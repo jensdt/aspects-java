@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
 import jnome.core.type.RegularJavaType;
 
 import org.rejuse.association.SingleAssociation;
@@ -102,7 +100,7 @@ public class SignatureMethodInvocationPointcutExpression<E extends SignatureMeth
 		if (methodArguments.hasNext() || argumentTypes.hasNext())
 			return MatchResult.noMatch();
 		
-		return new MatchResult<SignatureMethodInvocationPointcutExpression, MethodInvocation>(this, (MethodInvocation) joinpoint);
+		return new MatchResult<MethodInvocation>(this, (MethodInvocation) joinpoint);
 	}
 	
 	private boolean containsWildcards(String type) {

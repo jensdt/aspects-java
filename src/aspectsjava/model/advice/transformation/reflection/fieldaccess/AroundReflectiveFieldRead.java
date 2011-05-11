@@ -4,10 +4,8 @@ import java.util.List;
 
 import jnome.core.language.Java;
 import chameleon.aspects.WeavingEncapsulator;
-import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.AdviceReturnStatement;
 import chameleon.aspects.advice.types.ProceedCall;
-import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.core.expression.Expression;
 import chameleon.core.lookup.LookupException;
 import chameleon.core.statement.Block;
@@ -19,11 +17,6 @@ import chameleon.support.member.simplename.method.RegularMethodInvocation;
 import chameleon.support.statement.ReturnStatement;
 
 public class AroundReflectiveFieldRead extends ReflectiveFieldRead {
-
-	public AroundReflectiveFieldRead(MatchResult<?, ?> joinpoint, Advice advice) {
-		super(joinpoint, advice);
-	}
-
 	@Override
 	protected Block getBody(WeavingEncapsulator next) {
 		Block adviceBody = getAdvice().body().clone();

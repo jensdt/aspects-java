@@ -9,7 +9,6 @@ import org.rejuse.property.PropertySet;
 import aspectsjava.translate.weaver.weavingprovider.ElementReplaceProvider;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.aspects.weaver.AbstractElementWeaver;
 import chameleon.aspects.weaver.weavingprovider.WeavingProvider;
 import chameleon.core.expression.MethodInvocation;
@@ -20,7 +19,7 @@ import chameleon.core.variable.RegularMemberVariable;
 public abstract class FieldWeaver extends AbstractElementWeaver<NamedTargetExpression, MethodInvocation> {
 
 	@Override
-	public boolean supports(Advice advice, MatchResult<? extends PointcutExpression, NamedTargetExpression> result) throws LookupException {
+	public boolean supports(Advice advice, MatchResult<NamedTargetExpression> result) throws LookupException {
 		if (!super.supports(advice, result))
 			return false;
 		
@@ -51,5 +50,4 @@ public abstract class FieldWeaver extends AbstractElementWeaver<NamedTargetExpre
 		
 		return supportedProperties;
 	}
-
 }

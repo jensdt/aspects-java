@@ -1,11 +1,11 @@
-package aspectsjava.model.advice.transformation.reflection.fieldaccess;
+package aspectsjava.model.advice.transformation.cast;
 
 import chameleon.aspects.WeavingEncapsulator;
+import chameleon.core.expression.Expression;
 import chameleon.core.statement.Block;
-import chameleon.support.member.simplename.method.RegularMethodInvocation;
 import chameleon.support.statement.ReturnStatement;
 
-public class BeforeReflectiveFieldRead extends ReflectiveFieldRead {
+public class BeforeCastTransformationProvider extends CastTransformationProvider {
 	@Override
 	protected Block getBody(WeavingEncapsulator next) {
 		Block adviceBody = new Block();
@@ -18,7 +18,7 @@ public class BeforeReflectiveFieldRead extends ReflectiveFieldRead {
 		/*
 		 *	Create the proceed call
 		 */
-		RegularMethodInvocation<?> getValueInvocation = getNextInvocation(next);
+		Expression<?> getValueInvocation = getNextInvocation(next);
 		
 		/*
 		 * 	Add the return statement

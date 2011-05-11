@@ -1,4 +1,4 @@
-package aspectsjava.translate.weaver.weavingprovider;
+package aspectsjava.translate.weaver.weavingprovider.catchclause;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import aspectsjava.model.advice.transformation.runtime.transformationprovider.Ru
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeOr;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeSingleArgumentTypeCheck;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeTypeCheck;
-import aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.CatchClauseArgsParameterExposure;
-import aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.ThisTypeParameterExposure;
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.SingleArgParameterExposure;
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.TypeParameterExposure;
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.runtimetransformation.Coordinator;
 import chameleon.aspects.advice.runtimetransformation.transformationprovider.RuntimeExpressionProvider;
@@ -77,7 +77,7 @@ public abstract class CatchClauseInsertProvider extends AbstractWeavingProviderS
 	 *  {@inheritDoc}
 	 */
 	@Override
-	public RuntimeExpressionProvider getRuntimeTransformer(RuntimePointcutExpression pointcutExpression) {
+	public RuntimeExpressionProvider getRuntimeExpressionProvider(RuntimePointcutExpression pointcutExpression) {
 		if (pointcutExpression instanceof ArgsPointcutExpression)
 			return argumentsTypeCheck;
 		
@@ -103,11 +103,11 @@ public abstract class CatchClauseInsertProvider extends AbstractWeavingProviderS
 	 * 	{@inheritDoc}
 	 */
 	@Override
-	public void initialiseRuntimeTransformers(MatchResult<? extends PointcutExpression, ? extends Element> joinpoint) {
+	public void initialiseRuntimeTransformers(MatchResult<? extends Element> joinpoint) {
 		String exceptionParameterName = ((CatchClause) joinpoint.getJoinpoint().parent()).getExceptionParameter().signature().name();
 		
 		argumentsTypeCheck = new RuntimeSingleArgumentTypeCheck(new NamedTargetExpression(exceptionParameterName));
-		argumentsExposer = new CatchClauseArgsParameterExposure(exceptionParameterName);
+		argumentsExposer = new SingleArgParameterExposure(exceptionParameterName);
 	}
 
 	/**
@@ -121,7 +121,7 @@ public abstract class CatchClauseInsertProvider extends AbstractWeavingProviderS
 	@Override
 	public RuntimeParameterExposureProvider getRuntimeParameterInjectionProvider(ParameterExposurePointcutExpression expression) {
 		if (expression instanceof ThisTypePointcutExpression)
-			return new ThisTypeParameterExposure();
+			return new TypeParameterExposure(new ThisLiteral());
 		
 		if (expression instanceof ArgsPointcutExpression)
 			return argumentsExposer;

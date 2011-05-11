@@ -1,9 +1,8 @@
-package aspectsjava.translate.weaver.weavingprovider;
+package aspectsjava.translate.weaver.weavingprovider.catchclause;
 
 import java.util.List;
 
 import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.aspects.weaver.weavingprovider.WeavingProvider;
 import chameleon.core.statement.Block;
 import chameleon.core.statement.Statement;
@@ -19,8 +18,15 @@ public class CatchClauseInsertAfterProvider extends CatchClauseInsertProvider im
 	 * 	{@inheritDoc}
 	 */
 	@Override
-	protected void executeWeaving(MatchResult<? extends PointcutExpression, Block> joinpoint, List<Statement> adviceResult) {
-		for (Statement<?> st : adviceResult)
-			joinpoint.getJoinpoint().addStatement(st.clone());
+	protected void executeWeaving(MatchResult<Block> joinpoint, List<Statement> adviceResult) {
+		Block adviceResultBlock = new Block();
+		adviceResultBlock.addStatements(adviceResult);
+		
+		Block finalBlock = new Block();
+		finalBlock.addStatement(joinpoint.getJoinpoint().clone());
+		finalBlock.addStatement(adviceResultBlock);
+		
+		joinpoint.getJoinpoint().clear();
+		joinpoint.getJoinpoint().addBlock(finalBlock);
 	}
 }

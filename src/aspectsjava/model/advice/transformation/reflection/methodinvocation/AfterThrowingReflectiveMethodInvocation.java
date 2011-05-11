@@ -1,11 +1,7 @@
 package aspectsjava.model.advice.transformation.reflection.methodinvocation;
 
 import chameleon.aspects.WeavingEncapsulator;
-import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.types.Throwing;
-import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.PointcutExpression;
-import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.statement.Block;
 import chameleon.core.variable.FormalParameter;
@@ -24,11 +20,6 @@ import chameleon.support.variable.LocalVariable;
 import chameleon.support.variable.LocalVariableDeclarator;
 
 public class AfterThrowingReflectiveMethodInvocation extends ReflectiveMethodInvocation  {
-
-	public AfterThrowingReflectiveMethodInvocation(MatchResult<? extends PointcutExpression, ? extends MethodInvocation> joinpoint, Advice advice) {
-		super(joinpoint, advice);
-	}
-	
 	@Override
 	public CatchClause getCatchClause(String name, Type caughtType) {
 		Block body = new Block();
@@ -36,15 +27,15 @@ public class AfterThrowingReflectiveMethodInvocation extends ReflectiveMethodInv
 		
 		try {
 			Throwing m = (Throwing) getAdvice().modifiers(getAdvice().language().property("advicetype.throwing")).get(0);
-			Type declaredType = m.exceptionParameter().getType();
 			// Do a type check if there is a type defined
 			if (m.hasExceptionParameter()) {
+				Type declaredType = m.exceptionParameter().getType();
 				// If the declared type is the same or a super type of the type caught, add the advice and expose the parameter
 				if (caughtType.assignableTo(declaredType)) {
 					LocalVariableDeclarator paramExpose = new LocalVariableDeclarator(m.exceptionParameter().getTypeReference().clone());
 					paramExpose.add(new VariableDeclaration<LocalVariable>(m.exceptionParameter().getName(), new NamedTargetExpression(name)));
 					body.addStatement(paramExpose);
-					body.addBlock(getAdvice().body());
+					body.addBlock(getAdvice().body().clone());
 					body.addStatement(rethrow);
 				}
 				// If the declared type is a subtype of the type caught, we need a runtime check
@@ -67,7 +58,7 @@ public class AfterThrowingReflectiveMethodInvocation extends ReflectiveMethodInv
 					body.addStatement(rethrow);
 				}
 			} else {
-				body.addBlock(getAdvice().body());
+				body.addBlock(getAdvice().body().clone());
 				body.addStatement(rethrow);
 			}
 				

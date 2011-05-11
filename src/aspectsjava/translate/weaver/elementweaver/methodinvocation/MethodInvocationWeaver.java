@@ -85,19 +85,19 @@ public class MethodInvocationWeaver extends AbstractElementWeaver<MethodInvocati
 		PropertySet afterThrowing = getAfterThrowing(advice);
 		
 		if (around.containsAll(advice.properties().properties()))
-			return new AroundReflectiveMethodInvocation(joinpoint, advice);
+			return new AroundReflectiveMethodInvocation();
 		
 		if (before.containsAll(advice.properties().properties()))
-			return new BeforeReflectiveMethodInvocation(joinpoint, advice);
+			return new BeforeReflectiveMethodInvocation();
 		
 		if (after.containsAll(advice.properties().properties()))
-			return new AfterReflectiveMethodInvocation(joinpoint, advice);
+			return new AfterReflectiveMethodInvocation();
 		
 		if (afterThrowing.containsAll(advice.properties().properties()))
-			return new AfterThrowingReflectiveMethodInvocation(joinpoint, advice);
+			return new AfterThrowingReflectiveMethodInvocation();
 			
 		if (afterReturning.containsAll(advice.properties().properties()))
-			return new AfterReturningReflectiveMethodInvocation(joinpoint, advice);
+			return new AfterReturningReflectiveMethodInvocation();
 			
 		throw new RuntimeException();
 	}

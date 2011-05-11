@@ -1,5 +1,8 @@
 package aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.reflection;
 
+import java.util.Collections;
+import java.util.List;
+
 import jnome.core.expression.ArrayAccessExpression;
 import jnome.core.language.Java;
 import jnome.core.type.BasicJavaTypeReference;
@@ -27,7 +30,7 @@ public class ReflectiveArgsParameterExposure implements RuntimeParameterExposure
 	}
 
 	@Override
-	public LocalVariableDeclarator getParameterExposureDeclaration(ArgsPointcutExpression<?> expression, FormalParameter fp) {
+	public List<LocalVariableDeclarator> getParameterExposureDeclaration(ArgsPointcutExpression<?> expression, FormalParameter fp) {
 		LocalVariableDeclarator parameterInjector = new LocalVariableDeclarator(fp.getTypeReference().clone());
 		VariableDeclaration parameterInjectorDecl = new VariableDeclaration(fp.getName());					
 		parameterInjector.add(parameterInjectorDecl);
@@ -61,7 +64,7 @@ public class ReflectiveArgsParameterExposure implements RuntimeParameterExposure
 		parameterInjectorDecl.setInitialization(cast);
 		parameterInjector.add(parameterInjectorDecl);
 		
-		return parameterInjector;
+		return Collections.singletonList(parameterInjector);
 	}
 
 }

@@ -22,12 +22,13 @@ import chameleon.aspects.advice.AdviceReturnStatement;
 import chameleon.aspects.advice.types.*;
 import chameleon.aspects.pointcut.*;
 import chameleon.aspects.pointcut.expression.*;
-import chameleon.aspects.pointcut.expression.catchclause.*;
-import chameleon.aspects.pointcut.expression.fieldAccess.*;
+
 import chameleon.aspects.pointcut.expression.generic.*;
 import chameleon.aspects.pointcut.expression.namedpointcut.*;
-import chameleon.aspects.pointcut.expression.runtime.*;
-
+import chameleon.aspects.pointcut.expression.dynamicexpression.*;
+import chameleon.aspects.pointcut.expression.staticexpression.catchclause.*;
+import chameleon.aspects.pointcut.expression.staticexpression.fieldAccess.*;
+import chameleon.aspects.pointcut.expression.staticexpression.cast.*;
 
 import chameleon.exception.ModelException;
 import chameleon.exception.ChameleonProgrammerException;
@@ -390,7 +391,8 @@ pointcutAtom returns [PointcutExpression element]
 	| clA='callAnnotated' '(' annot=Identifier ')' {AnnotatedMethodInvocationExpression result = new AnnotatedMethodInvocationExpression(); result.setReference(new AnnotationReference($annot.text)); retval.element = result; setKeyword(retval.element, clA);}
 	| emptyCatch='emptyCatch' {retval.element = new EmptyCatchClausePointcutExpression(); setKeyword(retval.element, emptyCatch); }
 	| fieldRead='fieldRead' '(' fieldreadtype=type fieldref=fieldReference ')' {retval.element = new FieldReadPointcutExpression(fieldreadtype.element, fieldref.element); setKeyword(retval.element, fieldRead); }
-	| handler='handler' '(' exceptionType=type (includeSub=subtypeMarker {marker=includeSub.element;})? ')' {CatchClausePointcutExpression catchHandler = new CatchClausePointcutExpression(); catchHandler.setExceptionType(exceptionType.element); catchHandler.setSubtypeMarker(marker); retval.element = catchHandler; setKeyword(retval.element, handler); }
+	| handler='handler' '(' exceptionType=type (includeSub=subtypeMarker {marker=includeSub.element;})? ')' {TypeCatchClausePointcutExpression catchHandler = new TypeCatchClausePointcutExpression(); catchHandler.setExceptionType(exceptionType.element); catchHandler.setSubtypeMarker(marker); retval.element = catchHandler; setKeyword(retval.element, handler); }
+	| cast='cast' '(' castType=type ')' { retval.element = new CastPointcutExpression(castType.element); setKeyword(retval.element, cast); }
 	| namedRef=namedPointcutReference {NamedPointcutExpression named = new NamedPointcutExpression(); named.setPointcutReference(namedRef.element); retval.element = named;}
 	// Runtime checks
 	| getargs='arguments' t=typesOrParameters {ArgsPointcutExpression expr = new ArgsPointcutExpression(); expr.addAll(t.element); retval.element = expr; setKeyword(retval.element, getargs); }

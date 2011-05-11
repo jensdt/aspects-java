@@ -8,11 +8,8 @@ import jnome.core.language.Java;
 import jnome.core.type.ArrayTypeReference;
 import jnome.core.type.BasicJavaTypeReference;
 import chameleon.aspects.WeavingEncapsulator;
-import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.AdviceReturnStatement;
 import chameleon.aspects.advice.types.ProceedCall;
-import chameleon.aspects.pointcut.expression.MatchResult;
-import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.core.expression.Expression;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.lookup.LookupException;
@@ -24,11 +21,6 @@ import chameleon.support.expression.NullLiteral;
 import chameleon.support.statement.ReturnStatement;
 
 public class AroundReflectiveMethodInvocation extends ReflectiveMethodInvocation {
-
-	public AroundReflectiveMethodInvocation(MatchResult<? extends PointcutExpression, ? extends MethodInvocation> joinpoint, Advice advice) {
-		super(joinpoint, advice);
-	}
-
 	protected boolean encloseWithTry() {
 		return !getAdvice().body().descendants(ProceedCall.class).isEmpty();
 	}
@@ -50,7 +42,7 @@ public class AroundReflectiveMethodInvocation extends ReflectiveMethodInvocation
 			
 			actualArgumentsArray.setInitializer(actualArgumentsInitializer);
 			
-			MethodInvocation reflectiveCall = getNextInvocation(next);
+			MethodInvocation reflectiveCall = getNextInvocation(next, actualArgumentsArray);
 			
 			Expression reflectiveCallInvocation = null;
 			// Note that if the return type is a primitive, we first have to cast the primitive to its boxed variant, then cast to T

@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:45:30 JavaL.g 2011-03-26 12:33:26
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 JavaL.g 2011-05-10 00:56:14
 
   package aspectsjava.input;
 
@@ -115,6 +115,7 @@ public class Aspect_JavaL extends Lexer {
     public static final int T__128=128;
     public static final int T__129=129;
     public static final int T__130=130;
+    public static final int T__131=131;
     public static final int Identifier=4;
     public static final int ENUM=5;
     public static final int FloatingPointLiteral=6;
@@ -137,7 +138,7 @@ public class Aspect_JavaL extends Lexer {
     public static final int WS=23;
     public static final int COMMENT=24;
     public static final int LINE_COMMENT=25;
-    public static final int Tokens=131;
+    public static final int Tokens=132;
 
       protected boolean enumIsKeyword = true;
       protected boolean assertIsKeyword = true;
