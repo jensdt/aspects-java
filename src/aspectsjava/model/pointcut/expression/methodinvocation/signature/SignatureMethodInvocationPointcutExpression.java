@@ -39,73 +39,30 @@ public class SignatureMethodInvocationPointcutExpression<E extends SignatureMeth
 	public MatchResult matches(Element element) throws LookupException {		
 		MethodInvocation joinpoint = (MethodInvocation) element;
 		
-		Method e = joinpoint.getElement();
-
-		// Check if the returntype matches
-		// Types match if: the type of the method is a (sub)type of the type declared in the pointcut expression.
-		// E.g. public Integer getCalculationResult() matches call(Number getCalculationResult)
-		
-		// If the type name contains no wild cards, it is as a type that is known (e.g. through a fqn or imports).
-		// If it does contain wild cards, do string comparison to check
-		boolean matches = false;
-		if (methodReference().hasExplicitType())
-			 matches = e.returnType().assignableTo(methodReference().type().getType());
-		else {
-			matches = sameAsWithWildcard(e.returnType().getFullyQualifiedName(), methodReference().typeNameWithWC());
+		// This might not be foolproof in all cases (inner classes etc), need further testing - TODO
+		Type definedType = null;
+		try {
+			if (joinpoint.getElement().toString().equals("example.cityroad.City.name()"))
+				System.out.println("bp");
+			System.out.println(joinpoint.getElement() + " - " + joinpoint.getElement().getClass());
+			definedType = (Type) joinpoint.getElement().nearestAncestor(Type.class);
+		} catch (Exception e) {
+			// super happy debug time
+			//definedType = (Type) joinpoint.getElement().nearestAncestor(Type.class);
 			
-			Iterator<Type> superTypeIterator = e.returnType().getAllSuperTypes().iterator();
-			
-			while (!matches && superTypeIterator.hasNext()) {
-				matches = sameAsWithWildcard(superTypeIterator.next().getFullyQualifiedName(), methodReference().typeNameWithWC());
-			}
+			// TODO: debug this further, right know just ignore the exception
+			return MatchResult.noMatch();
 		}
 		
-		if (!matches)
-			return MatchResult.noMatch();
-				
-		
-		// Check if the signature matches
-		if (!sameAsWithWildcard(e.signature().name(), methodReference().fqn().methodHeader().name()))
-			return MatchResult.noMatch();
-		
-		// Check if the FQN matches
-		Type definedType = ((RegularJavaType) ((LocalLookupStrategy) joinpoint.getTarget().targetContext()).declarationContainer()).getType();
-		String definedFqn = methodReference().getFullyQualifiedName();
-
-		matches = sameFQNWithWildcard(definedType.getFullyQualifiedName(), definedFqn);
-		
-		Iterator<Type> superTypeIterator = definedType.getAllSuperTypes().iterator();
-		while (!matches && superTypeIterator.hasNext()) {
-			
-			matches = sameFQNWithWildcard(superTypeIterator.next().getFullyQualifiedName(), definedFqn);
+		try {
+			if (methodReference().matches(joinpoint.getElement(), definedType))
+				return new MatchResult<MethodInvocation>(this, (MethodInvocation) joinpoint);
+		} catch (Exception e) {
+			// TODO: debug this further, e.g. lookupexceptions that are thrown here
 		}
-		
-		if (!matches)
 			return MatchResult.noMatch();
-		
-		// Check if the parameter types match
-		Iterator<FormalParameter> methodArguments = e.formalParameters().iterator();
-		Iterator<TypeReference> argumentTypes = methodReference().fqn().methodHeader().types().iterator();
-	
-		
-		while (methodArguments.hasNext() && argumentTypes.hasNext()) {
-			TypeReference argType = argumentTypes.next();
-			FormalParameter methodArg = methodArguments.next();
-			
-			if (!methodArg.getType().assignableTo(argType.getType()))	
-				return MatchResult.noMatch();
-		}
-		
-		// If this is true, it means there is a difference in the number of args
-		if (methodArguments.hasNext() || argumentTypes.hasNext())
-			return MatchResult.noMatch();
-		
-		return new MatchResult<MethodInvocation>(this, (MethodInvocation) joinpoint);
 	}
-	
-	private boolean containsWildcards(String type) {
-		return type.contains("**");
-	}
+
 
 	/**
 	 * 	Match rules:
@@ -164,9 +121,4 @@ public class SignatureMethodInvocationPointcutExpression<E extends SignatureMeth
 	public E clone() {
 		return (E) new SignatureMethodInvocationPointcutExpression<E>(methodReference().clone()); 
 	}
-
-	@Override
-	public MatchResult matchesInverse(Element joinpoint) throws LookupException {
-		return super.matchesInverse(joinpoint);
-	}	
 }

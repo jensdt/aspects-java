@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.rejuse.property.PropertySet;
 
+import aspectsjava.model.advice.weaving.ReturnJavaAdviceProvider;
 import aspectsjava.translate.weaver.weavingprovider.catchclause.CatchClauseInsertAfterProvider;
 import aspectsjava.translate.weaver.weavingprovider.catchclause.CatchClauseInsertAroundProvider;
 import aspectsjava.translate.weaver.weavingprovider.catchclause.CatchClauseInsertBeforeProvider;
@@ -13,7 +14,6 @@ import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.types.translation.AdviceTransformationProvider;
 import chameleon.aspects.advice.types.translation.NoOperationTransformationProvider;
 import chameleon.aspects.advice.types.weaving.AdviceWeaveResultProvider;
-import chameleon.aspects.advice.types.weaving.ReturnAdviceProvider;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.aspects.weaver.AbstractElementWeaver;
 import chameleon.aspects.weaver.weavingprovider.WeavingProvider;
@@ -32,7 +32,7 @@ public class CatchClauseWeaver extends AbstractElementWeaver<Block, List<Stateme
 	 *  {@inheritDoc}
 	 */
 	@Override
-	public AdviceTransformationProvider getTransformationStrategy(Advice advice, MatchResult<Block> joinpoint) {
+	public AdviceTransformationProvider getTransformationProvider(Advice advice, MatchResult<Block> joinpoint) {
 		return new NoOperationTransformationProvider();
 	}
 
@@ -79,7 +79,7 @@ public class CatchClauseWeaver extends AbstractElementWeaver<Block, List<Stateme
 		throw new RuntimeException();
 	}
 	
-	AdviceWeaveResultProvider<Block, List<Statement>> weavingAdviceType = new ReturnAdviceProvider<Block>();
+	AdviceWeaveResultProvider<Block, List<Statement>> weavingAdviceType = new ReturnJavaAdviceProvider<Block>();
 
 	/**
 	 *  {@inheritDoc}

@@ -12,7 +12,7 @@ public class AfterReflectiveMethodInvocation extends ReflectiveMethodInvocation 
 	@Override
 	public TryStatement getEnclosingTry(Block tryBody) throws LookupException {
 		TryStatement enclosingTry = super.getEnclosingTry(tryBody);
-		enclosingTry.setFinallyClause(new FinallyClause(((Block) getAdvice().body()).clone()));
+		enclosingTry.setFinallyClause(new FinallyClause(getAdvice().body().clone()));
 		
 		return enclosingTry;
 	}

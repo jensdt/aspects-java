@@ -21,11 +21,11 @@ import chameleon.support.expression.FilledArrayIndex;
 import chameleon.support.expression.RegularLiteral;
 import chameleon.support.variable.LocalVariableDeclarator;
 
-public class ReflectiveArgsParameterExposure implements RuntimeParameterExposureProvider<ArgsPointcutExpression<?>> {
+public class MultipleArgsParameterExposure implements RuntimeParameterExposureProvider<ArgsPointcutExpression<?>> {
 	
 	private ReflectiveMethodInvocation reflectiveInvocation;
 	
-	public ReflectiveArgsParameterExposure(ReflectiveMethodInvocation reflectiveInvocation) {
+	public MultipleArgsParameterExposure(ReflectiveMethodInvocation reflectiveInvocation) {
 		this.reflectiveInvocation = reflectiveInvocation;
 	}
 

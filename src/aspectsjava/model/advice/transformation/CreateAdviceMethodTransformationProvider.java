@@ -1,5 +1,6 @@
 package aspectsjava.model.advice.transformation;
 
+import java.util.Collections;
 import java.util.List;
 
 import jnome.core.expression.invocation.ConstructorInvocation;
@@ -7,20 +8,28 @@ import jnome.core.type.BasicJavaTypeReference;
 
 import org.rejuse.predicate.SafePredicate;
 
+import aspectsjava.model.advice.JavaAdvice;
+import chameleon.aspects.Aspect;
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.types.translation.AbstractAdviceTransformationProviderSupportingRuntime;
 import chameleon.aspects.namingRegistry.NamingRegistry;
 import chameleon.aspects.namingRegistry.NamingRegistryFactory;
 import chameleon.core.compilationunit.CompilationUnit;
+import chameleon.core.declaration.DeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
 import chameleon.core.expression.Expression;
 import chameleon.core.expression.NamedTargetExpression;
+import chameleon.core.lookup.LookupException;
 import chameleon.core.method.RegularImplementation;
 import chameleon.core.statement.Block;
+import chameleon.core.variable.FormalParameter;
 import chameleon.core.variable.VariableDeclaration;
 import chameleon.oo.type.BasicTypeReference;
 import chameleon.oo.type.RegularType;
+import chameleon.oo.type.TypeReference;
+import chameleon.oo.type.generics.TypeParameter;
+import chameleon.oo.type.inheritance.SubtypeRelation;
 import chameleon.support.member.simplename.method.NormalMethod;
 import chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import chameleon.support.modifier.Constructor;
@@ -48,6 +57,84 @@ public abstract class CreateAdviceMethodTransformationProvider extends AbstractA
 		});
 	}
 	
+	/**
+	 * 	Get the return type for the advice method
+	 * 
+	 * 	@return	The return type for the advice method
+	 */
+	protected abstract TypeReference getAdiceMethodReturnType();
+	
+	
+	/**
+	 * 	Get the body for the advice method
+	 * 
+	 * 	@param next
+	 * 			The next weavingEncapsulator in the chain
+	 * 	@return	The body of the advice method
+	 */
+	protected abstract Block getBody(WeavingEncapsulator next);
+	
+
+	/**
+	 * 	Get the list of formal parameters for the advice method
+	 * 
+	 * 	@return	The list of formal parameters
+	 */
+	protected abstract List<FormalParameter> getAdviceMethodParameters();
+	
+	/**
+	 * 	Get the lits of type parameters for the advice method
+	 * 
+	 * 	@return	The list of type parameters
+	 */
+	protected List<TypeParameter> getAdviceMethodTypeParameters() {
+		return Collections.emptyList();
+	}
+	
+	/**
+	 * 	{@inheritDoc}
+	 */
+	@Override
+	public NormalMethod transform(WeavingEncapsulator previous,	WeavingEncapsulator next) throws LookupException {
+		Aspect<?> aspect = getAdvice().aspect();
+		CompilationUnit compilationUnit = aspect.nearestAncestor(CompilationUnit.class);
+		
+		// Get the class we are going to create this method in
+		RegularType aspectClass = getOrCreateAspectClass(compilationUnit, aspect.name());
+		
+		// Check if the method has already been created
+		if (isAlreadyDefined(getAdvice(), compilationUnit))
+			return null;
+		
+		String adviceMethodName = getAdviceMethodName(getAdvice());
+		
+		DeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader(adviceMethodName);
+		
+		NormalMethod adviceMethod = new NormalMethod(header, getAdiceMethodReturnType());
+		
+		adviceMethod.addModifier(new Public());
+		adviceMethod.addModifier(new Static());
+		
+		// Add the parameters
+		for (FormalParameter fp : getAdviceMethodParameters())
+			header.addFormalParameter(fp);
+		
+		for (TypeParameter tp : getAdviceMethodTypeParameters())
+			header.addTypeParameter(tp);
+		
+		// Get the body
+		Block body = getBody(next);
+		
+		// Set the method body
+		adviceMethod.setImplementation(new RegularImplementation(body));
+		
+		// Add the method
+		aspectClass.add(adviceMethod);
+		
+		return adviceMethod;
+	}
+	
+
 	/**
 	 * 	Return the type used for implementing the advice - methods. If it doesn't exist, it is created. It is always created in the same
 	 * 	compilation unit as the aspect.
@@ -78,8 +165,10 @@ public abstract class CreateAdviceMethodTransformationProvider extends AbstractA
 			aspectClass = new RegularType(name);
 			aspectClass.addModifier(new Public());
 			
+			aspectClass.addInheritanceRelation(new SubtypeRelation(new BasicTypeReference("java.lang.Object")));
+			
 			// Create new empty constructor
-			NormalMethod m = new NormalMethod(new SimpleNameDeclarationWithParametersHeader(name), null);
+			NormalMethod m = new NormalMethod(new SimpleNameDeclarationWithParametersHeader(name), new BasicTypeReference(name));
 			m.addModifier(new Constructor());
 			m.addModifier(new Private());
 			m.setImplementation(new RegularImplementation(new Block()));
@@ -126,4 +215,17 @@ public abstract class CreateAdviceMethodTransformationProvider extends AbstractA
 	}
 
 	public abstract Expression getNextInvocation(WeavingEncapsulator nextWeavingEncapsulator);
+
+	@Override
+	public JavaAdvice getAdvice() {
+		return (JavaAdvice) super.getAdvice();
+	}
+	
+	@Override
+	protected void setAdvice(Advice advice) {
+		if (!(advice instanceof JavaAdvice))
+			throw new IllegalArgumentException();
+		
+		super.setAdvice(advice);
+	}
 }

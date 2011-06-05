@@ -44,7 +44,7 @@ public class CastWeaver extends AbstractElementWeaver<ClassCastExpression, Metho
 	 * 	{@inheritDoc}
 	 */
 	@Override
-	public AdviceTransformationProvider getTransformationStrategy(Advice advice, MatchResult<ClassCastExpression> joinpoint) {
+	public AdviceTransformationProvider getTransformationProvider(Advice advice, MatchResult<ClassCastExpression> joinpoint) {
 		PropertySet around = getAround(advice);		
 		PropertySet before = getBefore(advice);
 		PropertySet after = getAfter(advice);

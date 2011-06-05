@@ -3,7 +3,6 @@ package aspectsjava.model.advice.weaving.cast;
 import java.util.ArrayList;
 import java.util.List;
 
-import jnome.core.language.Java;
 import aspectsjava.model.advice.weaving.AdviceMethodProvider;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.namingRegistry.NamingRegistry;
@@ -11,10 +10,6 @@ import chameleon.aspects.namingRegistry.NamingRegistryFactory;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.core.expression.Expression;
 import chameleon.core.lookup.LookupException;
-import chameleon.oo.language.ObjectOrientedLanguage;
-import chameleon.oo.type.BasicTypeReference;
-import chameleon.oo.type.Type;
-import chameleon.oo.type.generics.BasicTypeArgument;
 import chameleon.support.expression.ClassCastExpression;
 
 public class DefaultCastProvider extends AdviceMethodProvider<ClassCastExpression> {
@@ -40,11 +35,5 @@ public class DefaultCastProvider extends AdviceMethodProvider<ClassCastExpressio
 		parameters.add(self);
 		
 		return parameters;
-	}
-	
-	//TODO delete
-	@Override
-	protected BasicTypeArgument getGenericParameter(Advice advice, MatchResult<ClassCastExpression> joinpoint)	throws LookupException {
-		return null;
 	}
 }

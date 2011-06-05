@@ -16,7 +16,7 @@ import chameleon.core.variable.FormalParameter;
 import chameleon.support.member.simplename.method.NormalMethod;
 import chameleon.support.statement.ReturnStatement;
 
-public abstract class AdviceMethodCoordinator extends ThreePhasedCoordinator<NormalMethod> {
+public class AdviceMethodCoordinator extends ThreePhasedCoordinator<NormalMethod> {
 	
 	public AdviceMethodCoordinator(CreateAdviceMethodTransformationProvider adviceTransformationProvider, MatchResult<? extends Element> matchResult, WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextWeavingEncapsulator) {
 		super(adviceTransformationProvider, matchResult, previousWeavingEncapsulator, nextWeavingEncapsulator);

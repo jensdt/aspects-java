@@ -77,7 +77,7 @@ public class MethodInvocationWeaver extends AbstractElementWeaver<MethodInvocati
 	 *  {@inheritDoc}
 	 */
 	@Override
-	public AdviceTransformationProvider getTransformationStrategy(Advice advice, MatchResult joinpoint) {	
+	public AdviceTransformationProvider getTransformationProvider(Advice advice, MatchResult joinpoint) {	
 		PropertySet around = getAround(advice);		
 		PropertySet before = getBefore(advice);
 		PropertySet after = getAfter(advice);

@@ -1,7 +1,10 @@
 package aspectsjava.model.advice.transformation.cast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import aspectsjava.model.advice.transformation.CreateAdviceMethodTransformationProvider;
-import aspectsjava.model.advice.transformation.runtime.CastCoordinator;
+import aspectsjava.model.advice.transformation.runtime.AdviceMethodCoordinator;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeAnd;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeIfCheck;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeNot;
@@ -31,22 +34,17 @@ import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.declaration.DeclarationWithParametersHeader;
 import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
-import chameleon.core.declaration.SimpleNameSignature;
 import chameleon.core.element.Element;
 import chameleon.core.expression.Expression;
 import chameleon.core.expression.NamedTarget;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.lookup.LookupException;
-import chameleon.core.method.Method;
 import chameleon.core.method.RegularImplementation;
 import chameleon.core.statement.Block;
 import chameleon.core.variable.FormalParameter;
 import chameleon.oo.type.BasicTypeReference;
 import chameleon.oo.type.RegularType;
 import chameleon.oo.type.TypeReference;
-import chameleon.oo.type.generics.BasicTypeArgument;
-import chameleon.oo.type.generics.FormalTypeParameter;
-import chameleon.oo.type.generics.TypeParameter;
 import chameleon.support.expression.ClassCastExpression;
 import chameleon.support.member.simplename.method.NormalMethod;
 import chameleon.support.member.simplename.method.RegularMethodInvocation;
@@ -101,7 +99,7 @@ public abstract class CastTransformationProvider extends CreateAdviceMethodTrans
 
 	@Override
 	public Coordinator<NormalMethod> getCoordinator(MatchResult<? extends Element> joinpoint, WeavingEncapsulator previous, WeavingEncapsulator next) {
-		return new CastCoordinator(this, joinpoint, previous, next);
+		return new AdviceMethodCoordinator(this, joinpoint, previous, next);
 	}
 
 	@Override
@@ -142,48 +140,31 @@ public abstract class CastTransformationProvider extends CreateAdviceMethodTrans
 	public final String expressionName = "_$expr";
 	public final String retvalName = "_$retval";
 	
+	/**
+	 * 	{@inheritDoc}
+	 */
 	@Override
-	public NormalMethod transform(WeavingEncapsulator previous, WeavingEncapsulator next) throws LookupException {
-		Aspect<?> aspect = getAdvice().aspect();
-		CompilationUnit compilationUnit = aspect.nearestAncestor(CompilationUnit.class);
-		
-		// Get the class we are going to create this method in
-		RegularType aspectClass = getOrCreateAspectClass(compilationUnit, aspect.name());
-		
-		// Check if the method has already been created
-		if (isAlreadyDefined(getAdvice(), compilationUnit))
-			return null;
-		
-		String adviceMethodName = getAdviceMethodName(getAdvice());
-		
-		DeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader(adviceMethodName);
-		
-		TypeReference returnType = getJoinpoint().getJoinpoint().getTypeReference().clone();		
-		NormalMethod adviceMethod = new NormalMethod(header, returnType);
-		
-		adviceMethod.addModifier(new Public());
-		adviceMethod.addModifier(new Static());
-		
-		// Add all the parameters 
-		FormalParameter object = new FormalParameter(expressionName, new BasicTypeReference(getJoinpoint().getJoinpoint().getExpression().getType().getFullyQualifiedName()));
-		header.addFormalParameter(object);
-		
-		FormalParameter callee = new FormalParameter(calleeName, new BasicTypeReference("Object"));
-		header.addFormalParameter(callee);
-		
-		// Get the body
-		Block body = getBody(next);
-		
-		// Set the method body
-		adviceMethod.setImplementation(new RegularImplementation(body));
-		
-		// Add the method
-		aspectClass.add(adviceMethod);
-		
-		return adviceMethod;
+	protected TypeReference getAdiceMethodReturnType() {
+		return getJoinpoint().getJoinpoint().getTypeReference().clone();
 	}
-	
-	protected abstract Block getBody(WeavingEncapsulator next);
+
+	/**
+	 * 	{@inheritDoc}
+	 */
+	@Override
+	protected List<FormalParameter> getAdviceMethodParameters() {
+		List<FormalParameter> result = new ArrayList<FormalParameter>();
+		
+		try {
+			result.add(new FormalParameter(expressionName, new BasicTypeReference(getJoinpoint().getJoinpoint().getExpression().getType().getFullyQualifiedName())));
+		} catch (LookupException e) {
+			// Can only occur due to a bug, swallow it
+			e.printStackTrace();
+		}
+		result.add(new FormalParameter(calleeName, new BasicTypeReference("java.lang.Object")));
+		
+		return result;
+	}
 	
 	@Override
 	public Expression getNextInvocation(WeavingEncapsulator next) {
@@ -211,4 +192,6 @@ public abstract class CastTransformationProvider extends CreateAdviceMethodTrans
 
 		return adviceInvocation;
 	}
+
+
 }

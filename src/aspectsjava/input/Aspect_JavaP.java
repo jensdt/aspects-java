@@ -1,7 +1,9 @@
-// $ANTLR 3.3 Nov 30, 2010 12:45:30 JavaP.g 2011-05-10 00:56:11
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 JavaP.g 2011-05-28 18:41:06
 
 package aspectsjava.input;
 
+import aspectsjava.model.advice.*;
+import aspectsjava.model.pointcut.expression.within.*;
 import aspectsjava.model.pointcut.expression.methodinvocation.annotated.AnnotatedMethodInvocationExpression;
 import aspectsjava.model.pointcut.expression.methodinvocation.annotated.AnnotationReference;
 import aspectsjava.model.pointcut.expression.methodinvocation.signature.MethodReference;
@@ -18,6 +20,7 @@ import chameleon.aspects.pointcut.expression.*;
 import chameleon.aspects.pointcut.expression.generic.*;
 import chameleon.aspects.pointcut.expression.namedpointcut.*;
 import chameleon.aspects.pointcut.expression.dynamicexpression.*;
+import chameleon.aspects.pointcut.expression.staticexpression.within.*;
 import chameleon.aspects.pointcut.expression.staticexpression.catchclause.*;
 import chameleon.aspects.pointcut.expression.staticexpression.fieldAccess.*;
 import chameleon.aspects.pointcut.expression.staticexpression.cast.*;
@@ -468,6 +471,7 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final int T__129=129;
     public static final int T__130=130;
     public static final int T__131=131;
+    public static final int T__132=132;
     public static final int Identifier=4;
     public static final int ENUM=5;
     public static final int FloatingPointLiteral=6;
@@ -6473,7 +6477,7 @@ public class Aspect_JavaP extends ChameleonParser {
             if ( (LA62_0==45) ) {
                 alt62=1;
             }
-            else if ( (LA62_0==Identifier||(LA62_0>=FloatingPointLiteral && LA62_0<=DecimalLiteral)||LA62_0==48||(LA62_0>=57 && LA62_0<=64)||(LA62_0>=66 && LA62_0<=67)||(LA62_0>=70 && LA62_0<=73)||(LA62_0>=106 && LA62_0<=107)||(LA62_0>=110 && LA62_0<=114)||LA62_0==131) ) {
+            else if ( (LA62_0==Identifier||(LA62_0>=FloatingPointLiteral && LA62_0<=DecimalLiteral)||LA62_0==48||(LA62_0>=57 && LA62_0<=64)||(LA62_0>=66 && LA62_0<=67)||(LA62_0>=70 && LA62_0<=73)||(LA62_0>=106 && LA62_0<=107)||(LA62_0>=110 && LA62_0<=114)||LA62_0==132) ) {
                 alt62=2;
             }
             else {
@@ -6588,7 +6592,7 @@ public class Aspect_JavaP extends ChameleonParser {
             int alt65=2;
             int LA65_0 = input.LA(1);
 
-            if ( (LA65_0==Identifier||(LA65_0>=FloatingPointLiteral && LA65_0<=DecimalLiteral)||LA65_0==45||LA65_0==48||(LA65_0>=57 && LA65_0<=64)||(LA65_0>=66 && LA65_0<=67)||(LA65_0>=70 && LA65_0<=73)||(LA65_0>=106 && LA65_0<=107)||(LA65_0>=110 && LA65_0<=114)||LA65_0==131) ) {
+            if ( (LA65_0==Identifier||(LA65_0>=FloatingPointLiteral && LA65_0<=DecimalLiteral)||LA65_0==45||LA65_0==48||(LA65_0>=57 && LA65_0<=64)||(LA65_0>=66 && LA65_0<=67)||(LA65_0>=70 && LA65_0<=73)||(LA65_0>=106 && LA65_0<=107)||(LA65_0>=110 && LA65_0<=114)||LA65_0==132) ) {
                 alt65=1;
             }
             switch (alt65) {
@@ -6613,7 +6617,7 @@ public class Aspect_JavaP extends ChameleonParser {
                         if ( (LA63_0==42) ) {
                             int LA63_1 = input.LA(2);
 
-                            if ( (LA63_1==Identifier||(LA63_1>=FloatingPointLiteral && LA63_1<=DecimalLiteral)||LA63_1==45||LA63_1==48||(LA63_1>=57 && LA63_1<=64)||(LA63_1>=66 && LA63_1<=67)||(LA63_1>=70 && LA63_1<=73)||(LA63_1>=106 && LA63_1<=107)||(LA63_1>=110 && LA63_1<=114)||LA63_1==131) ) {
+                            if ( (LA63_1==Identifier||(LA63_1>=FloatingPointLiteral && LA63_1<=DecimalLiteral)||LA63_1==45||LA63_1==48||(LA63_1>=57 && LA63_1<=64)||(LA63_1>=66 && LA63_1<=67)||(LA63_1>=70 && LA63_1<=73)||(LA63_1>=106 && LA63_1<=107)||(LA63_1>=110 && LA63_1<=114)||LA63_1==132) ) {
                                 alt63=1;
                             }
 
@@ -8509,7 +8513,7 @@ public class Aspect_JavaP extends ChameleonParser {
                 int alt84=2;
                 int LA84_0 = input.LA(1);
 
-                if ( ((LA84_0>=Identifier && LA84_0<=ASSERT)||LA84_0==27||LA84_0==29||(LA84_0>=32 && LA84_0<=38)||LA84_0==45||(LA84_0>=47 && LA84_0<=48)||LA84_0==54||(LA84_0>=57 && LA84_0<=64)||(LA84_0>=66 && LA84_0<=67)||(LA84_0>=70 && LA84_0<=74)||LA84_0==77||(LA84_0>=79 && LA84_0<=82)||(LA84_0>=84 && LA84_0<=88)||(LA84_0>=106 && LA84_0<=107)||(LA84_0>=110 && LA84_0<=114)||LA84_0==131) ) {
+                if ( ((LA84_0>=Identifier && LA84_0<=ASSERT)||LA84_0==27||LA84_0==29||(LA84_0>=32 && LA84_0<=38)||LA84_0==45||(LA84_0>=47 && LA84_0<=48)||LA84_0==54||(LA84_0>=57 && LA84_0<=64)||(LA84_0>=66 && LA84_0<=67)||(LA84_0>=70 && LA84_0<=74)||LA84_0==77||(LA84_0>=79 && LA84_0<=82)||(LA84_0>=84 && LA84_0<=88)||(LA84_0>=106 && LA84_0<=107)||(LA84_0>=110 && LA84_0<=114)||LA84_0==132) ) {
                     alt84=1;
                 }
 
@@ -11003,7 +11007,7 @@ public class Aspect_JavaP extends ChameleonParser {
                 int alt110=2;
                 int LA110_0 = input.LA(1);
 
-                if ( ((LA110_0>=Identifier && LA110_0<=ASSERT)||LA110_0==27||LA110_0==29||(LA110_0>=32 && LA110_0<=38)||LA110_0==45||(LA110_0>=47 && LA110_0<=48)||LA110_0==54||(LA110_0>=57 && LA110_0<=64)||(LA110_0>=66 && LA110_0<=67)||(LA110_0>=70 && LA110_0<=74)||LA110_0==77||(LA110_0>=79 && LA110_0<=82)||(LA110_0>=84 && LA110_0<=88)||(LA110_0>=106 && LA110_0<=107)||(LA110_0>=110 && LA110_0<=114)||LA110_0==131) ) {
+                if ( ((LA110_0>=Identifier && LA110_0<=ASSERT)||LA110_0==27||LA110_0==29||(LA110_0>=32 && LA110_0<=38)||LA110_0==45||(LA110_0>=47 && LA110_0<=48)||LA110_0==54||(LA110_0>=57 && LA110_0<=64)||(LA110_0>=66 && LA110_0<=67)||(LA110_0>=70 && LA110_0<=74)||LA110_0==77||(LA110_0>=79 && LA110_0<=82)||(LA110_0>=84 && LA110_0<=88)||(LA110_0>=106 && LA110_0<=107)||(LA110_0>=110 && LA110_0<=114)||LA110_0==132) ) {
                     alt110=1;
                 }
 
@@ -11986,7 +11990,7 @@ public class Aspect_JavaP extends ChameleonParser {
                     int alt116=2;
                     int LA116_0 = input.LA(1);
 
-                    if ( (LA116_0==Identifier||(LA116_0>=FloatingPointLiteral && LA116_0<=DecimalLiteral)||LA116_0==48||(LA116_0>=57 && LA116_0<=64)||(LA116_0>=66 && LA116_0<=67)||(LA116_0>=70 && LA116_0<=73)||(LA116_0>=106 && LA116_0<=107)||(LA116_0>=110 && LA116_0<=114)||LA116_0==131) ) {
+                    if ( (LA116_0==Identifier||(LA116_0>=FloatingPointLiteral && LA116_0<=DecimalLiteral)||LA116_0==48||(LA116_0>=57 && LA116_0<=64)||(LA116_0>=66 && LA116_0<=67)||(LA116_0>=70 && LA116_0<=73)||(LA116_0>=106 && LA116_0<=107)||(LA116_0>=110 && LA116_0<=114)||LA116_0==132) ) {
                         alt116=1;
                     }
                     switch (alt116) {
@@ -12624,7 +12628,7 @@ public class Aspect_JavaP extends ChameleonParser {
                 int alt122=2;
                 int LA122_0 = input.LA(1);
 
-                if ( ((LA122_0>=Identifier && LA122_0<=ASSERT)||LA122_0==27||LA122_0==29||(LA122_0>=32 && LA122_0<=38)||LA122_0==45||(LA122_0>=47 && LA122_0<=48)||LA122_0==54||(LA122_0>=57 && LA122_0<=64)||(LA122_0>=66 && LA122_0<=67)||(LA122_0>=70 && LA122_0<=74)||LA122_0==77||(LA122_0>=79 && LA122_0<=82)||(LA122_0>=84 && LA122_0<=88)||(LA122_0>=106 && LA122_0<=107)||(LA122_0>=110 && LA122_0<=114)||LA122_0==131) ) {
+                if ( ((LA122_0>=Identifier && LA122_0<=ASSERT)||LA122_0==27||LA122_0==29||(LA122_0>=32 && LA122_0<=38)||LA122_0==45||(LA122_0>=47 && LA122_0<=48)||LA122_0==54||(LA122_0>=57 && LA122_0<=64)||(LA122_0>=66 && LA122_0<=67)||(LA122_0>=70 && LA122_0<=74)||LA122_0==77||(LA122_0>=79 && LA122_0<=82)||(LA122_0>=84 && LA122_0<=88)||(LA122_0>=106 && LA122_0<=107)||(LA122_0>=110 && LA122_0<=114)||LA122_0==132) ) {
                     alt122=1;
                 }
 
@@ -12716,7 +12720,7 @@ public class Aspect_JavaP extends ChameleonParser {
             if ( (LA123_0==90) ) {
                 int LA123_1 = input.LA(2);
 
-                if ( ((LA123_1>=FloatingPointLiteral && LA123_1<=DecimalLiteral)||LA123_1==48||(LA123_1>=57 && LA123_1<=64)||(LA123_1>=66 && LA123_1<=67)||(LA123_1>=70 && LA123_1<=73)||(LA123_1>=106 && LA123_1<=107)||(LA123_1>=110 && LA123_1<=114)||LA123_1==131) ) {
+                if ( ((LA123_1>=FloatingPointLiteral && LA123_1<=DecimalLiteral)||LA123_1==48||(LA123_1>=57 && LA123_1<=64)||(LA123_1>=66 && LA123_1<=67)||(LA123_1>=70 && LA123_1<=73)||(LA123_1>=106 && LA123_1<=107)||(LA123_1>=110 && LA123_1<=114)||LA123_1==132) ) {
                     alt123=1;
                 }
                 else if ( (LA123_1==Identifier) ) {
@@ -12930,7 +12934,7 @@ public class Aspect_JavaP extends ChameleonParser {
                     int alt124=2;
                     int LA124_0 = input.LA(1);
 
-                    if ( (LA124_0==Identifier||(LA124_0>=FloatingPointLiteral && LA124_0<=DecimalLiteral)||LA124_0==36||LA124_0==48||(LA124_0>=57 && LA124_0<=64)||(LA124_0>=66 && LA124_0<=67)||(LA124_0>=70 && LA124_0<=74)||(LA124_0>=106 && LA124_0<=107)||(LA124_0>=110 && LA124_0<=114)||LA124_0==131) ) {
+                    if ( (LA124_0==Identifier||(LA124_0>=FloatingPointLiteral && LA124_0<=DecimalLiteral)||LA124_0==36||LA124_0==48||(LA124_0>=57 && LA124_0<=64)||(LA124_0>=66 && LA124_0<=67)||(LA124_0>=70 && LA124_0<=74)||(LA124_0>=106 && LA124_0<=107)||(LA124_0>=110 && LA124_0<=114)||LA124_0==132) ) {
                         alt124=1;
                     }
                     switch (alt124) {
@@ -12958,7 +12962,7 @@ public class Aspect_JavaP extends ChameleonParser {
                     int alt125=2;
                     int LA125_0 = input.LA(1);
 
-                    if ( (LA125_0==Identifier||(LA125_0>=FloatingPointLiteral && LA125_0<=DecimalLiteral)||LA125_0==48||(LA125_0>=57 && LA125_0<=64)||(LA125_0>=66 && LA125_0<=67)||(LA125_0>=70 && LA125_0<=73)||(LA125_0>=106 && LA125_0<=107)||(LA125_0>=110 && LA125_0<=114)||LA125_0==131) ) {
+                    if ( (LA125_0==Identifier||(LA125_0>=FloatingPointLiteral && LA125_0<=DecimalLiteral)||LA125_0==48||(LA125_0>=57 && LA125_0<=64)||(LA125_0>=66 && LA125_0<=67)||(LA125_0>=70 && LA125_0<=73)||(LA125_0>=106 && LA125_0<=107)||(LA125_0>=110 && LA125_0<=114)||LA125_0==132) ) {
                         alt125=1;
                     }
                     switch (alt125) {
@@ -12986,7 +12990,7 @@ public class Aspect_JavaP extends ChameleonParser {
                     int alt126=2;
                     int LA126_0 = input.LA(1);
 
-                    if ( (LA126_0==Identifier||(LA126_0>=FloatingPointLiteral && LA126_0<=DecimalLiteral)||LA126_0==48||(LA126_0>=57 && LA126_0<=64)||(LA126_0>=66 && LA126_0<=67)||(LA126_0>=70 && LA126_0<=73)||(LA126_0>=106 && LA126_0<=107)||(LA126_0>=110 && LA126_0<=114)||LA126_0==131) ) {
+                    if ( (LA126_0==Identifier||(LA126_0>=FloatingPointLiteral && LA126_0<=DecimalLiteral)||LA126_0==48||(LA126_0>=57 && LA126_0<=64)||(LA126_0>=66 && LA126_0<=67)||(LA126_0>=70 && LA126_0<=73)||(LA126_0>=106 && LA126_0<=107)||(LA126_0>=110 && LA126_0<=114)||LA126_0==132) ) {
                         alt126=1;
                     }
                     switch (alt126) {
@@ -18566,7 +18570,7 @@ public class Aspect_JavaP extends ChameleonParser {
             int alt171=2;
             int LA171_0 = input.LA(1);
 
-            if ( (LA171_0==Identifier||(LA171_0>=FloatingPointLiteral && LA171_0<=DecimalLiteral)||LA171_0==48||(LA171_0>=57 && LA171_0<=64)||(LA171_0>=66 && LA171_0<=67)||(LA171_0>=70 && LA171_0<=73)||(LA171_0>=106 && LA171_0<=107)||(LA171_0>=110 && LA171_0<=114)||LA171_0==131) ) {
+            if ( (LA171_0==Identifier||(LA171_0>=FloatingPointLiteral && LA171_0<=DecimalLiteral)||LA171_0==48||(LA171_0>=57 && LA171_0<=64)||(LA171_0>=66 && LA171_0<=67)||(LA171_0>=70 && LA171_0<=73)||(LA171_0>=106 && LA171_0<=107)||(LA171_0>=110 && LA171_0<=114)||LA171_0==132) ) {
                 alt171=1;
             }
             switch (alt171) {
@@ -19677,7 +19681,7 @@ public class Aspect_JavaP extends ChameleonParser {
             if ( (LA200_0==49) ) {
                 int LA200_1 = input.LA(2);
 
-                if ( (LA200_1==Identifier||(LA200_1>=FloatingPointLiteral && LA200_1<=DecimalLiteral)||LA200_1==48||(LA200_1>=57 && LA200_1<=64)||(LA200_1>=66 && LA200_1<=67)||(LA200_1>=70 && LA200_1<=73)||(LA200_1>=106 && LA200_1<=107)||(LA200_1>=110 && LA200_1<=114)||LA200_1==131) ) {
+                if ( (LA200_1==Identifier||(LA200_1>=FloatingPointLiteral && LA200_1<=DecimalLiteral)||LA200_1==48||(LA200_1>=57 && LA200_1<=64)||(LA200_1>=66 && LA200_1<=67)||(LA200_1>=70 && LA200_1<=73)||(LA200_1>=106 && LA200_1<=107)||(LA200_1>=110 && LA200_1<=114)||LA200_1==132) ) {
                     alt200=1;
                 }
 
@@ -21051,7 +21055,7 @@ public class Aspect_JavaP extends ChameleonParser {
     static final String DFA83_minS =
         "\1\4\1\uffff\27\0\41\uffff";
     static final String DFA83_maxS =
-        "\1\u0083\1\uffff\27\0\41\uffff";
+        "\1\u0084\1\uffff\27\0\41\uffff";
     static final String DFA83_acceptS =
         "\1\uffff\1\1\27\uffff\1\2\40\uffff";
     static final String DFA83_specialS =
@@ -21062,7 +21066,7 @@ public class Aspect_JavaP extends ChameleonParser {
             "\uffff\1\31\2\uffff\7\31\2\uffff\1\1\3\uffff\3\31\1\20\5\uffff"+
             "\1\31\2\uffff\1\21\1\22\1\23\1\24\1\25\1\26\1\27\1\30\1\uffff"+
             "\1\4\1\3\2\uffff\1\2\1\15\1\13\1\14\1\31\2\uffff\1\31\1\uffff"+
-            "\4\31\1\uffff\5\31\21\uffff\2\31\2\uffff\4\31\1\16\20\uffff"+
+            "\4\31\1\uffff\5\31\21\uffff\2\31\2\uffff\4\31\1\16\21\uffff"+
             "\1\31",
             "",
             "\1\uffff",
@@ -21635,7 +21639,7 @@ public class Aspect_JavaP extends ChameleonParser {
     static final String DFA111_minS =
         "\1\4\13\0\55\uffff";
     static final String DFA111_maxS =
-        "\1\u0083\13\0\55\uffff";
+        "\1\u0084\13\0\55\uffff";
     static final String DFA111_acceptS =
         "\14\uffff\1\2\10\uffff\1\3\42\uffff\1\1";
     static final String DFA111_specialS =
@@ -21645,7 +21649,7 @@ public class Aspect_JavaP extends ChameleonParser {
             "\2\14\6\uffff\1\25\1\uffff\1\14\1\25\5\uffff\1\25\2\uffff\1"+
             "\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\uffff\2\25\2\uffff\4\25"+
             "\1\2\2\uffff\1\25\1\uffff\4\25\1\uffff\5\25\21\uffff\2\25\2"+
-            "\uffff\5\25\20\uffff\1\25",
+            "\uffff\5\25\21\uffff\1\25",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
@@ -21920,7 +21924,7 @@ public class Aspect_JavaP extends ChameleonParser {
     static final String DFA119_minS =
         "\1\4\17\uffff\1\33\1\uffff";
     static final String DFA119_maxS =
-        "\1\u0083\17\uffff\1\157\1\uffff";
+        "\1\u0084\17\uffff\1\157\1\uffff";
     static final String DFA119_acceptS =
         "\1\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1"+
         "\15\1\16\1\17\1\uffff\1\20";
@@ -21930,7 +21934,7 @@ public class Aspect_JavaP extends ChameleonParser {
             "\1\20\1\uffff\6\17\1\2\16\uffff\1\16\21\uffff\1\1\2\uffff\1"+
             "\17\5\uffff\1\11\2\uffff\10\17\1\uffff\2\17\2\uffff\4\17\3\uffff"+
             "\1\3\1\uffff\1\4\1\5\1\6\1\7\1\uffff\1\10\1\12\1\13\1\14\1\15"+
-            "\21\uffff\2\17\2\uffff\5\17\20\uffff\1\17",
+            "\21\uffff\2\17\2\uffff\5\17\21\uffff\1\17",
             "",
             "",
             "",
@@ -21997,8 +22001,8 @@ public class Aspect_JavaP extends ChameleonParser {
         "\2\uffff\4\0\2\uffff\4\0\2\uffff\4\0\2\uffff\4\0\2\uffff\4\0\2\uffff"+
         "\4\0\2\uffff";
     static final String DFA127_maxS =
-        "\1\u0083\1\112\1\4\1\157\10\61\26\uffff\11\61\1\112\1\4\1\112\2"+
-        "\162\1\u0083\1\114\35\uffff\1\62\1\114\1\uffff\1\62\1\114\1\uffff"+
+        "\1\u0084\1\112\1\4\1\157\10\61\26\uffff\11\61\1\112\1\4\1\112\2"+
+        "\162\1\u0084\1\114\35\uffff\1\62\1\114\1\uffff\1\62\1\114\1\uffff"+
         "\1\62\1\114\1\uffff\1\62\1\114\1\uffff\1\62\1\114\1\uffff\1\62\1"+
         "\114\1\uffff\1\62\1\114\1\uffff\1\62\1\114\1\uffff\55\0\2\uffff"+
         "\12\0\24\uffff\1\0\5\uffff\1\0\36\uffff\3\0\2\uffff\4\0\2\uffff"+
@@ -22020,7 +22024,7 @@ public class Aspect_JavaP extends ChameleonParser {
     static final String[] DFA127_transitionS = {
             "\1\3\1\uffff\6\14\17\uffff\1\14\10\uffff\1\1\13\uffff\1\14"+
             "\10\uffff\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\uffff\2\14\2"+
-            "\uffff\4\14\1\2\37\uffff\2\14\2\uffff\5\14\20\uffff\1\14",
+            "\uffff\4\14\1\2\37\uffff\2\14\2\uffff\5\14\21\uffff\1\14",
             "\1\42\37\uffff\1\53\24\uffff\1\43\1\44\1\45\1\46\1\47\1\50"+
             "\1\51\1\52\11\uffff\1\54",
             "\1\55",
@@ -22079,7 +22083,7 @@ public class Aspect_JavaP extends ChameleonParser {
             "\1\u00b4\41\uffff\1\14\2\uffff\1\14\30\uffff\1\14\3\uffff"+
             "\1\14\53\uffff\1\14",
             "\1\14\1\uffff\6\14\44\uffff\1\14\1\uffff\1\u00ba\6\uffff\10"+
-            "\14\1\uffff\2\14\2\uffff\4\14\40\uffff\2\14\2\uffff\5\14\20"+
+            "\14\1\uffff\2\14\2\uffff\4\14\40\uffff\2\14\2\uffff\5\14\21"+
             "\uffff\1\14",
             "\1\14\16\uffff\1\u00db\6\uffff\1\u00d9\2\uffff\1\u00da\27"+
             "\uffff\1\u00dc",
@@ -23744,7 +23748,7 @@ public class Aspect_JavaP extends ChameleonParser {
     static final String DFA128_minS =
         "\1\4\2\uffff\11\0\25\uffff";
     static final String DFA128_maxS =
-        "\1\u0083\2\uffff\11\0\25\uffff";
+        "\1\u0084\2\uffff\11\0\25\uffff";
     static final String DFA128_acceptS =
         "\1\uffff\1\1\12\uffff\1\2\24\uffff";
     static final String DFA128_specialS =
@@ -23752,7 +23756,7 @@ public class Aspect_JavaP extends ChameleonParser {
     static final String[] DFA128_transitionS = {
             "\1\3\1\uffff\6\14\30\uffff\1\1\13\uffff\1\14\10\uffff\1\4\1"+
             "\5\1\6\1\7\1\10\1\11\1\12\1\13\1\uffff\2\14\2\uffff\4\14\1\1"+
-            "\37\uffff\2\14\2\uffff\5\14\20\uffff\1\14",
+            "\37\uffff\2\14\2\uffff\5\14\21\uffff\1\14",
             "",
             "",
             "\1\uffff",
@@ -23978,7 +23982,7 @@ public class Aspect_JavaP extends ChameleonParser {
         "\1\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\2\uffff\1\13"+
         "\1\14";
     static final String DFA131_specialS =
-        "\1\1\13\uffff\1\0\2\uffff}>";
+        "\1\0\13\uffff\1\1\2\uffff}>";
     static final String[] DFA131_transitionS = {
             "\1\12\1\uffff\1\13\10\uffff\1\1\46\uffff\1\2\1\3\1\4\1\5\1"+
             "\6\1\7\1\10\1\11",
@@ -24035,21 +24039,6 @@ public class Aspect_JavaP extends ChameleonParser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA131_12 = input.LA(1);
-
-                         
-                        int index131_12 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA131_12==43) && (synpred191_JavaP())) {s = 13;}
-
-                        else if ( (LA131_12==52) && (synpred192_JavaP())) {s = 14;}
-
-                         
-                        input.seek(index131_12);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
                         int LA131_0 = input.LA(1);
 
                          
@@ -24082,6 +24071,21 @@ public class Aspect_JavaP extends ChameleonParser {
                         input.seek(index131_0);
                         if ( s>=0 ) return s;
                         break;
+                    case 1 : 
+                        int LA131_12 = input.LA(1);
+
+                         
+                        int index131_12 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA131_12==43) && (synpred191_JavaP())) {s = 13;}
+
+                        else if ( (LA131_12==52) && (synpred192_JavaP())) {s = 14;}
+
+                         
+                        input.seek(index131_12);
+                        if ( s>=0 ) return s;
+                        break;
             }
             if (state.backtracking>0) {state.failed=true; return -1;}
             NoViableAltException nvae =
@@ -24101,7 +24105,7 @@ public class Aspect_JavaP extends ChameleonParser {
     static final String DFA144_acceptS =
         "\1\uffff\1\1\2\uffff\1\2\35\3";
     static final String DFA144_specialS =
-        "\1\0\2\uffff\1\1\36\uffff}>";
+        "\1\1\2\uffff\1\0\36\uffff}>";
     static final String[] DFA144_transitionS = {
             "\1\1\1\uffff\1\2",
             "",
@@ -24179,21 +24183,6 @@ public class Aspect_JavaP extends ChameleonParser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA144_0 = input.LA(1);
-
-                         
-                        int index144_0 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA144_0==41) && (synpred207_JavaP())) {s = 1;}
-
-                        else if ( (LA144_0==43) ) {s = 2;}
-
-                         
-                        input.seek(index144_0);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
                         int LA144_3 = input.LA(1);
 
                          
@@ -24262,6 +24251,21 @@ public class Aspect_JavaP extends ChameleonParser {
 
                          
                         input.seek(index144_3);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA144_0 = input.LA(1);
+
+                         
+                        int index144_0 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA144_0==41) && (synpred207_JavaP())) {s = 1;}
+
+                        else if ( (LA144_0==43) ) {s = 2;}
+
+                         
+                        input.seek(index144_0);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -25389,22 +25393,22 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_Identifier_in_constantDeclarator3374 = new BitSet(new long[]{0x0012000000000000L});
     public static final BitSet FOLLOW_49_in_constantDeclarator3378 = new BitSet(new long[]{0x0004000000000000L});
     public static final BitSet FOLLOW_50_in_constantDeclarator3380 = new BitSet(new long[]{0x0012000000000000L});
-    public static final BitSet FOLLOW_52_in_constantDeclarator3386 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_52_in_constantDeclarator3386 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_variableInitializer_in_constantDeclarator3390 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_variableDeclarator_in_variableDeclarators3430 = new BitSet(new long[]{0x0000040000000002L});
     public static final BitSet FOLLOW_42_in_variableDeclarators3434 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_variableDeclarator_in_variableDeclarators3438 = new BitSet(new long[]{0x0000040000000002L});
     public static final BitSet FOLLOW_variableDeclaratorId_in_variableDeclarator3471 = new BitSet(new long[]{0x0010000000000002L});
-    public static final BitSet FOLLOW_52_in_variableDeclarator3490 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_52_in_variableDeclarator3490 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_variableInitializer_in_variableDeclarator3494 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_Identifier_in_variableDeclaratorId3537 = new BitSet(new long[]{0x0002000000000002L});
     public static final BitSet FOLLOW_49_in_variableDeclaratorId3540 = new BitSet(new long[]{0x0004000000000000L});
     public static final BitSet FOLLOW_50_in_variableDeclaratorId3542 = new BitSet(new long[]{0x0002000000000002L});
     public static final BitSet FOLLOW_arrayInitializer_in_variableInitializer3573 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_expression_in_variableInitializer3587 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_45_in_arrayInitializer3620 = new BitSet(new long[]{0xFE01600000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_45_in_arrayInitializer3620 = new BitSet(new long[]{0xFE01600000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_variableInitializer_in_arrayInitializer3627 = new BitSet(new long[]{0x0000440000000000L});
-    public static final BitSet FOLLOW_42_in_arrayInitializer3631 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_42_in_arrayInitializer3631 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_variableInitializer_in_arrayInitializer3635 = new BitSet(new long[]{0x0000440000000000L});
     public static final BitSet FOLLOW_42_in_arrayInitializer3641 = new BitSet(new long[]{0x0000400000000000L});
     public static final BitSet FOLLOW_46_in_arrayInitializer3648 = new BitSet(new long[]{0x0000000000000002L});
@@ -25462,9 +25466,9 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_69_in_formalParameterDecls4520 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_variableDeclaratorId_in_formalParameterDecls4524 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_block_in_methodBody4569 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_45_in_constructorBody4594 = new BitSet(new long[]{0xFE41623F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000008L});
-    public static final BitSet FOLLOW_explicitConstructorInvocation_in_constructorBody4611 = new BitSet(new long[]{0xFE41603F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000008L});
-    public static final BitSet FOLLOW_blockStatement_in_constructorBody4630 = new BitSet(new long[]{0xFE41603F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_45_in_constructorBody4594 = new BitSet(new long[]{0xFE41623F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000010L});
+    public static final BitSet FOLLOW_explicitConstructorInvocation_in_constructorBody4611 = new BitSet(new long[]{0xFE41603F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000010L});
+    public static final BitSet FOLLOW_blockStatement_in_constructorBody4630 = new BitSet(new long[]{0xFE41603F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_46_in_constructorBody4636 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_nonWildcardTypeArguments_in_explicitConstructorInvocation4663 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
     public static final BitSet FOLLOW_70_in_explicitConstructorInvocation4666 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
@@ -25544,8 +25548,8 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_variableDeclarators_in_annotationConstantRest5588 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_75_in_defaultValue5622 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000007CDL});
     public static final BitSet FOLLOW_elementValue_in_defaultValue5624 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_45_in_block5649 = new BitSet(new long[]{0xFE41603F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000008L});
-    public static final BitSet FOLLOW_blockStatement_in_block5656 = new BitSet(new long[]{0xFE41603F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_45_in_block5649 = new BitSet(new long[]{0xFE41603F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000010L});
+    public static final BitSet FOLLOW_blockStatement_in_block5656 = new BitSet(new long[]{0xFE41603F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_46_in_block5662 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_localVariableDeclarationStatement_in_blockStatement5695 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_classOrInterfaceDeclaration_in_blockStatement5709 = new BitSet(new long[]{0x0000000000000002L});
@@ -25557,25 +25561,25 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_variableDeclarators_in_localVariableDeclaration5794 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_variableModifier_in_variableModifiers5840 = new BitSet(new long[]{0x0000001000000002L,0x0000000000000400L});
     public static final BitSet FOLLOW_block_in_statement5871 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ASSERT_in_statement5883 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_ASSERT_in_statement5883 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_statement5887 = new BitSet(new long[]{0x0000000008000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_76_in_statement5891 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_76_in_statement5891 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_statement5895 = new BitSet(new long[]{0x0000000008000000L});
     public static final BitSet FOLLOW_27_in_statement5901 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_77_in_statement5913 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_parExpression_in_statement5917 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_parExpression_in_statement5917 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_statement_in_statement5921 = new BitSet(new long[]{0x0000000000000002L,0x0000000000004000L});
-    public static final BitSet FOLLOW_78_in_statement5933 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_78_in_statement5933 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_statement_in_statement5937 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_79_in_statement5963 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_67_in_statement5965 = new BitSet(new long[]{0xFE01201008000FD0L,0x0007CC00000007CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_67_in_statement5965 = new BitSet(new long[]{0xFE01201008000FD0L,0x0007CC00000007CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_forControl_in_statement5969 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
-    public static final BitSet FOLLOW_68_in_statement5971 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_68_in_statement5971 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_statement_in_statement5975 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_80_in_statement5998 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_parExpression_in_statement6002 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_parExpression_in_statement6002 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_statement_in_statement6006 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_81_in_statement6029 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_81_in_statement6029 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_statement_in_statement6033 = new BitSet(new long[]{0x0000000000000000L,0x0000000000010000L});
     public static final BitSet FOLLOW_80_in_statement6037 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_parExpression_in_statement6041 = new BitSet(new long[]{0x0000000008000000L});
@@ -25596,10 +25600,10 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_54_in_statement6237 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_parExpression_in_statement6241 = new BitSet(new long[]{0x0000200020000000L});
     public static final BitSet FOLLOW_block_in_statement6245 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_85_in_statement6270 = new BitSet(new long[]{0xFE01200008000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_85_in_statement6270 = new BitSet(new long[]{0xFE01200008000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_statement6301 = new BitSet(new long[]{0x0000000008000000L});
     public static final BitSet FOLLOW_27_in_statement6307 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_86_in_statement6319 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_86_in_statement6319 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_statement6323 = new BitSet(new long[]{0x0000000008000000L});
     public static final BitSet FOLLOW_27_in_statement6344 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_87_in_statement6356 = new BitSet(new long[]{0x0000000008000010L});
@@ -25612,7 +25616,7 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_statementExpression_in_statement6454 = new BitSet(new long[]{0x0000000008000000L});
     public static final BitSet FOLLOW_27_in_statement6458 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_Identifier_in_statement6470 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_76_in_statement6472 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_76_in_statement6472 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_statement_in_statement6476 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_catchClause_in_catches6514 = new BitSet(new long[]{0x0000000000000002L,0x0000000002000000L});
     public static final BitSet FOLLOW_89_in_catchClause6551 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
@@ -25624,9 +25628,9 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_type_in_formalParameter6607 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_variableDeclaratorId_in_formalParameter6611 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_switchCase_in_switchBlockStatementGroups6661 = new BitSet(new long[]{0x0000000000000002L,0x0000000004000800L});
-    public static final BitSet FOLLOW_switchLabel_in_switchCase6700 = new BitSet(new long[]{0xFE41203F28001FD2L,0x0007CC0001F7A7CDL,0x0000000000000008L});
-    public static final BitSet FOLLOW_blockStatement_in_switchCase6704 = new BitSet(new long[]{0xFE41203F28001FD2L,0x0007CC0001F7A7CDL,0x0000000000000008L});
-    public static final BitSet FOLLOW_90_in_switchLabel6736 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_switchLabel_in_switchCase6700 = new BitSet(new long[]{0xFE41203F28001FD2L,0x0007CC0001F7A7CDL,0x0000000000000010L});
+    public static final BitSet FOLLOW_blockStatement_in_switchCase6704 = new BitSet(new long[]{0xFE41203F28001FD2L,0x0007CC0001F7A7CDL,0x0000000000000010L});
+    public static final BitSet FOLLOW_90_in_switchLabel6736 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_constantExpression_in_switchLabel6740 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
     public static final BitSet FOLLOW_76_in_switchLabel6742 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_90_in_switchLabel6754 = new BitSet(new long[]{0x0000000000000010L});
@@ -25636,21 +25640,21 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_76_in_switchLabel6774 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_enhancedForControl_in_forControl6816 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_forInit_in_forControl6830 = new BitSet(new long[]{0x0000000008000000L});
-    public static final BitSet FOLLOW_27_in_forControl6833 = new BitSet(new long[]{0xFE01200008000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_27_in_forControl6833 = new BitSet(new long[]{0xFE01200008000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_forControl6837 = new BitSet(new long[]{0x0000000008000000L});
-    public static final BitSet FOLLOW_27_in_forControl6840 = new BitSet(new long[]{0xFE01201000000FD2L,0x0007CC00000007CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_27_in_forControl6840 = new BitSet(new long[]{0xFE01201000000FD2L,0x0007CC00000007CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_forUpdate_in_forControl6844 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_localVariableDeclaration_in_forInit6876 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_expressionList_in_forInit6890 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_localVariableDeclaration_in_enhancedForControl6925 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_76_in_enhancedForControl6927 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_76_in_enhancedForControl6927 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_enhancedForControl6931 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_expressionList_in_forUpdate6958 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_67_in_parExpression6995 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_67_in_parExpression6995 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_parExpression6999 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
     public static final BitSet FOLLOW_68_in_parExpression7005 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_expression_in_expressionList7046 = new BitSet(new long[]{0x0000040000000002L});
-    public static final BitSet FOLLOW_42_in_expressionList7069 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_42_in_expressionList7069 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_expressionList7073 = new BitSet(new long[]{0x0000040000000002L});
     public static final BitSet FOLLOW_expression_in_statementExpression7102 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_expression_in_constantExpression7133 = new BitSet(new long[]{0x0000000000000002L});
@@ -25674,9 +25678,9 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_43_in_assignmentOperator7410 = new BitSet(new long[]{0x0010000000000000L});
     public static final BitSet FOLLOW_52_in_assignmentOperator7414 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_conditionalOrExpression_in_conditionalExpression7449 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_conditionalExpression7454 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_65_in_conditionalExpression7454 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_conditionalExpression7458 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_76_in_conditionalExpression7460 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_76_in_conditionalExpression7460 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_conditionalExpression7464 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_conditionalAndExpression_in_conditionalOrExpression7507 = new BitSet(new long[]{0x0000000000000002L,0x0000000800000000L});
     public static final BitSet FOLLOW_99_in_conditionalOrExpression7513 = new BitSet(new long[]{0xFE01000000000FD0L,0x0007CC00000003CDL});
@@ -25757,7 +25761,7 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_30_in_selector8755 = new BitSet(new long[]{0x0000000000000000L,0x0004000000000000L});
     public static final BitSet FOLLOW_114_in_selector8759 = new BitSet(new long[]{0x0000020000000010L});
     public static final BitSet FOLLOW_innerCreator_in_selector8763 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_49_in_selector8775 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_49_in_selector8775 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_selector8779 = new BitSet(new long[]{0x0004000000000000L});
     public static final BitSet FOLLOW_50_in_selector8783 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_67_in_castExpression8826 = new BitSet(new long[]{0xFE00000000000010L,0x0000000000000001L});
@@ -25820,7 +25824,7 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_114_in_identifierSuffixRubbush9458 = new BitSet(new long[]{0x0000020000000010L});
     public static final BitSet FOLLOW_innerCreator_in_identifierSuffixRubbush9462 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_arguments_in_argumentsSuffixRubbish9489 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_49_in_arrayAccessSuffixRubbish9536 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_49_in_arrayAccessSuffixRubbish9536 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_arrayAccessSuffixRubbish9540 = new BitSet(new long[]{0x0004000000000000L});
     public static final BitSet FOLLOW_50_in_arrayAccessSuffixRubbish9544 = new BitSet(new long[]{0x0002000000000002L});
     public static final BitSet FOLLOW_nonWildcardTypeArguments_in_creator9597 = new BitSet(new long[]{0xFE00000000000010L,0x0000000000000001L});
@@ -25831,7 +25835,7 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_50_in_creator9650 = new BitSet(new long[]{0x0002200000000000L});
     public static final BitSet FOLLOW_arrayInitializer_in_creator9658 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_createdName_in_creator9682 = new BitSet(new long[]{0x0002000000000000L});
-    public static final BitSet FOLLOW_49_in_creator9699 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_49_in_creator9699 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_creator9703 = new BitSet(new long[]{0x0004000000000000L});
     public static final BitSet FOLLOW_50_in_creator9705 = new BitSet(new long[]{0x0002000000000002L});
     public static final BitSet FOLLOW_49_in_creator9725 = new BitSet(new long[]{0x0004000000000000L});
@@ -25854,7 +25858,7 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_30_in_superSuffix10036 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_Identifier_in_superSuffix10040 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000008L});
     public static final BitSet FOLLOW_arguments_in_superSuffix10056 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_67_in_arguments10116 = new BitSet(new long[]{0xFE01201000000FD0L,0x0007CC00000007DDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_67_in_arguments10116 = new BitSet(new long[]{0xFE01201000000FD0L,0x0007CC00000007DDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expressionList_in_arguments10121 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
     public static final BitSet FOLLOW_68_in_arguments10128 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_annotations_in_synpred5_JavaP101 = new BitSet(new long[]{0x0000003F24000000L,0x0000000000000400L});
@@ -25878,13 +25882,13 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_annotation_in_synpred121_JavaP4983 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_localVariableDeclarationStatement_in_synpred144_JavaP5695 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_classOrInterfaceDeclaration_in_synpred145_JavaP5709 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_78_in_synpred150_JavaP5933 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_78_in_synpred150_JavaP5933 = new BitSet(new long[]{0xFE41203F28001FD0L,0x0007CC0001F7A7CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_statement_in_synpred150_JavaP5937 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_catches_in_synpred155_JavaP6095 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
     public static final BitSet FOLLOW_83_in_synpred155_JavaP6099 = new BitSet(new long[]{0x0000200020000000L});
     public static final BitSet FOLLOW_block_in_synpred155_JavaP6103 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_catches_in_synpred156_JavaP6131 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_90_in_synpred172_JavaP6736 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_90_in_synpred172_JavaP6736 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_constantExpression_in_synpred172_JavaP6740 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
     public static final BitSet FOLLOW_76_in_synpred172_JavaP6742 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_90_in_synpred173_JavaP6754 = new BitSet(new long[]{0x0000000000000010L});
@@ -25951,18 +25955,18 @@ public class Aspect_JavaP extends ChameleonParser {
     public static final BitSet FOLLOW_30_in_synpred254_JavaP9454 = new BitSet(new long[]{0x0000000000000000L,0x0004000000000000L});
     public static final BitSet FOLLOW_114_in_synpred254_JavaP9458 = new BitSet(new long[]{0x0000020000000010L});
     public static final BitSet FOLLOW_innerCreator_in_synpred254_JavaP9462 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_49_in_synpred255_JavaP9536 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_49_in_synpred255_JavaP9536 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_synpred255_JavaP9540 = new BitSet(new long[]{0x0004000000000000L});
     public static final BitSet FOLLOW_50_in_synpred255_JavaP9544 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_createdName_in_synpred258_JavaP9629 = new BitSet(new long[]{0x0002000000000000L});
     public static final BitSet FOLLOW_49_in_synpred258_JavaP9648 = new BitSet(new long[]{0x0004000000000000L});
     public static final BitSet FOLLOW_50_in_synpred258_JavaP9650 = new BitSet(new long[]{0x0002200000000000L});
     public static final BitSet FOLLOW_arrayInitializer_in_synpred258_JavaP9658 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_49_in_synpred259_JavaP9699 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_49_in_synpred259_JavaP9699 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_synpred259_JavaP9703 = new BitSet(new long[]{0x0004000000000000L});
     public static final BitSet FOLLOW_50_in_synpred259_JavaP9705 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_createdName_in_synpred261_JavaP9682 = new BitSet(new long[]{0x0002000000000000L});
-    public static final BitSet FOLLOW_49_in_synpred261_JavaP9699 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000008L});
+    public static final BitSet FOLLOW_49_in_synpred261_JavaP9699 = new BitSet(new long[]{0xFE01200000000FD0L,0x0007CC00000003CDL,0x0000000000000010L});
     public static final BitSet FOLLOW_expression_in_synpred261_JavaP9703 = new BitSet(new long[]{0x0004000000000000L});
     public static final BitSet FOLLOW_50_in_synpred261_JavaP9705 = new BitSet(new long[]{0x0002000000000002L});
     public static final BitSet FOLLOW_49_in_synpred261_JavaP9725 = new BitSet(new long[]{0x0004000000000000L});

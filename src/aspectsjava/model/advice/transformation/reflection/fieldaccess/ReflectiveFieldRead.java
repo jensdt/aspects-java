@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import aspectsjava.model.advice.transformation.reflection.ReflectiveAdviceTransformationProvider;
-import aspectsjava.model.advice.transformation.runtime.reflection.fieldaccess.FieldCoordinator;
+import aspectsjava.model.advice.transformation.runtime.AdviceMethodCoordinator;
 import chameleon.aspects.Aspect;
 import chameleon.aspects.WeavingEncapsulator;
-import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.runtimetransformation.Coordinator;
-import chameleon.aspects.namingRegistry.NamingRegistry;
-import chameleon.aspects.namingRegistry.NamingRegistryFactory;
 import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.core.compilationunit.CompilationUnit;
 import chameleon.core.declaration.DeclarationWithParametersHeader;
@@ -64,6 +61,9 @@ public abstract class ReflectiveFieldRead extends ReflectiveAdviceTransformation
 		return adviceInvocation;
 	}
 	
+	/**
+	 * 	{@inheritDoc}
+	 */
 	@Override
 	protected List<FormalParameter> getReflectiveMethodParameters() {
 		List<FormalParameter> resultList = new ArrayList<FormalParameter>();
@@ -74,6 +74,9 @@ public abstract class ReflectiveFieldRead extends ReflectiveAdviceTransformation
 		return resultList;
 	}
 	
+	/**
+	 * 	{@inheritDoc}
+	 */
 	@Override
 	protected Block getReflectivePublicCall() {
 		Block publicCall = new Block();
@@ -100,6 +103,9 @@ public abstract class ReflectiveFieldRead extends ReflectiveAdviceTransformation
 		return publicCall;
 	}
 	
+	/**
+	 * 	{@inheritDoc}
+	 */
 	@Override
 	protected Block getReflectivePrivateCall() {
 		Block privateCall = new Block();
@@ -132,6 +138,9 @@ public abstract class ReflectiveFieldRead extends ReflectiveAdviceTransformation
 		return privateCall;
 	}
 	
+	/**
+	 * 	{@inheritDoc}
+	 */
 	@Override
 	protected CatchClause getNotFoundCatchClause() {
 		return new CatchClause(new FormalParameter("nsm", new BasicTypeReference("NoSuchFieldException")), new Block());
@@ -147,62 +156,34 @@ public abstract class ReflectiveFieldRead extends ReflectiveAdviceTransformation
 		
 		return getFieldValueInvocation;
 	}
-	
-	@Override
-	public NormalMethod transform(WeavingEncapsulator previous, WeavingEncapsulator next) throws LookupException {
-		Aspect<?> aspect = getAdvice().aspect();
-		CompilationUnit compilationUnit = aspect.nearestAncestor(CompilationUnit.class);
-		
-		// Get the class we are going to create this method in
-		RegularType aspectClass = getOrCreateAspectClass(compilationUnit, aspect.name());
-		
-		// Check if the method has already been created
-		if (isAlreadyDefined(getAdvice(), compilationUnit))
-			return null;
-		
-		String adviceMethodName = getAdviceMethodName(getAdvice());
-		
-		DeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader(adviceMethodName);
-		
-		TypeReference returnType = new BasicTypeReference("T");			
-		NormalMethod adviceMethod = new NormalMethod(header, returnType);
-		
-		adviceMethod.addModifier(new Public());
-		adviceMethod.addModifier(new Static());
-		
-		header.addTypeParameter(new FormalTypeParameter(new SimpleNameSignature("T")));
 
-		// Add all the parameters to allow the reflective invocation 
-		FormalParameter object = new FormalParameter(objectParamName, new BasicTypeReference("Object"));
-		header.addFormalParameter(object);
+	/**
+	 * 	{@inheritDoc}
+	 */
+	@Override
+	protected List<FormalParameter> getAdviceMethodParameters() {
+		List<FormalParameter> result = new ArrayList<FormalParameter>();
 		
-		FormalParameter methodName = new FormalParameter(fieldName, new BasicTypeReference("String"));
-		header.addFormalParameter(methodName);
+		result.add(new FormalParameter(objectParamName, new BasicTypeReference("Object")));
+		result.add(new FormalParameter(fieldName, new BasicTypeReference("String")));
+		result.add(new FormalParameter(calleeName, new BasicTypeReference("Object")));
 		
-		FormalParameter callee = new FormalParameter(calleeName, new BasicTypeReference("Object"));
-		header.addFormalParameter(callee);
-		
-		// Get the body
-		Block body = getBody(next);
-		
-		// Set the method body
-		adviceMethod.setImplementation(new RegularImplementation(body));
-		
-		// Add the method
-		aspectClass.add(adviceMethod);
-		
-		return adviceMethod;
+		return result;
 	}
 	
-	protected abstract Block getBody(WeavingEncapsulator next);
-
+	/**
+	 * 	{@inheritDoc}
+	 */
 	@Override
 	protected String getReflectiveMethodName() {
 		return "getFieldValue";
 	}
 	
+	/**
+	 * 	{@inheritDoc}
+	 */
 	@Override
 	public Coordinator<NormalMethod> getCoordinator(MatchResult joinpoint, WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextWeavingEncapsulator) {
-		return new FieldCoordinator(this, getJoinpoint(), previousWeavingEncapsulator, nextWeavingEncapsulator);
+		return new AdviceMethodCoordinator(this, getJoinpoint(), previousWeavingEncapsulator, nextWeavingEncapsulator);
 	}
 }

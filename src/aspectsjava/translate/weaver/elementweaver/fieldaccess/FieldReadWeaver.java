@@ -3,6 +3,7 @@ package aspectsjava.translate.weaver.elementweaver.fieldaccess;
 import org.rejuse.property.PropertySet;
 
 import aspectsjava.model.advice.transformation.reflection.fieldaccess.AfterReflectiveFieldRead;
+import aspectsjava.model.advice.transformation.reflection.fieldaccess.AfterReturningReflectiveFieldRead;
 import aspectsjava.model.advice.transformation.reflection.fieldaccess.AroundReflectiveFieldRead;
 import aspectsjava.model.advice.transformation.reflection.fieldaccess.BeforeReflectiveFieldRead;
 import aspectsjava.model.advice.weaving.reflection.fieldaccess.DefaultReflectiveFieldAccess;
@@ -36,7 +37,7 @@ public class FieldReadWeaver extends FieldWeaver {
 	}
 
 	@Override
-	public AdviceTransformationProvider getTransformationStrategy(Advice advice, MatchResult<NamedTargetExpression> joinpoint) {
+	public AdviceTransformationProvider getTransformationProvider(Advice advice, MatchResult<NamedTargetExpression> joinpoint) {
 		PropertySet around = getAround(advice);		
 		PropertySet before = getBefore(advice);
 		PropertySet after = getAfter(advice);
@@ -52,7 +53,7 @@ public class FieldReadWeaver extends FieldWeaver {
 			return new AfterReflectiveFieldRead();
 					
 		if (afterReturning.containsAll(advice.properties().properties()))
-			return new AfterReflectiveFieldRead();
+			return new AfterReturningReflectiveFieldRead();
 	
 		throw new RuntimeException();
 	}

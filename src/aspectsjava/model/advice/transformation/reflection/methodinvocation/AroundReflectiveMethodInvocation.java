@@ -45,7 +45,7 @@ public class AroundReflectiveMethodInvocation extends ReflectiveMethodInvocation
 			MethodInvocation reflectiveCall = getNextInvocation(next, actualArgumentsArray);
 			
 			Expression reflectiveCallInvocation = null;
-			// Note that if the return type is a primitive, we first have to cast the primitive to its boxed variant, then cast to T
+			// Note that if the return type is a primitive, we first have to cast the primitive to its boxed variant, then cast to the actual type
 			try {
 				Type type = getAdvice().actualReturnType().getType();
 				Java java = (Java) getAdvice().language(Java.class);
@@ -54,8 +54,11 @@ public class AroundReflectiveMethodInvocation extends ReflectiveMethodInvocation
 					reflectiveCallInvocation = new ClassCastExpression(new BasicTypeReference(java.box(type).getFullyQualifiedName()), reflectiveCall.clone());
 				else
 					reflectiveCallInvocation = reflectiveCall.clone();
+				
+				// Now cast to the actual return type
+				Expression actualReturnType = new ClassCastExpression(new BasicTypeReference(type.getFullyQualifiedName()), reflectiveCallInvocation);
 
-				pc.parentLink().getOtherRelation().replace(pc.parentLink(), reflectiveCallInvocation.parentLink());
+				pc.parentLink().getOtherRelation().replace(pc.parentLink(), actualReturnType.parentLink());
 			} catch (LookupException e) {
 				System.out.println("Error while getting advice type");
 				e.printStackTrace();

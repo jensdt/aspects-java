@@ -1,14 +1,12 @@
 package aspectsjava.model.advice.transformation.reflection;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import jnome.core.expression.invocation.ConstructorInvocation;
 import jnome.core.type.BasicJavaTypeReference;
 import jnome.core.variable.JavaVariableDeclaration;
-
-import org.rejuse.predicate.SafePredicate;
-
 import aspectsjava.model.advice.transformation.CreateAdviceMethodTransformationProvider;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeAnd;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeIfCheck;
@@ -40,24 +38,20 @@ import chameleon.core.method.RegularImplementation;
 import chameleon.core.statement.Block;
 import chameleon.core.statement.Statement;
 import chameleon.core.variable.FormalParameter;
-import chameleon.core.variable.VariableDeclaration;
 import chameleon.oo.type.BasicTypeReference;
 import chameleon.oo.type.RegularType;
+import chameleon.oo.type.TypeReference;
 import chameleon.oo.type.generics.FormalTypeParameter;
+import chameleon.oo.type.generics.TypeParameter;
 import chameleon.support.expression.AssignmentExpression;
 import chameleon.support.expression.ClassCastExpression;
 import chameleon.support.expression.InstanceofExpression;
-import chameleon.support.expression.ThisLiteral;
 import chameleon.support.member.simplename.method.NormalMethod;
 import chameleon.support.member.simplename.method.RegularMethodInvocation;
-import chameleon.support.member.simplename.variable.MemberVariableDeclarator;
-import chameleon.support.modifier.Constructor;
 import chameleon.support.modifier.Private;
-import chameleon.support.modifier.Public;
 import chameleon.support.modifier.Static;
 import chameleon.support.statement.CatchClause;
 import chameleon.support.statement.IfThenElseStatement;
-import chameleon.support.statement.ReturnStatement;
 import chameleon.support.statement.StatementExpression;
 import chameleon.support.statement.ThrowStatement;
 import chameleon.support.statement.TryStatement;
@@ -278,5 +272,21 @@ public abstract class ReflectiveAdviceTransformationProvider extends CreateAdvic
 			return new TypeParameterExposure(new NamedTargetExpression(objectParamName));
 		
 		return null;
+	}
+	
+	/**
+	 * 	{@inheritDoc}
+	 */
+	@Override
+	protected TypeReference getAdiceMethodReturnType() {
+		return new BasicTypeReference("T");
+	}
+	
+	/**
+	 * 	{@inheritDoc}
+	 */
+	@Override
+	protected List<TypeParameter> getAdviceMethodTypeParameters() {
+		return Collections.<TypeParameter>singletonList(new FormalTypeParameter(new SimpleNameSignature("T")));
 	}
 }

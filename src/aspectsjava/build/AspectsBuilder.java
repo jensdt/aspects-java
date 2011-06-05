@@ -2,6 +2,7 @@ package aspectsjava.build;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import jnome.output.CompilationUnitWriter;
@@ -14,6 +15,7 @@ import chameleon.exception.ChameleonProgrammerException;
 import chameleon.exception.ModelException;
 import chameleon.plugin.Plugin;
 import chameleon.plugin.PluginImpl;
+import chameleon.plugin.build.BuildProgressHelper;
 import chameleon.plugin.build.Builder;
 import chameleon.plugin.output.Syntax;
 
@@ -45,52 +47,6 @@ public class AspectsBuilder extends PluginImpl implements Builder {
 
 	CompilationUnitWriter _writer;
 
-	/*
-	public void build(Collection<CompilationUnit> compilationUnits,
-			List<CompilationUnit> allProjectCompilationUnits) throws ModelException, IOException {
-		
-		List<CompilationUnit> allProjectCompilationUnitsWithoutAspects = new ArrayList<CompilationUnit>();
-		
-		boolean hasAspect = false;
-		
-		for(CompilationUnit cu: compilationUnits) {
-			if (!cu.descendants(Aspect.class).isEmpty()) {
-				hasAspect = true;
-				build(cu, allProjectCompilationUnits);
-				allProjectCompilationUnitsWithoutAspects.remove(cu);
-			}
-		}
-		
-		List<CompilationUnit> toBuild;
-		// Need a complete rebuild or not?
-		if (hasAspect)
-			toBuild = allProjectCompilationUnitsWithoutAspects;
-		else
-			toBuild = allProjectCompilationUnits;
-		
-		for(CompilationUnit cu: toBuild) {
-			build(cu, allProjectCompilationUnits);
-		}
-	}
-	*/
-	
-	public void build(CompilationUnit compilationUnit, List<CompilationUnit> allProjectCompilationUnits) throws ModelException, IOException {
-		try {
-			String fileName = _writer.fileName(compilationUnit);
-			System.out.println("Building "+fileName);
-			List<CompilationUnit> cus = _translator.build(compilationUnit, allProjectCompilationUnits);
-			
-			for (CompilationUnit translated : cus)
-				_writer.write(translated);
-			
-		} catch(Error e) {
-			e.printStackTrace();
-			throw e;
-		} catch(RuntimeException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public Language targetLanguage() {
 		return _translator.targetLanguage();
 	}
@@ -106,4 +62,24 @@ public class AspectsBuilder extends PluginImpl implements Builder {
 		return new AspectsBuilder(writer().outputDir());
 	}
 
+	@Override
+	public void build(List<CompilationUnit> compilationUnits, List<CompilationUnit> allProjectCompilationUnits,	BuildProgressHelper buildProgressHelper) throws ModelException, IOException {
+		try {
+			Collection<CompilationUnit> cus = _translator.completeRebuild(allProjectCompilationUnits, buildProgressHelper);
+			
+			for (CompilationUnit translated : cus)
+				_writer.write(translated);
+			
+		} catch(Error e) {
+			e.printStackTrace();
+			throw e;
+		} catch(RuntimeException e) {
+			e.printStackTrace();
+		}		
+	}
+
+	@Override
+	public int totalAmountOfWork(List<CompilationUnit> compilationUnits, List<CompilationUnit> allProjectCompilationUnits) {
+		return allProjectCompilationUnits.size();
+	}
 }

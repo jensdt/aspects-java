@@ -8,15 +8,17 @@ import jnome.core.expression.ArrayCreationExpression;
 import jnome.core.expression.ArrayInitializer;
 import jnome.core.expression.ClassLiteral;
 import jnome.core.expression.invocation.ConstructorInvocation;
+import jnome.core.language.Java;
 import jnome.core.type.ArrayTypeReference;
 import jnome.core.type.BasicJavaTypeReference;
 import jnome.core.variable.JavaVariableDeclaration;
+
+import org.rejuse.predicate.SafePredicate;
+
 import aspectsjava.model.advice.transformation.reflection.ReflectiveAdviceTransformationProvider;
 import aspectsjava.model.advice.transformation.runtime.reflection.methodinvocation.MethodCoordinator;
 import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeArgumentsTypeCheck;
-import aspectsjava.model.advice.transformation.runtime.transformationprovider.RuntimeTypeCheck;
-import aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.reflection.ReflectiveArgsParameterExposure;
-import chameleon.aspects.Aspect;
+import aspectsjava.model.advice.transformation.runtime.transformationprovider.parameterexposure.reflection.MultipleArgsParameterExposure;
 import chameleon.aspects.WeavingEncapsulator;
 import chameleon.aspects.advice.Advice;
 import chameleon.aspects.advice.runtimetransformation.Coordinator;
@@ -28,21 +30,15 @@ import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.aspects.pointcut.expression.PointcutExpression;
 import chameleon.aspects.pointcut.expression.dynamicexpression.ArgsPointcutExpression;
 import chameleon.aspects.pointcut.expression.dynamicexpression.ParameterExposurePointcutExpression;
-import chameleon.aspects.pointcut.expression.dynamicexpression.TargetTypePointcutExpression;
-import chameleon.aspects.pointcut.expression.dynamicexpression.ThisTypePointcutExpression;
 import chameleon.aspects.pointcut.expression.generic.RuntimePointcutExpression;
-import chameleon.core.compilationunit.CompilationUnit;
-import chameleon.core.declaration.DeclarationWithParametersHeader;
-import chameleon.core.declaration.SimpleNameDeclarationWithParametersHeader;
-import chameleon.core.declaration.SimpleNameSignature;
 import chameleon.core.expression.Expression;
 import chameleon.core.expression.InvocationTarget;
 import chameleon.core.expression.MethodInvocation;
 import chameleon.core.expression.NamedTarget;
 import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.lookup.LookupException;
+import chameleon.core.member.Member;
 import chameleon.core.method.Method;
-import chameleon.core.method.RegularImplementation;
 import chameleon.core.method.exception.ExceptionDeclaration;
 import chameleon.core.method.exception.TypeExceptionDeclaration;
 import chameleon.core.statement.Block;
@@ -50,16 +46,14 @@ import chameleon.core.statement.Statement;
 import chameleon.core.variable.FormalParameter;
 import chameleon.oo.language.ObjectOrientedLanguage;
 import chameleon.oo.type.BasicTypeReference;
-import chameleon.oo.type.RegularType;
+import chameleon.oo.type.ConstructedType;
+import chameleon.oo.type.DeclarationWithType;
 import chameleon.oo.type.Type;
-import chameleon.oo.type.TypeReference;
+import chameleon.oo.type.TypeIndirection;
 import chameleon.oo.type.generics.BasicTypeArgument;
-import chameleon.oo.type.generics.FormalTypeParameter;
 import chameleon.support.expression.ClassCastExpression;
 import chameleon.support.member.simplename.method.NormalMethod;
 import chameleon.support.member.simplename.method.RegularMethodInvocation;
-import chameleon.support.modifier.Public;
-import chameleon.support.modifier.Static;
 import chameleon.support.statement.CatchClause;
 import chameleon.support.statement.EmptyStatement;
 import chameleon.support.statement.ReturnStatement;
@@ -190,61 +184,41 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 			return "advice_errord";
 		}
 	}
+	
+	/**
+	 * 	{@inheritDoc}
+	 */
+	@Override
+	protected List<FormalParameter> getAdviceMethodParameters() {
+		List<FormalParameter> result = new ArrayList<FormalParameter>();
+		
+		result.add(new FormalParameter(objectParamName, new BasicTypeReference("Object")));
+		result.add(new FormalParameter(methodNameParamName, new BasicTypeReference("String")));
+		result.add(new FormalParameter(argumentNameParamName, new ArrayTypeReference(new BasicJavaTypeReference("Object"))));
+		result.add(new FormalParameter(calleeName, new BasicTypeReference("Object")));
+		
+		return result;
+	}
 
+	/**
+	 * 	{@inheritDoc}
+	 */
 	@Override
 	public NormalMethod transform(WeavingEncapsulator previous, WeavingEncapsulator next) throws LookupException {
-		Aspect<?> aspect = getAdvice().aspect();
-		CompilationUnit compilationUnit = aspect.nearestAncestor(CompilationUnit.class);
+		NormalMethod adviceMethod = super.transform(previous, next);
 		
-		// Get the class we are going to create this method in
-		RegularType aspectClass = getOrCreateAspectClass(compilationUnit, aspect.name());
-		
-		// Check if the method has already been created
-		if (isAlreadyDefined(getAdvice(), compilationUnit))
-			return null;
-				
-		String adviceMethodName = getAdviceMethodName(getAdvice());
-		Method m = getJoinpoint().getJoinpoint().getElement();
-		// Create the method
-		DeclarationWithParametersHeader header = new SimpleNameDeclarationWithParametersHeader(adviceMethodName);
-		
-		TypeReference returnType = new BasicTypeReference("T");			
-		NormalMethod adviceMethod = new NormalMethod(header, returnType);
-		
-		adviceMethod.addModifier(new Public());
-		adviceMethod.addModifier(new Static());
-		
-		header.addTypeParameter(new FormalTypeParameter(new SimpleNameSignature("T")));
-
-		// Copy the exceptions
-		adviceMethod.setExceptionClause(m.getExceptionClause().clone());
-
-		// Add all the parameters to allow the reflective invocation 
-		FormalParameter object = new FormalParameter(objectParamName, new BasicTypeReference("Object"));
-		header.addFormalParameter(object);
-		
-		FormalParameter methodName = new FormalParameter(methodNameParamName, new BasicTypeReference("String"));
-		header.addFormalParameter(methodName);
-		
-		FormalParameter methodArguments = new FormalParameter(argumentNameParamName, new ArrayTypeReference(new BasicJavaTypeReference("Object")));
-		header.addFormalParameter(methodArguments);
-				
-		FormalParameter callee = new FormalParameter(calleeName, new BasicTypeReference("Object"));
-		header.addFormalParameter(callee);
-		
-		// Get the body
-		Block body = getBody(next);
-		
-		// Set the method body
-		adviceMethod.setImplementation(new RegularImplementation(body));
-		
-		// Add the method
-		aspectClass.add(adviceMethod);
+		if (adviceMethod != null)
+			// Copy the exceptions
+			adviceMethod.setExceptionClause(getJoinpoint().getJoinpoint().getElement().getExceptionClause().clone());
 		
 		return adviceMethod;
 	}
 	
-	protected Block getBody(WeavingEncapsulator next) throws LookupException {
+	/**
+	 *  {@inheritDoc}
+	 */
+	@Override
+	protected Block getBody(WeavingEncapsulator next) {
 		Block finalBody = new Block();
 		
 		/*
@@ -260,7 +234,13 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 			/*
 			 * 	Create the surrounding try-catch block for exception handling
 			 */
-			TryStatement exceptionHandler = getEnclosingTry(adviceBody);
+			TryStatement exceptionHandler = null;
+			try {
+				exceptionHandler = getEnclosingTry(adviceBody);
+			} catch (LookupException e) {
+				// Can only occur due to a bug, swallow it
+				e.printStackTrace();
+			}
 		
 			/*
 			 * 	Complete the complete body
@@ -297,8 +277,17 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 		ArrayInitializer typesInitializer = new ArrayInitializer();					
 	
 		try {
-			for (FormalParameter fp : (List<FormalParameter>) getJoinpoint().getJoinpoint().getElement().formalParameters())
-				typesInitializer.addInitializer(new ClassLiteral(fp.getTypeReference().clone()));
+			int index = 1; // 1-based indices
+			for (FormalParameter fp : (List<FormalParameter>) ((Method) getJoinpoint().getJoinpoint().getElement()).formalParameters()) {
+				
+				Type parameterType = getFormalParameterType(fp, index);
+				if (parameterType instanceof ConstructedType)
+					typesInitializer.addInitializer(new ClassLiteral(new BasicTypeReference(((ConstructedType) parameterType).aliasedType().getFullyQualifiedName())));
+				else
+					typesInitializer.addInitializer(new ClassLiteral(new BasicTypeReference(parameterType.getFullyQualifiedName())));
+				
+				index++;
+			}
 		} catch (LookupException e) {
 			// This shouldn't occur in normal usage, only a bug can cause this
 			e.printStackTrace();
@@ -308,6 +297,54 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 		proceedInvocation.addArgument(typesArray);
 		
 		return proceedInvocation;
+	}
+	
+	public Type getFormalParameterType(FormalParameter fp, int index) throws LookupException {
+		/*
+		 *	The parameter type isn't easily determined in case it is a generic type - we need the erasure in the original class, not
+		 *	the instantiated. Note, the if-then-else below isn't exhaustive. Need more checking which cases aren't covered and how
+		 *	to implement them - TODO. 	
+		 */
+		
+		
+		SafePredicate<Member> filter = new SafePredicate<Member>() {
+
+			@Override
+			public boolean eval(Member object) {
+				try {
+					return object == getJoinpoint().getJoinpoint().getElement().origin();
+				} catch (LookupException e) {
+					// Can't occur, only due to a bug
+					return false;
+				}
+			}
+		};
+
+		
+		InvocationTarget target = getJoinpoint().getJoinpoint().getTarget();
+		
+		Type typeToErase = null;
+		if (target == null)
+			typeToErase = (Type) getJoinpoint().getJoinpoint().getElement().nearestAncestor(Type.class);
+		else if (target instanceof Expression)
+			typeToErase = ((Expression) target).getType();
+		else if (target instanceof NamedTarget) {
+			if (((NamedTarget) target).getElement() instanceof DeclarationWithType)
+				typeToErase = ((DeclarationWithType) ((NamedTarget) target).getElement()).declarationType();
+		}
+		List<Member> m = fp.language(Java.class).erasure(typeToErase).baseType().descendants(Member.class, filter);
+		
+		Type parameterType;
+		if (!m.isEmpty())
+			parameterType = ((Method) m.get(0)).formalParameter(index).getType();
+		else {
+			if (fp.getType() instanceof TypeIndirection)
+				parameterType = ((TypeIndirection) fp.getType()).aliasedType();
+			else
+				parameterType = fp.getType();
+		}
+		
+		return parameterType;
 	}
 
 	@Override
@@ -432,7 +469,7 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 	@Override
 	public RuntimeParameterExposureProvider getRuntimeParameterInjectionProvider(ParameterExposurePointcutExpression<?> expression) {
 		if (expression instanceof ArgsPointcutExpression)
-			return new ReflectiveArgsParameterExposure(this);
+			return new MultipleArgsParameterExposure(this);
 		
 		return super.getRuntimeParameterInjectionProvider(expression);
 	}
@@ -441,6 +478,4 @@ public abstract class ReflectiveMethodInvocation extends ReflectiveAdviceTransfo
 	public Coordinator<NormalMethod> getCoordinator(MatchResult<?> joinpoint, WeavingEncapsulator previousWeavingEncapsulator, WeavingEncapsulator nextEncapsulator) {
 		return new MethodCoordinator(this, getJoinpoint(), previousWeavingEncapsulator, nextEncapsulator);
 	}
-	
-
 }

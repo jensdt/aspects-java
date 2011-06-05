@@ -10,6 +10,8 @@ import JavaP,JavaL;
 @header {
 package aspectsjava.input;
 
+import aspectsjava.model.advice.*;
+import aspectsjava.model.pointcut.expression.within.*;
 import aspectsjava.model.pointcut.expression.methodinvocation.annotated.AnnotatedMethodInvocationExpression;
 import aspectsjava.model.pointcut.expression.methodinvocation.annotated.AnnotationReference;
 import aspectsjava.model.pointcut.expression.methodinvocation.signature.MethodReference;
@@ -26,6 +28,7 @@ import chameleon.aspects.pointcut.expression.*;
 import chameleon.aspects.pointcut.expression.generic.*;
 import chameleon.aspects.pointcut.expression.namedpointcut.*;
 import chameleon.aspects.pointcut.expression.dynamicexpression.*;
+import chameleon.aspects.pointcut.expression.staticexpression.within.*;
 import chameleon.aspects.pointcut.expression.staticexpression.catchclause.*;
 import chameleon.aspects.pointcut.expression.staticexpression.fieldAccess.*;
 import chameleon.aspects.pointcut.expression.staticexpression.cast.*;
@@ -384,16 +387,30 @@ pointcutExpressionOr returns [PointcutExpression element]
 subtypeMarker returns [SubtypeMarker element]
 	: '+' {retval.element = new SubtypeMarker();};
 	
+withinType returns [WithinTypePointcutExpression element]
+@init{WithinTypePointcutExpression within = new WithinTypePointcutExpression();}
+	: withinToken='within' '(' withinTypeRef=type (marker=subtypeMarker {within.setSubtypeMarker(marker.element);})? ')' {retval.element = within; within.setTypeReference(withinTypeRef.element); setKeyword(retval.element, withinToken); };
+	
+withinMethod returns [WithinMethodPointcutExpression element]
+@init{WithinMethodPointcutExpression within = new WithinMethodPointcutExpression();}
+	: withinToken='within' '(' metref=methodReference ')' {retval.element = within; within.setMethodReference(metref.element); setKeyword(retval.element, withinToken); };
+
+within returns [WithinPointcutExpression element]
+	: withinTypeCL=withinType {retval.element = withinTypeCL.element;}
+	| withinMethodCL=withinMethod {retval.element = withinMethodCL.element;}
+	;
+
+	
 pointcutAtom returns [PointcutExpression element]
-@init{SubtypeMarker marker = null;}
 @after{setLocation(retval.element, retval.start, retval.stop);}
 	: cl='call' '(' metref=methodReference ')' {retval.element = new SignatureMethodInvocationPointcutExpression(metref.element); setKeyword(retval.element, cl);}
 	| clA='callAnnotated' '(' annot=Identifier ')' {AnnotatedMethodInvocationExpression result = new AnnotatedMethodInvocationExpression(); result.setReference(new AnnotationReference($annot.text)); retval.element = result; setKeyword(retval.element, clA);}
-	| emptyCatch='emptyCatch' {retval.element = new EmptyCatchClausePointcutExpression(); setKeyword(retval.element, emptyCatch); }
+	| emptyCatch='emptyHandler' {retval.element = new EmptyCatchClausePointcutExpression(); setKeyword(retval.element, emptyCatch); }
 	| fieldRead='fieldRead' '(' fieldreadtype=type fieldref=fieldReference ')' {retval.element = new FieldReadPointcutExpression(fieldreadtype.element, fieldref.element); setKeyword(retval.element, fieldRead); }
-	| handler='handler' '(' exceptionType=type (includeSub=subtypeMarker {marker=includeSub.element;})? ')' {TypeCatchClausePointcutExpression catchHandler = new TypeCatchClausePointcutExpression(); catchHandler.setExceptionType(exceptionType.element); catchHandler.setSubtypeMarker(marker); retval.element = catchHandler; setKeyword(retval.element, handler); }
+	| handler='typeHandler' '(' exceptionType=type ')' {TypeCatchClausePointcutExpression catchHandler = new TypeCatchClausePointcutExpression(); catchHandler.setExceptionType(exceptionType.element); retval.element = catchHandler; setKeyword(retval.element, handler); }
 	| cast='cast' '(' castType=type ')' { retval.element = new CastPointcutExpression(castType.element); setKeyword(retval.element, cast); }
 	| namedRef=namedPointcutReference {NamedPointcutExpression named = new NamedPointcutExpression(); named.setPointcutReference(namedRef.element); retval.element = named;}
+	| withinCl=within {retval.element = withinCl.element;}
 	// Runtime checks
 	| getargs='arguments' t=typesOrParameters {ArgsPointcutExpression expr = new ArgsPointcutExpression(); expr.addAll(t.element); retval.element = expr; setKeyword(retval.element, getargs); }
 	| thisType='thisType' '(' exp=expression ')' {ThisTypePointcutExpression expr = new ThisTypePointcutExpression((NamedTargetExpression) exp.element); retval.element = expr; setKeyword(retval.element, thisType); }
@@ -408,9 +425,9 @@ namedPointcutReference returns [PointcutReference element]
 	: decl=pointcutDecl '(' (params=argParams {arguments = params.element;})? end=')' {PointcutReference ref = new PointcutReference(decl.element); ref.addAllArguments(arguments); retval.element = ref;}
 	;
 	
-fieldReference returns [FieldReference element]
+fieldReference returns [MemberReference element]
 @init{String fullName = "";}
-	: (initName=Identifier {fullName = $initName.text;} ('.' appendName=Identifier {fullName += "." + $appendName.text; })*) {retval.element = new FieldReference(fullName);}
+	: (initName=Identifier {fullName = $initName.text;} ('.' appendName=Identifier {fullName += "." + $appendName.text; })*) {retval.element = new MemberReference(fullName);}
 	;
 	
 	
@@ -429,7 +446,7 @@ advice returns [Advice element]
 	: (t=type {tref=t.element;}| 'void' {tref = typeRef("void");})? advtype=adviceTypeModifier pars=formalParameters (advtypespec=adviceTypeModifierSpecifier {adviceTypeSpecifier = advtypespec.element; })? ':' pointcutExpr=pointcutExpression
 	
 	{
-		retval.element=new Advice(tref);
+		retval.element=new JavaAdvice(tref);
 		retval.element.setPointcutExpression(pointcutExpr.element);
 		retval.element.addModifier(advtype.element);
 		retval.element.addModifier(adviceTypeSpecifier);

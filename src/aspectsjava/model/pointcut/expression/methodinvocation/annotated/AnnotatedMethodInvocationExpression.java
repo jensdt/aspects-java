@@ -59,9 +59,4 @@ public class AnnotatedMethodInvocationExpression<E extends AnnotatedMethodInvoca
 		clone.setReference(reference().clone());
 		return (E) clone;
 	}
-	
-	@Override
-	public MatchResult matchesInverse(Element joinpoint) throws LookupException {
-		return super.matchesInverse(joinpoint);
-	}
 }

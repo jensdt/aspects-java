@@ -17,7 +17,7 @@ import chameleon.support.expression.ClassCastExpression;
 public class JavaWeaveTransformer extends WeaveTransformer {
 
 	@Override
-	protected void initialiseWeavers() {
+	protected Weaver initialiseWeavers() {
 		// Initiate the weavers
 		Weaver<MethodInvocation, MethodInvocation> methodInvocationWeaver = new MethodInvocationWeaver();
 		Weaver<Block, List<Statement>> catchClauseWeaver = new CatchClauseWeaver();
@@ -28,6 +28,6 @@ public class JavaWeaveTransformer extends WeaveTransformer {
 		catchClauseWeaver.setNext(fieldWeaver);
 		fieldWeaver.setNext(castWeaver);
 		
-		setElementWeaver(methodInvocationWeaver);
+		return methodInvocationWeaver;
 	}	
 }

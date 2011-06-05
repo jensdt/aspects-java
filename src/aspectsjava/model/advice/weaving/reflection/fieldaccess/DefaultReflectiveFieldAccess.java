@@ -22,7 +22,8 @@ public class DefaultReflectiveFieldAccess extends TargetedAdviceMethodProvider<N
 	protected List<Expression> getParameters(Advice advice, MatchResult<NamedTargetExpression> joinpoint) throws LookupException {
 		List<Expression> parameters = new ArrayList<Expression>();
 		
-		InvocationTarget target = getTarget(joinpoint);
+		// Cast is ok because a MI is a NamedTargetExpression which will return an InvocationTarget
+		InvocationTarget target = (InvocationTarget) getTarget(joinpoint);
 
 		parameters.add(new VariableReference("object", target));
 		parameters.add(new RegularLiteral(new BasicTypeReference("String"), "\"" + joinpoint.getJoinpoint().signature().name()+ "\""));

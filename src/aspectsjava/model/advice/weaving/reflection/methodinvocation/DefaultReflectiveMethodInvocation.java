@@ -16,12 +16,14 @@ import chameleon.aspects.pointcut.expression.MatchResult;
 import chameleon.core.expression.Expression;
 import chameleon.core.expression.InvocationTarget;
 import chameleon.core.expression.MethodInvocation;
-import chameleon.core.expression.VariableReference;
+import chameleon.core.expression.NamedTarget;
+import chameleon.core.expression.NamedTargetExpression;
 import chameleon.core.lookup.LookupException;
 import chameleon.core.method.Method;
 import chameleon.oo.language.ObjectOrientedLanguage;
 import chameleon.oo.type.BasicTypeReference;
 import chameleon.oo.type.Type;
+import chameleon.oo.type.TypeIndirection;
 import chameleon.oo.type.generics.BasicTypeArgument;
 import chameleon.support.expression.RegularLiteral;
 
@@ -41,9 +43,16 @@ public class DefaultReflectiveMethodInvocation extends TargetedAdviceMethodProvi
 	protected List<Expression> getParameters(Advice advice, MatchResult<MethodInvocation> joinpoint) throws LookupException {
 		List<Expression> parameters = new ArrayList<Expression>();
 		
-		InvocationTarget target = getTarget(joinpoint);
+		// Cast is ok because a MI is a NamedTargetExpression which will return an InvocationTarget
+		InvocationTarget target = (InvocationTarget) getTarget(joinpoint);
+		
+		Expression reference = null;
+		if (target instanceof Expression)
+			reference = (Expression) target.clone();
+		else if (target instanceof NamedTarget)
+			reference = new NamedTargetExpression(((NamedTarget) target).name());
 
-		parameters.add(new VariableReference("object", target));
+		parameters.add(reference);
 		parameters.add(new RegularLiteral(new BasicTypeReference("String"), "\"" + joinpoint.getJoinpoint().getElement().name() + "\""));
 		
 		List<Expression> methodParameters = joinpoint.getJoinpoint().getActualParameters();
@@ -68,6 +77,9 @@ public class DefaultReflectiveMethodInvocation extends TargetedAdviceMethodProvi
 	protected BasicTypeArgument getGenericParameter(Advice advice, MatchResult<MethodInvocation> joinpoint)	throws LookupException {
 		Type type = joinpoint.getJoinpoint().getElement().returnType();
 		Java java = (Java) joinpoint.getJoinpoint().language(Java.class);
+		
+		if (type instanceof TypeIndirection)
+			type = ((TypeIndirection) type).aliasedType();
 				
 		// Set the generic parameter
 		if (joinpoint.getJoinpoint().getType() != ((ObjectOrientedLanguage) joinpoint.getJoinpoint().language(ObjectOrientedLanguage.class)).voidType()) {
